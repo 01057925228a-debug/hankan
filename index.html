@@ -10,6 +10,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0B0C10">
 <link rel="manifest" href="manifest.json">
+<script>(function(){function fit(){var sa=navigator.standalone||(window.matchMedia&&matchMedia("(display-mode: standalone)").matches);if(sa){var h=Math.max(screen.height,window.innerHeight);if(Math.abs(window.orientation||0)===90)h=Math.max(screen.width,window.innerHeight);document.documentElement.style.setProperty("--app-h",h+"px")}}fit();window.addEventListener("resize",fit);window.addEventListener("orientationchange",fit);document.addEventListener("visibilitychange",fit)})();</script>
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-192.png">
 <style>
@@ -152,7 +153,7 @@ img.ph{width:100%;border-radius:12px;background:var(--bg);min-height:80px;displa
   .edit{background:#1F2229}
 }
 /* 화면 틀: 위 고정 · 가운데만 스크롤 · 아래 칸은 항상 바닥 (아이폰 홈 화면 앱의 fixed 버그 피함) */
-html,body{height:100vh;height:100dvh;overflow:hidden}
+html,body{height:100vh;height:100dvh;height:var(--app-h,100dvh);overflow:hidden}
 body{display:flex;flex-direction:column;padding:env(safe-area-inset-top,0px) 0 0!important}
 #scroller{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding-bottom:16px}
 .dock{position:relative!important;flex:none;left:auto;right:auto;bottom:auto}
@@ -258,7 +259,7 @@ function hkMain(){
     if(D.syncedAt){var mins=Math.round((Date.now()-D.syncedAt)/60000);
       t='PC '+(key(new Date(D.syncedAt))!==TODAY?label(key(new Date(D.syncedAt)))+' ':'')+hm(D.syncedAt)+(mins<1?' (방금)':mins<60?' ('+mins+'분 전)':'');}
     else t='아직 PC에서 동기화 전';
-    s.innerHTML=esc(t)+(D.pending?' · <b>PC 반영 대기 '+D.pending+'개</b>':'');
+    s.innerHTML=esc(t)+' · 앱 v4'+(D.pending?' · <b>PC 반영 대기 '+D.pending+'개</b>':'');
     if(NS&&NS.on){var bad=NS.err&&NS.errSince&&(Date.now()-NS.errSince>3600000)||(NS.lastOk&&Date.now()-NS.lastOk>3600000);
       var warn=!bad&&NS.err;   // 방금 생긴 문제: 자동으로 다시 시도 중
       var nt=bad?'노션 ⚠ '+(NS.err||'1시간 넘게 못 보냈어요'):warn?'노션 ⚠ 다시 시도 중 · '+NS.err:NS.prog&&NS.prog[0]<NS.prog[1]?'노션 옮기는 중 '+NS.prog[0]+'/'+NS.prog[1]:'노션 ✓ '+(NS.lastOk?hm(NS.lastOk):'');
