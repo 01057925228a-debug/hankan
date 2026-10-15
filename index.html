@@ -129,6 +129,28 @@ nav.tabs .bd{position:absolute;top:4px;left:calc(50% + 8px);min-width:17px;heigh
 img.ph{width:100%;border-radius:12px;background:var(--bg);min-height:80px;display:block}
 .lb{position:fixed;inset:0;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;z-index:50;padding:10px}
 .lb img{max-width:100%;max-height:100%}
+/* 오늘의 고정 칸 */
+.slots{padding:14px 14px 8px}
+.slots.need{box-shadow:0 0 0 2px var(--act)}
+.sl-head{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.sl-head b{font-size:15px}
+.sl-need{font-size:12.5px;color:var(--act);font-weight:600;margin:0 0 6px}
+.sl-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;padding:9px 0;border-top:1px solid var(--line)}
+.sl-row:first-of-type{border-top:0}
+.sl-time{font-weight:800;font-size:16px;font-variant-numeric:tabular-nums;background:var(--bg);border-radius:9px;padding:5px 9px;flex:none}
+.sl-body{flex:1 1 120px;min-width:0;font-size:14.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sl-t{font-weight:700}.sl-b{font-size:11.5px;color:var(--muted)}
+.sl-hint{font-size:10.5px;color:var(--warm);font-weight:700;border:1px solid var(--warm);border-radius:99px;padding:0 6px;margin-right:4px}
+.sl-pick{font-size:14px;color:var(--act);border:1.5px dashed var(--act);border-radius:9px;padding:5px 10px;font-weight:600}
+.sl-act{display:flex;gap:4px;align-items:center;margin-left:auto}
+.sl-st{font-size:12.5px;font-weight:700}.sl-st.ok{color:var(--done)}.sl-st.run{color:var(--act)}
+.s-due .sl-time{background:var(--act);color:#fff}
+.s-missed .sl-time{background:#FDE8E6;color:#C62828}
+.s-done .sl-time{background:var(--zone);color:var(--done)}
+.s-done .sl-body,.s-pass .sl-body{opacity:.6}
+.sl-list{display:flex;flex-direction:column;gap:6px;padding:4px 0 10px}
+.sl-list .opt{text-align:left;background:var(--bg);border-radius:11px;padding:10px 12px;font-size:14.5px}
+.tag.pin{background:var(--soft);color:var(--act)}
 /* 폰 칸 타이머 */
 .timer{border:2px solid var(--act)}
 .timer .lbl{font-size:12.5px;color:var(--act);font-weight:700}
@@ -143,6 +165,7 @@ img.ph{width:100%;border-radius:12px;background:var(--bg);min-height:80px;displa
   input:focus,select:focus,textarea:focus{background:#2A2E37}
   .panel{box-shadow:none;border:1px solid #20232B}
   .dock{background:#13151A}
+  .s-missed .sl-time{background:#3A1E1E;color:#FF8A80}
   .btn{background:#272B34}
   .btn.p{background:var(--act);color:#fff}.btn.g{background:transparent}
   .btn.m{background:var(--m);color:#fff}.btn.sv{background:var(--s);color:#fff}
@@ -234,17 +257,76 @@ function hkMain(){
         else if(d.act==='later'){m.status='later';m.showFrom=d.tomorrow}else if(d.act==='drop')m.status='dropped';else if(d.act==='keep')m.status='kept';break;
       case 'panGoal': st.pan=st.pan||{}; var gp=st.pan[d.day]||{m:0,s:0}, gg=Math.round(+d.g||0); if(gg>=10000)gp.g=gg; else delete gp.g; st.pan[d.day]=gp; break;
       case 'snooze': var sz=st.tasks.filter(function(x){return x.id===d.id})[0]; if(sz&&!sz.done&&!(sz.dailyId&&!sz.optional)){sz.snoozeUntil=d.tomorrow;sz.planned=false;sz.postponed=(sz.postponed||0)+1} break;
-      case 'phoneStart': var pt=st.tasks.filter(function(x){return x.id===d.taskId})[0]; if(pt&&!pt.done)st.psession={id:op.id,taskId:pt.id,title:pt.title,brand:pt.brand||'',startAt:+d.startAt||op.at,endAt:+d.endAt||op.at,min:+d.min||0}; break;
-      case 'phoneCancel': if(st.psession&&(!d.id||st.psession.id===d.id))st.psession=null; break;
+      case 'phoneStart': var pt=st.tasks.filter(function(x){return x.id===d.taskId})[0]; if(pt&&!pt.done){var psid=d.slotId?slLink(st,pt.id,+d.startAt||op.at,d.slotId):''; st.psession={id:op.id,taskId:pt.id,title:pt.title,brand:pt.brand||'',startAt:+d.startAt||op.at,endAt:+d.endAt||op.at,min:+d.min||0,slotId:psid||''}} break;
+      case 'phoneCancel': if(st.psession&&(!d.id||st.psession.id===d.id)){slUnlink(st,st.psession.slotId);st.psession=null} break;
+      case 'slotSet': case 'slotTime': case 'slotAdd': case 'slotDel': case 'slotPass': case 'slotMove': slOp(st,op); break;
       case 'phoneFinish': var ps=st.psession&&(!d.id||st.psession.id===d.id)?st.psession:(d.ps||null); if(!ps)break;
         var pe=Math.max(ps.startAt,Math.min(+d.endAt||op.at,op.at));
-        if(!st.blocks.some(function(b){return b.id===op.id}))st.blocks.push({id:op.id,day:d.day||key(new Date(pe)),title:ps.title,brand:ps.brand||'',start:ps.startAt,end:pe,minutes:Math.max(1,Math.round((pe-ps.startAt)/60000)),result:d.result==='done'?'done':'half',src:'폰'});
+        if(!st.blocks.some(function(b){return b.id===op.id}))st.blocks.push({id:op.id,day:d.day||key(new Date(pe)),title:ps.title,brand:ps.brand||'',start:ps.startAt,end:pe,minutes:Math.max(1,Math.round((pe-ps.startAt)/60000)),result:d.result==='done'?'done':'half',src:'폰',slotId:ps.slotId||undefined});
+        slDone(st,ps.slotId,d.result==='done'?'done':'half',op.id);
         if(d.result==='done'){var ft=st.tasks.filter(function(x){return x.id===ps.taskId})[0]; if(ft&&!ft.done){ft.done=true;ft.doneAt=pe}}
         if(st.psession&&st.psession.id===ps.id)st.psession=null; break;
       case 'pan': st.pan=st.pan||{}; var pp=st.pan[d.day]||{m:0,s:0}; if(d.g)pp.g=d.g; pp.m=Math.max(0,(pp.m||0)+(+d.dm||0)); pp.s=Math.max(0,(pp.s||0)+(+d.ds||0)); st.pan[d.day]=pp; break;
       case 'missionAdd': var mm=st.missionDay&&(st.missionDay.items||[]).filter(function(x){return x.id===d.id})[0]; if(!mm||mm.added)break;
         mm.added=true; st.tasks.push({id:op.id,title:mm.task_title,brand:mm.brand||'',kind:'head',steps:(mm.steps||[]).map(function(t){return {t:t,done:false}}),done:false,created:op.at,doneAt:0});break;
     }}
+  /* ===== 오늘의 고정 칸 (PC·시트와 같은 규칙) ===== */
+  var SL_MIN=50, SL_GAP=10, SL_MAX=4, SL_LATE=10, SL_MISS=15, SL_DEF={wd:['10:30','13:40','16:00'],we:['11:00','14:00','16:00']};
+  function slMin(t){var p=String(t||'0:0').split(':').map(Number);return (p[0]||0)*60+(p[1]||0)}
+  function slTs(day,t){var p=day.split('-').map(Number);var m=slMin(t);return new Date(p[0],p[1]-1,p[2],Math.floor(m/60),m%60).getTime()}
+  function slTimes(st,day){var T=st.slotTimes||SL_DEF;var p=day.split('-').map(Number);var w=new Date(p[0],p[1]-1,p[2]).getDay();return ((w===0||w===6?T.we:T.wd)||[]).filter(Boolean)}
+  function slEnsure(st,day){st.slots=st.slots||{}; if(st.slots[day])return false; st.slots[day]=slTimes(st,day).slice(0,SL_MAX).sort(function(a,b){return slMin(a)-slMin(b)}).map(function(t,i){return {id:day.replace(/-/g,'')+'d'+i,t:t,taskId:null,st:'wait'}}); return true}
+  function slOf(st,day){return ((st.slots||{})[day]||[]).slice().sort(function(a,b){return slMin(a.t)-slMin(b.t)})}
+  function slCheck(list){ if(list.length>SL_MAX)return '고정 칸은 하루 '+SL_MAX+'개까지예요'; var ms=list.map(function(x){return slMin(x.t)}).sort(function(a,b){return a-b}); for(var i=1;i<ms.length;i++) if(ms[i]-ms[i-1]<SL_MIN+SL_GAP) return '너무 빡빡해요. 시작 시간끼리 1시간은 띄워주세요'; return ''}
+  function slState(x,day,now){ if(x.st==='run'||x.st==='done'||x.st==='pass')return x.st; var t0=slTs(day,x.t); if(now<t0)return 'wait'; return now-t0<SL_MISS*60000?'due':'missed'}
+  function slFind(st,id){var ks=Object.keys(st.slots||{}); for(var i=0;i<ks.length;i++){var f=st.slots[ks[i]].filter(function(y){return y.id===id})[0]; if(f)return f} return null}
+  function slLink(st,taskId,now,slotId){var day=key(new Date(now)); slEnsure(st,day); var L=st.slots[day];
+    var x=slotId?L.filter(function(y){return y.id===slotId&&y.st!=='done'})[0]:null; if(!x)return '';
+    x.st='run'; x.at=now; x.late=Math.max(0,Math.round((now-slTs(day,x.t))/60000)); if(taskId)x.taskId=taskId; return x.id}
+  function slUnlink(st,id){var x=id&&slFind(st,id); if(x&&x.st==='run'){x.st='wait';delete x.at;delete x.late}}
+  function slDone(st,id,res,bid){var x=id&&slFind(st,id); if(x){x.st='done';x.res=res;if(bid)x.blockId=bid}}
+  function slOp(st,op){var d=op.d||{}, day=d.day||TODAY; slEnsure(st,day); var L=st.slots[day], x=L.filter(function(y){return y.id===d.id})[0], free=x&&x.st!=='done'&&x.st!=='run';
+    var okT=function(t){return /^\d{1,2}:\d{2}$/.test(t||'')}, fix=function(t){return ('0'+t).slice(-5)};
+    switch(op.type){
+      case 'slotSet': if(free)x.taskId=d.taskId||null; break;
+      case 'slotTime': if(free&&okT(d.t)){var t=fix(d.t); if(!slCheck(L.map(function(y){return y===x?{t:t}:y}))){x.t=t;x.st='wait';delete x.n0;delete x.n1}} break;
+      case 'slotAdd': if(!L.some(function(y){return y.id===op.id})&&okT(d.t)){var n={id:op.id,t:fix(d.t),taskId:d.taskId||null,st:'wait'}; if(!slCheck(L.concat([n])))L.push(n)} break;
+      case 'slotDel': if(free)st.slots[day]=L.filter(function(y){return y!==x}); break;
+      case 'slotPass': if(free)x.st='pass'; break;
+      case 'slotMove': if(free&&okT(d.t)){var t2=fix(d.t); if(!slCheck(L.map(function(y){return y===x?{t:t2}:y}))){x.t=t2;x.st='wait';x.moved=(x.moved||0)+1;delete x.n0;delete x.n1}} break;
+    }}
+  function slNextFree(id){var others=slOf(D,TODAY).filter(function(x){return x.id!==id}).map(function(x){return slMin(x.t)}); var d=new Date(), m=Math.ceil((d.getHours()*60+d.getMinutes()+5)/10)*10;
+    for(;m<=22*60;m+=10) if(others.every(function(o){return Math.abs(o-m)>=SL_MIN+SL_GAP})) return pad(Math.floor(m/60))+':'+pad(m%60); return ''}
+  function slPlaced(id){return slOf(D,TODAY).filter(function(x){return x.taskId===id&&x.st!=='done'&&x.st!=='pass'})[0]}
+  var slPick='', slTimeEd='';
+  function slotsHTML(){
+    slEnsure(D,TODAY); var L=slOf(D,TODAY), now=Date.now(); if(!L.length) return '<section class="panel slots"><div class="sl-head"><b>오늘의 고정 칸</b><span class="grow"></span><button class="btn s g" data-a="slAdd">+ 자리</button></div></section>';
+    var placed=L.filter(function(x){return x.taskId}).length, kept=L.filter(function(x){return x.st==='done'}).length, busy=!!D.psession||pcBusy();
+    var open=openList().filter(function(t){return !L.some(function(x){return x.taskId===t.id&&x.st!=='done'})});
+    var h='<section class="panel slots'+(placed<L.length&&!kept&&!busy?' need':'')+'"><div class="sl-head"><b>오늘의 고정 칸</b><span class="small muted">'+(kept?kept+'/'+L.length+' 지킴':placed+'/'+L.length+' 배치')+'</span><span class="grow"></span>'+(L.length<SL_MAX?'<button class="btn s g" data-a="slAdd">+ 자리</button>':'')+'</div>'
+      +(placed<L.length&&!kept?'<div class="sl-need">오늘 꼭 할 일 '+L.length+'개를 자리에 배치해요</div>':'');
+    L.forEach(function(x,i){
+      var s=slState(x,TODAY,now), t=x.taskId&&D.tasks.filter(function(y){return y.id===x.taskId})[0];
+      var title=t?'<span class="sl-t">'+esc(t.title)+'</span>'+(t.brand?' <span class="sl-b">'+esc(t.brand)+'</span>':''):x.taskId?'<span class="sl-t muted">(지운 할 일)</span>':s==='done'?'':'<button class="sl-pick" data-a="slPick" data-sid="'+x.id+'">+ 할 일 배치하기</button>';
+      var right='';
+      if(s==='done') right='<span class="sl-st ok">✓ '+(x.late>SL_LATE?x.late+'분 늦게':'지킴')+'</span>';
+      else if(s==='run') right='<span class="sl-st run">▶ 진행 중</span>';
+      else if(s==='pass') right='<span class="sl-st muted">패스</span>';
+      else if(s==='missed') right='<button class="btn s" data-a="slMove" data-sid="'+x.id+'">다음 빈 시간</button><button class="btn s g" data-a="slPass" data-sid="'+x.id+'">패스</button>';
+      else right=(s==='due'?'<button class="btn s p" data-a="slStart" data-sid="'+x.id+'"'+(busy?' disabled':'')+'>▶ 50분 시작</button>':'')+(t?'<button class="btn s g" data-a="slClear" data-sid="'+x.id+'" aria-label="배치 빼기">✕</button>':'');
+      var can=s!=='done'&&s!=='run';
+      h+='<div class="sl-row s-'+s+'"><button class="sl-time" data-a="slTime" data-sid="'+x.id+'"'+(can?'':' disabled')+'>'+esc(x.t)+'</button><span class="small muted">50분</span><span class="sl-body">'+(i===0&&!t&&(s==='wait'||s==='due')?'<span class="sl-hint">매출 일 추천</span>':'')+title+'</span><span class="sl-act">'+right+'</span></div>';
+      if(slPick===x.id) h+='<div class="sl-list">'+(open.length?open.slice(0,12).map(function(o){return '<button class="opt" data-a="slSet" data-sid="'+x.id+'" data-id="'+o.id+'">'+esc(o.title)+(o.brand?' <span class="sl-b">'+esc(o.brand)+'</span>':'')+'</button>'}).join(''):'<span class="small muted">배치할 할 일이 없어요</span>')+'<button class="btn s g" data-a="slPickClose">닫기</button></div>';
+      if(slTimeEd===x.id) h+='<div class="sl-list"><div class="row"><input type="time" id="slT" value="'+esc(x.t)+'" style="flex:1"><button class="btn s p" data-a="slTimeSave" data-sid="'+x.id+'">저장</button></div><div class="row"><button class="btn s g" data-a="slDel" data-sid="'+x.id+'">자리 빼기</button><span class="grow"></span><button class="btn s g" data-a="slTimeClose">취소</button></div></div>';
+    });
+    return h+'</section>';
+  }
+  function slPin(taskId,sid){ slEnsure(D,TODAY); var L=slOf(D,TODAY), now=Date.now();
+    var x=sid?L.filter(function(y){return y.id===sid})[0]:L.filter(function(y){return !y.taskId&&['wait','due'].indexOf(slState(y,TODAY,now))>=0})[0];
+    if(!x){toast('빈 고정 칸이 없어요');return}
+    L.forEach(function(y){ if(y!==x&&y.taskId===taskId&&y.st!=='done'&&y.st!=='run') send('slotSet',{day:TODAY,id:y.id,taskId:null}) });
+    send('slotSet',{day:TODAY,id:x.id,taskId:taskId},x.t+' 고정 칸에 넣었어요') }
+  function sendRaw(op){ LS.set('hk_data',JSON.stringify({d:D,n:NS})); fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({k:K,op:op})}).then(function(r){return r.json()}).then(function(r){ if(r&&r.ok&&typeof r.pending==='number'){D.pending=r.pending;drawSync()} else if(!r||!r.ok) toast('저장 실패: '+(r&&r.err||'다시 시도해 주세요')); }).catch(function(){toast('저장 실패: 인터넷 확인')}); }
   function send(type,d,msg){
     var op={id:uid(),type:type,at:Date.now(),d:d};
     applyOp(D,op); D.pending=(D.pending||0)+1; render(); if(msg)toast(msg);
@@ -259,7 +341,7 @@ function hkMain(){
     if(D.syncedAt){var mins=Math.round((Date.now()-D.syncedAt)/60000);
       t='PC '+(key(new Date(D.syncedAt))!==TODAY?label(key(new Date(D.syncedAt)))+' ':'')+hm(D.syncedAt)+(mins<1?' (방금)':mins<60?' ('+mins+'분 전)':'');}
     else t='아직 PC에서 동기화 전';
-    s.innerHTML=esc(t)+' · 앱 v4'+(D.pending?' · <b>PC 반영 대기 '+D.pending+'개</b>':'');
+    s.innerHTML=esc(t)+' · 앱 v5'+(D.pending?' · <b>PC 반영 대기 '+D.pending+'개</b>':'');
     if(NS&&NS.on){var bad=NS.err&&NS.errSince&&(Date.now()-NS.errSince>3600000)||(NS.lastOk&&Date.now()-NS.lastOk>3600000);
       var warn=!bad&&NS.err;   // 방금 생긴 문제: 자동으로 다시 시도 중
       var nt=bad?'노션 ⚠ '+(NS.err||'1시간 넘게 못 보냈어요'):warn?'노션 ⚠ 다시 시도 중 · '+NS.err:NS.prog&&NS.prog[0]<NS.prog[1]?'노션 옮기는 중 '+NS.prog[0]+'/'+NS.prog[1]:'노션 ✓ '+(NS.lastOk?hm(NS.lastOk):'');
@@ -395,7 +477,7 @@ function hkMain(){
         +'<div class="row" style="margin-top:6px"><select id="edB" style="flex:1">'+brandOpts(t.brand)+'</select><select id="edK" style="width:auto"><option value="head" '+(t.kind!=='chore'?'selected':'')+'>머리 씀</option><option value="chore" '+(t.kind==='chore'?'selected':'')+'>잡무</option></select></div>'
         +'<div class="row" style="margin-top:6px"><button class="btn s p" data-a="edSave" data-id="'+t.id+'">저장</button><button class="btn s" data-a="edCancel">취소</button><span style="flex:1"></span>'+(t.dailyId&&!t.optional?'<span class="small muted">매일 할 일은 삭제 안 돼요</span>':'<button class="btn s g" data-a="taskDel" data-id="'+t.id+'">삭제</button>')+'</div></div></div>';
       return '<div class="item row"><div class="grow" data-pk="'+t.id+'"><div>'+esc(t.title)+'</div><div class="row" style="margin-top:3px">'+(t.dailyId?(t.optional?'<span class="tag" style="background:transparent;border:1px solid var(--warm);color:var(--warm)">선택</span>':'<span class="tag" style="background:var(--warm);color:#fff">매일 🔒</span>'):'')+kindTag(t.kind)+(t.brand?'<span class="tag n">'+esc(t.brand)+'</span>':'')+(s.length?'<span class="small muted">단계 '+dn+'/'+s.length+'</span>':'')+'</div></div>'
-        +'<button class="btn s g" data-a="edOpen" data-id="'+t.id+'">수정</button></div>'}).join('')+'</div>'
+        +(function(){var pl=slPlaced(t.id);return pl?'<span class="tag pin">📌 '+esc(pl.t)+'</span>':'<button class="btn s g" data-a="slPin" data-id="'+t.id+'" aria-label="고정 칸에 넣기">📌</button>'})()+'<button class="btn s g" data-a="edOpen" data-id="'+t.id+'">수정</button></div>'}).join('')+'</div>'
       :'<p class="empty" style="margin-top:10px">남은 할 일이 없어요.</p>';
     if(snz) h+='<p class="small muted" style="margin:8px 0 0">내일로 미룬 것 '+snz+'개 (PC에서 관리)</p>';
     h+='<p class="small muted" style="margin:8px 0 0">할 일을 누르면 오늘 탭에서 바로 시작할 수 있어요.</p>';
@@ -437,13 +519,14 @@ function hkMain(){
     $('today').innerHTML=(D.med[TODAY]?'<button class="medchip" data-a="medEdit" title="약 시간 수정">💊 '+esc(D.med[TODAY])+'</button>':'')+esc(label(TODAY));
     var pm=pendingMemos().length, bd=$('memoBd'); bd.hidden=!pm; bd.textContent=pm;
     var v=$('view'), h='';
-    if(tab==='today') h=timerHTML()+declHTML()+panHTML()+sugHTML()+nowHTML()+missionsHTML();
+    if(tab==='today') h=timerHTML()+declHTML()+slotsHTML()+panHTML()+sugHTML()+nowHTML()+missionsHTML();
     else if(tab==='tasks') h=tasksHTML();
     else h=memoReviewHTML();
     v.innerHTML=h; loadPhotos();
     var aq=$('aq'); if(aq){ aq.oninput=function(){ window.__aq=aq.value; var p=aq.selectionStart; render(); var n=$('aq'); n.focus(); try{n.setSelectionRange(p,p)}catch(e){} }; }
     var gi=$('goalIn'); if(gi) gi.onkeydown=function(e){if(e.key==='Enter'&&!e.isComposing){e.preventDefault();click('goalSave')}};
     var pi=$('panIn'); if(pi) pi.onkeydown=function(e){if(e.key==='Enter'&&!e.isComposing){e.preventDefault();click('panS')}};
+    var slt=$('slT'); if(slt){ slt.onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();click('slTimeSave')}}; slt.focus(); }
     var ti=$('taskIn'); if(ti) ti.onkeydown=function(e){if(e.key==='Enter'&&!e.isComposing){e.preventDefault();click('taskAdd')}};
   }
   // 아래 아이디어 입력칸 (화면 바뀌어도 그대로 유지)
@@ -478,6 +561,22 @@ function hkMain(){
         hkImg(D.imgDrive[id],function(d){im.src=d},function(){im.alt='불러오기 실패'}); });
       return; }
     switch(a){
+      case 'slPick': slPick=slPick===b.getAttribute('data-sid')?'':b.getAttribute('data-sid'); slTimeEd=''; render(); break;
+      case 'slPickClose': slPick=''; render(); break;
+      case 'slSet': slPick=''; slPin(id,b.getAttribute('data-sid')); break;
+      case 'slPin': slPin(id); break;
+      case 'slClear': send('slotSet',{day:TODAY,id:b.getAttribute('data-sid'),taskId:null},'배치 뺐어요'); break;
+      case 'slTime': slTimeEd=slTimeEd===b.getAttribute('data-sid')?'':b.getAttribute('data-sid'); slPick=''; render(); break;
+      case 'slTimeClose': slTimeEd=''; render(); break;
+      case 'slTimeSave': var sid1=b.getAttribute('data-sid'), tv1=($('slT')||{}).value||''; if(!tv1)break; var er1=slCheck(slOf(D,TODAY).map(function(x){return x.id===sid1?{t:tv1}:x})); if(er1){toast(er1);break} slTimeEd=''; send('slotTime',{day:TODAY,id:sid1,t:tv1},tv1+'로 옮겼어요'); break;
+      case 'slDel': slTimeEd=''; send('slotDel',{day:TODAY,id:b.getAttribute('data-sid')},'자리를 뺐어요'); break;
+      case 'slAdd': var L1=slOf(D,TODAY); if(L1.length>=SL_MAX){toast('고정 칸은 하루 '+SL_MAX+'개까지예요');break} var nt1=slNextFree(''); if(!nt1){toast('오늘은 더 넣을 시간이 없어요');break} var nid=uid(); applyOp(D,{id:nid,type:'slotAdd',at:Date.now(),d:{day:TODAY,t:nt1}}); slTimeEd=nid;
+        var op1={id:nid,type:'slotAdd',at:Date.now(),d:{day:TODAY,t:nt1}}; D.pending=(D.pending||0)+1; render(); toast(nt1+' 자리를 만들었어요. 시간 바꿔도 돼요'); sendRaw(op1); break;
+      case 'slPass': send('slotPass',{day:TODAY,id:b.getAttribute('data-sid')},'오늘은 패스'); break;
+      case 'slMove': var sid2=b.getAttribute('data-sid'), nt2=slNextFree(sid2); if(!nt2){toast('오늘은 옮길 시간이 없어요');break} send('slotMove',{day:TODAY,id:sid2,t:nt2},nt2+'로 밀었어요'); break;
+      case 'slStart': if(D.psession||pcBusy()){toast('이미 도는 칸이 있어요');break} var sid3=b.getAttribute('data-sid'), x3=slOf(D,TODAY).filter(function(y){return y.id===sid3})[0]; if(!x3)break;
+        var tid3=x3.taskId&&D.tasks.some(function(y){return y.id===x3.taskId&&!y.done})?x3.taskId:(sugTask()||{}).id; if(!tid3){toast('할 일이 없어요. 먼저 배치해요');break}
+        var s3=Date.now(); send('phoneStart',{taskId:tid3,startAt:s3,endAt:s3+SL_MIN*60000,min:SL_MIN,slotId:sid3},'50분 시작! 이 칸만 하자'); break;
       case 'medNow': var n=new Date(); send('med',{day:TODAY,time:pad(n.getHours())+':'+pad(n.getMinutes())},'약 시간 기록됨'); break;
       case 'medEdit': medEdit=true; render(); break;
       case 'medCancel': medEdit=false; render(); break;
@@ -498,7 +597,7 @@ function hkMain(){
       case 'edOpen': editId=id; startOpen=null; render(); break;
       case 'sugGo':
         var mn=+b.getAttribute('data-min'); if(D.psession||pcBusy()){toast('이미 도는 칸이 있어요');break}
-        var st0=Date.now(); pick=null; sugMin=null; send('phoneStart',{taskId:id,startAt:st0,endAt:st0+mn*60000,min:mn},mn+'분 시작! 이 칸만 하자'); ($('scroller')||{}).scrollTop=0; break;
+        var st0=Date.now(), xs=slOf(D,TODAY).filter(function(y){return y.taskId===id&&(y.st||'wait')==='wait'&&st0>=slTs(TODAY,y.t)-15*60000})[0]; if(xs)mn=SL_MIN; pick=null; sugMin=null; send('phoneStart',{taskId:id,startAt:st0,endAt:st0+mn*60000,min:mn,slotId:xs?xs.id:''},mn+'분 시작! 이 칸만 하자'+(xs?' (고정 칸)':'')); ($('scroller')||{}).scrollTop=0; break;
       case 'sugSkip': if(pick===id)pick=null; skip.push(id); sugMin=null; render(); break;
       case 'skipReset': skip=[]; render(); break;
       case 'sugSnooze': if(pick===id)pick=null; sugMin=null; send('snooze',{id:id,tomorrow:tomorrow()},'내일 다시 보여줄게요'); break;
