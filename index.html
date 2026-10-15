@@ -143,7 +143,7 @@ img.ph{width:100%;border-radius:12px;background:var(--bg);min-height:80px;displa
 .sl-hint{font-size:10.5px;color:var(--warm);font-weight:700;border:1px solid var(--warm);border-radius:99px;padding:0 6px;margin-right:4px}
 .sl-pick{font-size:14px;color:var(--act);border:1.5px dashed var(--act);border-radius:9px;padding:5px 10px;font-weight:600}
 .sl-act{display:flex;gap:4px;align-items:center;margin-left:auto}
-.sl-st{font-size:12.5px;font-weight:700}.sl-st.ok{color:var(--done)}.sl-st.run{color:var(--act)}
+.sl-st{font-size:12.5px;font-weight:700}.sl-st.ok{color:var(--done)}.sl-st.run{color:var(--act)}.sl-st.miss{color:#C62828}
 .s-due .sl-time{background:var(--act);color:#fff}
 .s-missed .sl-time{background:#FDE8E6;color:#C62828}
 .s-done .sl-time{background:var(--zone);color:var(--done)}
@@ -289,36 +289,41 @@ function hkMain(){
     var okT=function(t){return /^\d{1,2}:\d{2}$/.test(t||'')}, fix=function(t){return ('0'+t).slice(-5)};
     switch(op.type){
       case 'slotSet': if(free)x.taskId=d.taskId||null; break;
-      case 'slotTime': if(free&&okT(d.t)){var t=fix(d.t); if(!slCheck(L.map(function(y){return y===x?{t:t}:y}))){x.t=t;x.st='wait';delete x.n0;delete x.n1}} break;
+      case 'slotTime': if(free&&(x.st||'wait')==='wait'&&Date.now()<slTs(day,x.t)&&okT(d.t)){var t=fix(d.t); if(!slCheck(L.map(function(y){return y===x?{t:t}:y}))){x.t=t;x.st='wait';delete x.n0;delete x.n1}} break;
       case 'slotAdd': if(!L.some(function(y){return y.id===op.id})&&okT(d.t)){var n={id:op.id,t:fix(d.t),taskId:d.taskId||null,st:'wait'}; if(!slCheck(L.concat([n])))L.push(n)} break;
-      case 'slotDel': if(free)st.slots[day]=L.filter(function(y){return y!==x}); break;
+      case 'slotDel': if(free&&(x.st||'wait')==='wait'&&Date.now()<slTs(day,x.t))st.slots[day]=L.filter(function(y){return y!==x}); break;
       case 'slotPass': if(free)x.st='pass'; break;
-      case 'slotMove': if(free&&okT(d.t)){var t2=fix(d.t); if(!slCheck(L.map(function(y){return y===x?{t:t2}:y}))){x.t=t2;x.st='wait';x.moved=(x.moved||0)+1;delete x.n0;delete x.n1}} break;
+      case 'slotMove': if(false){var t2=fix(d.t); if(!slCheck(L.map(function(y){return y===x?{t:t2}:y}))){x.t=t2;x.st='wait';x.moved=(x.moved||0)+1;delete x.n0;delete x.n1}} break;
     }}
   function slNextFree(id){var others=slOf(D,TODAY).filter(function(x){return x.id!==id}).map(function(x){return slMin(x.t)}); var d=new Date(), m=Math.ceil((d.getHours()*60+d.getMinutes()+5)/10)*10;
     for(;m<=22*60;m+=10) if(others.every(function(o){return Math.abs(o-m)>=SL_MIN+SL_GAP})) return pad(Math.floor(m/60))+':'+pad(m%60); return ''}
   function slPlaced(id){return slOf(D,TODAY).filter(function(x){return x.taskId===id&&x.st!=='done'&&x.st!=='pass'})[0]}
-  var slPick='', slTimeEd='';
+  var slPick='', slTimeEd='', slOpen=false;
   function slotsHTML(){
     slEnsure(D,TODAY); var L=slOf(D,TODAY), now=Date.now(); if(!L.length) return '<section class="panel slots"><div class="sl-head"><b>오늘의 고정 칸</b><span class="grow"></span><button class="btn s g" data-a="slAdd">+ 자리</button></div></section>';
     var placed=L.filter(function(x){return x.taskId}).length, kept=L.filter(function(x){return x.st==='done'}).length, busy=!!D.psession||pcBusy();
     var open=openList().filter(function(t){return !L.some(function(x){return x.taskId===t.id&&x.st!=='done'})});
-    var h='<section class="panel slots'+(placed<L.length&&!kept&&!busy?' need':'')+'"><div class="sl-head"><b>오늘의 고정 칸</b><span class="small muted">'+(kept?kept+'/'+L.length+' 지킴':placed+'/'+L.length+' 배치')+'</span><span class="grow"></span>'+(L.length<SL_MAX?'<button class="btn s g" data-a="slAdd">+ 자리</button>':'')+'</div>'
-      +(placed<L.length&&!kept?'<div class="sl-need">오늘 꼭 할 일 '+L.length+'개를 자리에 배치해요</div>':'');
+    var sts=L.map(function(x){return slState(x,TODAY,now)}), ni=-1, k;
+    for(k=0;k<sts.length;k++) if(sts[k]==='run'||sts[k]==='due'){ni=k;break}
+    if(ni<0) for(k=0;k<sts.length;k++) if(sts[k]==='wait'){ni=k;break}
+    var missed=sts.filter(function(x){return x==='missed'}).length, nx=ni>=0?L[ni]:null, need=nx&&!nx.taskId&&!busy;
+    var h='<section class="panel slots'+(need?' need':'')+'"><div class="sl-head"><b>📌 고정 칸</b><span class="small muted">'+(kept?kept+'/'+L.length+' 지킴':placed+'/'+L.length+' 배치')+(missed?' · 놓침 '+missed:'')+'</span><span class="grow"></span>'+(slOpen&&L.length<SL_MAX?'<button class="btn s g" data-a="slAdd">+ 자리</button>':'')+'<button class="btn s g" data-a="slFold">'+(slOpen?'접기 ▴':'전체 ▾')+'</button></div>';
     L.forEach(function(x,i){
+      if(!(slOpen||i===ni||slPick===x.id||slTimeEd===x.id)) return;
       var s=slState(x,TODAY,now), t=x.taskId&&D.tasks.filter(function(y){return y.id===x.taskId})[0];
-      var title=t?'<span class="sl-t">'+esc(t.title)+'</span>'+(t.brand?' <span class="sl-b">'+esc(t.brand)+'</span>':''):x.taskId?'<span class="sl-t muted">(지운 할 일)</span>':s==='done'?'':'<button class="sl-pick" data-a="slPick" data-sid="'+x.id+'">+ 할 일 배치하기</button>';
+      var title=t?'<span class="sl-t">'+esc(t.title)+'</span>'+(t.brand?' <span class="sl-b">'+esc(t.brand)+'</span>':''):x.taskId?'<span class="sl-t muted">(지운 할 일)</span>':(s==='done'||s==='pass'||s==='missed')?'<span class="sl-t muted">(빈 자리)</span>':'<button class="sl-pick" data-a="slPick" data-sid="'+x.id+'">+ 할 일 배치하기</button>';
       var right='';
       if(s==='done') right='<span class="sl-st ok">✓ '+(x.late>SL_LATE?x.late+'분 늦게':'지킴')+'</span>';
       else if(s==='run') right='<span class="sl-st run">▶ 진행 중</span>';
       else if(s==='pass') right='<span class="sl-st muted">패스</span>';
-      else if(s==='missed') right='<button class="btn s" data-a="slMove" data-sid="'+x.id+'">다음 빈 시간</button><button class="btn s g" data-a="slPass" data-sid="'+x.id+'">패스</button>';
+      else if(s==='missed') right='<span class="sl-st miss">놓침</span><button class="btn s g" data-a="slPass" data-sid="'+x.id+'">패스</button>';
       else right=(s==='due'?'<button class="btn s p" data-a="slStart" data-sid="'+x.id+'"'+(busy?' disabled':'')+'>▶ 50분 시작</button>':'')+(t?'<button class="btn s g" data-a="slClear" data-sid="'+x.id+'" aria-label="배치 빼기">✕</button>':'');
-      var can=s!=='done'&&s!=='run';
+      var can=s==='wait';
       h+='<div class="sl-row s-'+s+'"><button class="sl-time" data-a="slTime" data-sid="'+x.id+'"'+(can?'':' disabled')+'>'+esc(x.t)+'</button><span class="small muted">50분</span><span class="sl-body">'+(i===0&&!t&&(s==='wait'||s==='due')?'<span class="sl-hint">매출 일 추천</span>':'')+title+'</span><span class="sl-act">'+right+'</span></div>';
       if(slPick===x.id) h+='<div class="sl-list">'+(open.length?open.slice(0,12).map(function(o){return '<button class="opt" data-a="slSet" data-sid="'+x.id+'" data-id="'+o.id+'">'+esc(o.title)+(o.brand?' <span class="sl-b">'+esc(o.brand)+'</span>':'')+'</button>'}).join(''):'<span class="small muted">배치할 할 일이 없어요</span>')+'<button class="btn s g" data-a="slPickClose">닫기</button></div>';
       if(slTimeEd===x.id) h+='<div class="sl-list"><div class="row"><input type="time" id="slT" value="'+esc(x.t)+'" style="flex:1"><button class="btn s p" data-a="slTimeSave" data-sid="'+x.id+'">저장</button></div><div class="row"><button class="btn s g" data-a="slDel" data-sid="'+x.id+'">자리 빼기</button><span class="grow"></span><button class="btn s g" data-a="slTimeClose">취소</button></div></div>';
     });
+    if(!slOpen&&!nx) h+='<div class="small muted" style="padding:4px 0 2px">오늘 고정 칸은 다 지나갔어요</div>';
     return h+'</section>';
   }
   function slPin(taskId,sid){ slEnsure(D,TODAY); var L=slOf(D,TODAY), now=Date.now();
@@ -341,7 +346,7 @@ function hkMain(){
     if(D.syncedAt){var mins=Math.round((Date.now()-D.syncedAt)/60000);
       t='PC '+(key(new Date(D.syncedAt))!==TODAY?label(key(new Date(D.syncedAt)))+' ':'')+hm(D.syncedAt)+(mins<1?' (방금)':mins<60?' ('+mins+'분 전)':'');}
     else t='아직 PC에서 동기화 전';
-    s.innerHTML=esc(t)+' · 앱 v5'+(D.pending?' · <b>PC 반영 대기 '+D.pending+'개</b>':'');
+    s.innerHTML=esc(t)+' · 앱 v6'+(D.pending?' · <b>PC 반영 대기 '+D.pending+'개</b>':'');
     if(NS&&NS.on){var bad=NS.err&&NS.errSince&&(Date.now()-NS.errSince>3600000)||(NS.lastOk&&Date.now()-NS.lastOk>3600000);
       var warn=!bad&&NS.err;   // 방금 생긴 문제: 자동으로 다시 시도 중
       var nt=bad?'노션 ⚠ '+(NS.err||'1시간 넘게 못 보냈어요'):warn?'노션 ⚠ 다시 시도 중 · '+NS.err:NS.prog&&NS.prog[0]<NS.prog[1]?'노션 옮기는 중 '+NS.prog[0]+'/'+NS.prog[1]:'노션 ✓ '+(NS.lastOk?hm(NS.lastOk):'');
@@ -563,6 +568,7 @@ function hkMain(){
     switch(a){
       case 'slPick': slPick=slPick===b.getAttribute('data-sid')?'':b.getAttribute('data-sid'); slTimeEd=''; render(); break;
       case 'slPickClose': slPick=''; render(); break;
+      case 'slFold': slOpen=!slOpen; slPick=''; slTimeEd=''; render(); break;
       case 'slSet': slPick=''; slPin(id,b.getAttribute('data-sid')); break;
       case 'slPin': slPin(id); break;
       case 'slClear': send('slotSet',{day:TODAY,id:b.getAttribute('data-sid'),taskId:null},'배치 뺐어요'); break;
@@ -573,7 +579,6 @@ function hkMain(){
       case 'slAdd': var L1=slOf(D,TODAY); if(L1.length>=SL_MAX){toast('고정 칸은 하루 '+SL_MAX+'개까지예요');break} var nt1=slNextFree(''); if(!nt1){toast('오늘은 더 넣을 시간이 없어요');break} var nid=uid(); applyOp(D,{id:nid,type:'slotAdd',at:Date.now(),d:{day:TODAY,t:nt1}}); slTimeEd=nid;
         var op1={id:nid,type:'slotAdd',at:Date.now(),d:{day:TODAY,t:nt1}}; D.pending=(D.pending||0)+1; render(); toast(nt1+' 자리를 만들었어요. 시간 바꿔도 돼요'); sendRaw(op1); break;
       case 'slPass': send('slotPass',{day:TODAY,id:b.getAttribute('data-sid')},'오늘은 패스'); break;
-      case 'slMove': var sid2=b.getAttribute('data-sid'), nt2=slNextFree(sid2); if(!nt2){toast('오늘은 옮길 시간이 없어요');break} send('slotMove',{day:TODAY,id:sid2,t:nt2},nt2+'로 밀었어요'); break;
       case 'slStart': if(D.psession||pcBusy()){toast('이미 도는 칸이 있어요');break} var sid3=b.getAttribute('data-sid'), x3=slOf(D,TODAY).filter(function(y){return y.id===sid3})[0]; if(!x3)break;
         var tid3=x3.taskId&&D.tasks.some(function(y){return y.id===x3.taskId&&!y.done})?x3.taskId:(sugTask()||{}).id; if(!tid3){toast('할 일이 없어요. 먼저 배치해요');break}
         var s3=Date.now(); send('phoneStart',{taskId:tid3,startAt:s3,endAt:s3+SL_MIN*60000,min:SL_MIN,slotId:sid3},'50분 시작! 이 칸만 하자'); break;
