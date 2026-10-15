@@ -118,6 +118,9 @@ details.fold[open]>summary{margin-bottom:8px}
 .compose .ci{display:flex;gap:8px}
 .compose input{flex:1;min-width:0;min-height:44px}
 .compose .btn{min-height:44px}
+.compose .picb{display:flex;align-items:center;justify-content:center;width:46px;padding:0;font-size:20px;background:var(--bg);flex:none;cursor:pointer}
+.mpics{display:flex;gap:8px;margin-top:10px}.mp{position:relative;flex:none}.mp img{width:58px;height:58px;object-fit:cover;border-radius:10px;display:block}
+.mp button{position:absolute;top:-7px;right:-7px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;font-size:12px;border:0;padding:0;line-height:24px;text-align:center}
 nav.tabs{display:flex;max-width:560px;margin:0 auto;border-top:1px solid var(--line)}
 nav.tabs button{flex:1;padding:10px 0 6px;font-weight:700;font-size:11.5px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px;position:relative}
 nav.tabs button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
@@ -196,7 +199,8 @@ body{display:flex;flex-direction:column;padding:env(safe-area-inset-top,0px) 0 0
 <div class="dock">
   <div class="compose" id="compose">
     <div class="cb"><span>💡 아이디어</span><select id="memoB" aria-label="브랜드"></select></div>
-    <div class="ci"><input type="text" id="memoIn" maxlength="500" placeholder="떠오른 거 바로 적기" autocomplete="off" enterkeyhint="send"><button class="btn p" data-a="memoAdd">적기</button></div>
+    <div class="ci"><input type="text" id="memoIn" maxlength="500" placeholder="떠오른 거 바로 적기" autocomplete="off" enterkeyhint="send"><label class="btn picb" aria-label="사진 넣기" title="사진 넣기">📷<input type="file" id="memoPic" accept="image/*" multiple hidden></label><button class="btn p" data-a="memoAdd">적기</button></div>
+    <div class="mpics" id="memoPics" hidden></div>
   </div>
   <nav class="tabs" role="tablist">
     <button role="tab" data-t="today" aria-selected="true"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>오늘</button>
@@ -245,7 +249,7 @@ function hkMain(){
   /* 서버와 같은 규칙 */
   function applyOp(st,op){var d=op.d||{};
     switch(op.type){
-      case 'addMemo': if(!st.memos.some(function(m){return m.id===op.id}))st.memos.push({id:op.id,text:String(d.text||'').slice(0,500),at:op.at,day:d.day,ctx:'폰',brand:String(d.brand||'').slice(0,30),bp:1,status:'new',showFrom:d.day});break;
+      case 'addMemo': if(!st.memos.some(function(m){return m.id===op.id}))st.memos.push({id:op.id,text:String(d.text||'').slice(0,500),at:op.at,day:d.day,ctx:'폰',brand:String(d.brand||'').slice(0,30),bp:1,status:'new',showFrom:d.day,imgs:(d.imgs||[]).slice(0,4)}); if(d.drive){st.imgDrive=st.imgDrive||{}; Object.keys(d.drive).forEach(function(k2){st.imgDrive[k2]=d.drive[k2]})};break;
       case 'addBrand': var nb=String(d.name||'').replace(/[,\n]/g,' ').replace(/\s+/g,' ').trim().slice(0,30); if(nb&&brands.indexOf(nb)<0)brands.push(nb); break;
       case 'addTask': if(!st.tasks.some(function(t){return t.id===op.id}))st.tasks.push({id:op.id,title:String(d.title||'').slice(0,120),brand:d.brand||'',kind:d.kind==='chore'?'chore':'head',steps:[],done:false,created:op.at,doneAt:0});break;
       case 'editTask': var t=st.tasks.filter(function(x){return x.id===d.id})[0]; if(t){if(d.title)t.title=d.title;if(d.brand!==undefined)t.brand=d.brand;if(d.kind)t.kind=d.kind}break;
@@ -346,7 +350,7 @@ function hkMain(){
     if(D.syncedAt){var mins=Math.round((Date.now()-D.syncedAt)/60000);
       t='PC '+(key(new Date(D.syncedAt))!==TODAY?label(key(new Date(D.syncedAt)))+' ':'')+hm(D.syncedAt)+(mins<1?' (방금)':mins<60?' ('+mins+'분 전)':'');}
     else t='아직 PC에서 동기화 전';
-    s.innerHTML=esc(t)+' · 앱 v6'+(D.pending?' · <b>PC 반영 대기 '+D.pending+'개</b>':'');
+    s.innerHTML=esc(t)+' · 앱 v7'+(D.pending?' · <b>PC 반영 대기 '+D.pending+'개</b>':'');
     if(NS&&NS.on){var bad=NS.err&&NS.errSince&&(Date.now()-NS.errSince>3600000)||(NS.lastOk&&Date.now()-NS.lastOk>3600000);
       var warn=!bad&&NS.err;   // 방금 생긴 문제: 자동으로 다시 시도 중
       var nt=bad?'노션 ⚠ '+(NS.err||'1시간 넘게 못 보냈어요'):warn?'노션 ⚠ 다시 시도 중 · '+NS.err:NS.prog&&NS.prog[0]<NS.prog[1]?'노션 옮기는 중 '+NS.prog[0]+'/'+NS.prog[1]:'노션 ✓ '+(NS.lastOk?hm(NS.lastOk):'');
@@ -417,6 +421,30 @@ function hkMain(){
     var cur=memoBrand===null?defBrand():memoBrand, list=brands.slice(); if(cur&&list.indexOf(cur)<0)list.push(cur);
     $('memoB').innerHTML='<option value="" '+(!cur?'selected':'')+'>분류 없음</option>'+list.map(function(b){return '<option '+(b===cur?'selected':'')+'>'+esc(b)+'</option>'}).join('')+'<option value="__new__">+ 새로 만들기</option>';
   }
+  /* ===== 아이디어에 사진 붙이기 (한 메모 최대 4장, 긴 쪽 1600px로 줄여서 드라이브 '한 칸 이미지'에) ===== */
+  var memoPics=[], picBusy=false, PIC_MAX=4;
+  function drawPics(){ var el=$('memoPics'); if(!el)return; el.hidden=!memoPics.length; el.innerHTML=memoPics.map(function(p,i){return '<span class="mp"><img src="'+p.u+'" alt="첨부할 사진"><button type="button" data-a="picDel" data-i="'+i+'" aria-label="사진 빼기">✕</button></span>'}).join('') }
+  function shrink(file,cb){ var r=new FileReader(); r.onload=function(){ var im=new Image(); im.onload=function(){ var w=im.naturalWidth,h=im.naturalHeight,s=Math.min(1,1600/Math.max(w,h)); var c=document.createElement('canvas'); c.width=Math.max(1,Math.round(w*s)); c.height=Math.max(1,Math.round(h*s)); var g=c.getContext('2d'); g.fillStyle='#fff'; g.fillRect(0,0,c.width,c.height); g.drawImage(im,0,0,c.width,c.height); cb(c.toDataURL('image/jpeg',0.8)) }; im.onerror=function(){cb(null)}; im.src=r.result }; r.onerror=function(){cb(null)}; r.readAsDataURL(file) }
+  function upPic(p,ok,bad){ fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({k:K,img:{id:p.id,mime:'image/jpeg',data:p.u.split(',')[1]}})}).then(function(r){return r.json()}).then(function(r){ if(r&&r.ok&&r.fileId) ok(r.fileId); else bad(r&&r.err) }).catch(function(){bad('인터넷 확인')}) }
+  function memoSubmit(){
+    var mv=$('memoIn').value.trim(), mbv=$('memoB').value, br=mbv==='__new__'?'':mbv;
+    if(!mv&&!memoPics.length){$('memoIn').focus();return}
+    if(picBusy) return;
+    var done=function(extra){ $('memoIn').value=''; memoBrand=null; memoPics=[]; drawPics(); drawCompose(); };
+    if(!memoPics.length){ send('addMemo',{text:mv,day:TODAY,brand:br},'메모 적었어요'+(br?' · '+br:'')); done(); return }
+    picBusy=true; var pics=memoPics.slice(), drive={}, i=0, btn=document.querySelector('[data-a="memoAdd"]'); if(btn){btn.disabled=true;btn.textContent='올리는 중'}
+    var fin=function(){ picBusy=false; if(btn){btn.disabled=false;btn.textContent='적기'} };
+    (function next(){
+      if(i>=pics.length){ fin(); pics.forEach(function(p){ imgCache[drive[p.id]]=p.u });
+        send('addMemo',{text:mv||'(이미지)',day:TODAY,brand:br,imgs:pics.map(function(p){return p.id}),drive:drive},'메모 적었어요 · 사진 '+pics.length+'장'+(br?' · '+br:'')); done(); return }
+      toast('사진 올리는 중 '+(i+1)+'/'+pics.length);
+      upPic(pics[i],function(fid){ drive[pics[i].id]=fid; i++; next() },function(e){ fin(); toast('사진 올리기 실패: '+(e||'다시 눌러줘요')+' (적은 건 그대로 있어요)') });
+    })();
+  }
+  $('memoPic').onchange=function(){ var fs=[].slice.call(this.files||[]); this.value=''; var room=PIC_MAX-memoPics.length;
+    if(fs.length>room) toast('사진은 한 메모에 '+PIC_MAX+'장까지예요');
+    fs.slice(0,Math.max(0,room)).forEach(function(f){ shrink(f,function(u){ if(!u){toast('이 사진은 못 읽었어요');return} if(memoPics.length<PIC_MAX){memoPics.push({id:uid(),u:u}); drawPics()} }) }) };
+
   function pendingMemos(){return D.memos.filter(function(m){return m.status==='new'||(m.status==='later'&&m.showFrom<=TODAY)}).sort(function(a,b){return a.at-b.at})}
   function memoReviewHTML(){
     var ms=pendingMemos();
@@ -587,7 +615,8 @@ function hkMain(){
       case 'medCancel': medEdit=false; render(); break;
       case 'medSave': var mt=$('medT').value; medEdit=false; send('med',{day:TODAY,time:mt||null},'약 시간 수정됨'); break;
       case 'medClear': medEdit=false; send('med',{day:TODAY,time:null},'오늘 약 기록 지움'); break;
-      case 'memoAdd': var mv=$('memoIn').value.trim(); if(!mv){$('memoIn').focus();return} var mbv=$('memoB').value; send('addMemo',{text:mv,day:TODAY,brand:mbv==='__new__'?'':mbv},'메모 적었어요'+(mbv&&mbv!=='__new__'?' · '+mbv:'')); $('memoIn').value=''; memoBrand=null; drawCompose(); break;
+      case 'memoAdd': memoSubmit(); break;
+      case 'picDel': memoPics.splice(+b.getAttribute('data-i'),1); drawPics(); break;
       case 'panSOpen': salesOpen=!salesOpen; render(); if(salesOpen){var x=$('panIn'); if(x)x.focus()} break;
       case 'mTask': send('memoAct',{id:id,act:'task'},'할 일로 보냈어요'); break;
       case 'mLater': send('memoAct',{id:id,act:'later',tomorrow:tomorrow()},'내일 다시 보여줄게요'); break;
