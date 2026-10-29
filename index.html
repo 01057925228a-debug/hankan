@@ -13,11 +13,52 @@
 <script>(function(){function fit(){var sa=navigator.standalone||(window.matchMedia&&matchMedia("(display-mode: standalone)").matches);if(sa){var h=Math.max(screen.height,window.innerHeight);if(Math.abs(window.orientation||0)===90)h=Math.max(screen.width,window.innerHeight);document.documentElement.style.setProperty("--app-h",h+"px")}}fit();window.addEventListener("resize",fit);window.addEventListener("orientationchange",fit);document.addEventListener("visibilitychange",fit)})();</script>
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-192.png">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<style>img.ico{width:1.2em;height:1.2em;vertical-align:-.24em;display:inline-block;object-fit:contain;user-select:none;pointer-events:none}body{word-break:keep-all;overflow-wrap:break-word}h1,h2,h3{text-wrap:balance}p{text-wrap:pretty}nav.tabs button img.ico{width:26px;height:26px;vertical-align:0;opacity:.55;filter:grayscale(.6)}nav.tabs button[aria-selected="true"] img.ico{opacity:1;filter:none}</style>
+<script>window.FLUENT_CDN='https://cdn.jsdelivr.net/npm/@lobehub/fluent-emoji-3d@1.1.0/assets/';</script>
+<script>
+// 화면 글자 속 기본 이모티콘을 Fluent 3D 그림(fluent/*.webp, MIT)으로 바꿔 보여줌.
+// 입력칸·선택칸·알림처럼 그림을 못 넣는 곳은 그대로 둔다.
+(() => {
+  // 이모티콘: [확장 안 파일 이름, Fluent 원본 파일 이름(코드)]
+  const MAP = { '📌': 'pin:1f4cc', '⚠': 'warn:26a0-fe0f', '🔒': 'lock:1f512', '😴': 'sleep:1f634', '💊': 'pill:1f48a', '🎉': 'party:1f389', '🌴': 'palm:1f334', '📎': 'clip:1f5bc-fe0f', '🔥': 'fire:1f525',
+    '🌗': 'half:1f317', '📄': 'file:1f4c4', '⏸': 'pause:23f8-fe0f', '📁': 'folder:1f4c1', '📅': 'cal:1f4c5', '💡': 'bulb:1f4a1', '🎯': 'target:1f3af', '📣': 'mega:1f4e3', '📱': 'phone:1f4f1', '🎁': 'gift:1f381', '👍': 'thumb:1f44d', '⛔': 'stop:26d4', '✅': 'check:2705', '📷': 'camera:1f4f7' };
+  const CDN = typeof window !== 'undefined' && window.FLUENT_CDN;   // 폰: 인터넷에서 원본 이름으로
+  const src = v => { const [n, c] = v.split(':'); return CDN ? CDN + c + '.webp' : 'fluent/' + n + '.webp'; };
+  const RE = new RegExp('(' + Object.keys(MAP).join('|') + ')️?', 'g');
+  const SKIP = new Set(['SCRIPT', 'STYLE', 'TEXTAREA', 'INPUT', 'OPTION', 'SELECT', 'TITLE', 'NOSCRIPT']);
+  function swap(node) {
+    const t = node.nodeValue; RE.lastIndex = 0; if (!RE.test(t)) return;
+    const p = node.parentNode; if (!p || SKIP.has(p.nodeName) || (p.closest && p.closest('[contenteditable],.no-fluent'))) return;
+    const f = document.createDocumentFragment(); let last = 0; RE.lastIndex = 0; let m;
+    while ((m = RE.exec(t))) {
+      if (m.index > last) f.appendChild(document.createTextNode(t.slice(last, m.index)));
+      const img = document.createElement('img'); img.className = 'ico'; img.src = src(MAP[m[1]]); img.alt = m[1]; img.draggable = false;
+      f.appendChild(img); last = m.index + m[0].length;
+    }
+    if (last < t.length) f.appendChild(document.createTextNode(t.slice(last)));
+    p.replaceChild(f, node);
+  }
+  function walk(root) {
+    if (root.nodeType === 3) return swap(root);
+    if (root.nodeType !== 1 || SKIP.has(root.nodeName)) return;
+    const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); const list = [];
+    while (w.nextNode()) list.push(w.currentNode);
+    list.forEach(swap);
+  }
+  function start() {
+    walk(document.body);
+    new MutationObserver(ms => ms.forEach(m => { if (m.type === 'characterData') swap(m.target); else m.addedNodes.forEach(walk); }))
+      .observe(document.body, { childList: true, subtree: true, characterData: true });
+  }
+  if (document.body) start(); else document.addEventListener('DOMContentLoaded', start);
+})();
+</script>
 <style>
 :root{--bg:#F2F4F3;--surface:#FFFFFF;--ink:#16211D;--muted:#69776F;--line:#E1E6E3;--act:#2B45E8;--act-ink:#fff;--done:#1F7F53;--warm:#C98208;--soft:#E8ECFF;--zone:#DDF0E4;--m:#16A3B5;--s:#E89B00;color-scheme:light dark}
 @media (prefers-color-scheme:dark){:root{--bg:#0B0C10;--surface:#17191F;--ink:#F2F3F5;--muted:#9A9FAB;--line:#262932;--act:#5B73FF;--act-ink:#FFFFFF;--done:#4CC38A;--warm:#F5B547;--soft:#20264A;--zone:#173326;--m:#1FB5C9;--s:#F0A71F}}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:Pretendard,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",system-ui,sans-serif;font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo",sans-serif;font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;
   padding-top:env(safe-area-inset-top,0px);padding-bottom:175px}
 button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 button:disabled{opacity:.35;cursor:default}
@@ -206,9 +247,9 @@ body{display:flex;flex-direction:column;padding:env(safe-area-inset-top,0px) 0 0
     <div class="mpics" id="memoPics" hidden></div>
   </div>
   <nav class="tabs" role="tablist">
-    <button role="tab" data-t="today" aria-selected="true"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>오늘</button>
-    <button role="tab" data-t="tasks" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></svg>할 일</button>
-    <button role="tab" data-t="memo" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.5.4.8 1 .8 1.6V16h5.4v-.5c0-.6.3-1.2.8-1.6A6 6 0 0 0 12 3z"/></svg>메모 정리<span class="bd" id="memoBd" hidden></span></button>
+    <button role="tab" data-t="today" aria-selected="true"><span class="ti">📅</span>오늘</button>
+    <button role="tab" data-t="tasks" aria-selected="false"><span class="ti">✅</span>할 일</button>
+    <button role="tab" data-t="memo" aria-selected="false"><span class="ti">💡</span>메모 정리<span class="bd" id="memoBd" hidden></span></button>
   </nav>
 </div>
 <div class="toast" id="toast" role="status"></div>
@@ -218,9 +259,10 @@ var CFG=null; try{CFG=JSON.parse(LS.get('hk_cfg')||'null')}catch(e){}
 var API=CFG&&CFG.u, K=CFG&&CFG.k, D=null, NS=null;
 function hkParse(t){var m=String(t||'').match(/(https:\/\/script\.google\.com\/[^\s?#]*\/exec)\?k=([A-Za-z0-9]+)/);return m?{u:m[1],k:m[2]}:null}
 function hkFetch(cb){ if(!API)return; fetch(API+'?api=1&k='+encodeURIComponent(K)+'&t='+Date.now()).then(function(r){return r.json()}).then(function(r){
-    if(!r||!r.ok){ if(r&&r.err==='secret')hkSetup('주소가 바뀌었어요. 한 칸 설정의 "폰용 주소"를 다시 붙여넣어 주세요.'); return; }
+    if(!r||!r.ok){ if(r&&r.err==='secret')hkSetup('주소가 바뀌었어요. 한 칸 설정의 "폰용 주소"를 다시 붙여넣어 주세요.'); else if(!D) hkOffline(r&&r.err); return; }
     LS.set('hk_data',JSON.stringify({d:r.data,n:r.notion})); cb(r.data||{},r.notion);
-  }).catch(function(){ if(window.__hkToast)window.__hkToast('인터넷 연결을 확인해 주세요'); }); }
+  }).catch(function(){ if(window.__hkToast)window.__hkToast('인터넷 연결을 확인해 주세요'); else if(!D) hkOffline(); }); }
+function hkOffline(err){ document.body.className='setup-host'; document.body.innerHTML='<div class="setup"><h1>한 칸</h1><p>'+(err?'서버가 이렇게 답했어요: '+String(err).replace(/[<&]/g,''):'인터넷이 안 돼서 기록을 못 받아왔어요.')+'</p><button class="btn p" onclick="location.reload()" style="width:100%;padding:14px">다시 시도</button></div>'; }
 function hkSetup(msg){
   document.body.className='setup-host';document.body.innerHTML='<div class="setup"><h1>한 칸 연결</h1><p>'+(msg||'PC 한 칸 → 설정 → 폰·시트 동기화의 <b>폰용 주소</b>를 복사해서 아래에 붙여넣어 주세요. 처음 한 번만 하면 돼요.')+'</p><textarea id="cfgIn" placeholder="https://script.google.com/macros/s/.../exec?k=..."></textarea><button class="btn p" id="cfgGo">연결하기</button><p id="cfgMsg" style="margin-top:10px"></p></div>';
   document.getElementById('cfgGo').onclick=function(){ var c=hkParse(document.getElementById('cfgIn').value); if(!c){document.getElementById('cfgMsg').textContent='주소 모양이 아니에요. https://script.google.com/... 로 시작하는 걸 통째로 붙여넣어 주세요.';return}
@@ -233,7 +275,7 @@ function hkBoot(){
   if(!API){hkSetup();return}
   var c=null; try{c=JSON.parse(LS.get('hk_data')||'null')}catch(e){}
   if(c&&c.d){D=c.d;NS=c.n;hkMain();hkFetch(function(d,n){window.__hkUpdate(d,n)})}
-  else hkFetch(function(d,n){D=d;NS=n;hkMain()});
+  else hkFetch(function(d,n){D=d;NS=n;window.__hkFresh=true;hkMain()});
 }
 function hkMain(){
   D.tasks=D.tasks||[];D.blocks=D.blocks||[];D.memos=D.memos||[];D.notes=D.notes||{};D.med=D.med||{};D.session=D.session||{};
@@ -269,7 +311,7 @@ function hkMain(){
       case 'slotSet': case 'slotTime': case 'slotAdd': case 'slotDel': case 'slotPass': case 'slotMove': slOp(st,op); break;
       case 'phoneFinish': var ps=st.psession&&(!d.id||st.psession.id===d.id)?st.psession:(d.ps||null); if(!ps)break;
         var pe=Math.max(ps.startAt,Math.min(+d.endAt||op.at,op.at));
-        if(!st.blocks.some(function(b){return b.id===op.id}))st.blocks.push({id:op.id,day:d.day||key(new Date(pe)),title:ps.title,brand:ps.brand||'',start:ps.startAt,end:pe,minutes:Math.max(1,Math.round((pe-ps.startAt)/60000)),result:d.result==='done'?'done':'half',src:'폰',slotId:ps.slotId||undefined});
+        if(!st.blocks.some(function(b){return b.id===op.id}))st.blocks.push({id:op.id,day:key(new Date(ps.startAt||pe)),title:ps.title,brand:ps.brand||'',start:ps.startAt,end:pe,minutes:Math.max(1,Math.round((pe-ps.startAt)/60000)),result:d.result==='done'?'done':'half',src:'폰',slotId:ps.slotId||undefined});
         slDone(st,ps.slotId,d.result==='done'?'done':'half',op.id);
         if(d.result==='done'){var ft=st.tasks.filter(function(x){return x.id===ps.taskId})[0]; if(ft&&!ft.done){ft.done=true;ft.doneAt=pe}}
         if(st.psession&&st.psession.id===ps.id)st.psession=null; break;
@@ -278,27 +320,27 @@ function hkMain(){
         mm.added=true; st.tasks.push({id:op.id,title:mm.task_title,brand:mm.brand||'',kind:'head',steps:(mm.steps||[]).map(function(t){return {t:t,done:false}}),done:false,created:op.at,doneAt:0});break;
     }}
   /* ===== 오늘의 고정 칸 (PC·시트와 같은 규칙) ===== */
-  var SL_MIN=50, SL_GAP=10, SL_MAX=4, SL_LATE=10, SL_MISS=15, SL_DEF={wd:['10:30','13:40','16:00'],we:['11:00','14:00','16:00']};
+  var SL_MIN=50, SL_GAP=10, SL_MAX=4, SL_LATE=10, SL_MISS=15, SL_DEF={wd:['10:30','13:40','15:45'],we:['11:00','14:00','16:00']};
   function slMin(t){var p=String(t||'0:0').split(':').map(Number);return (p[0]||0)*60+(p[1]||0)}
   function slTs(day,t){var p=day.split('-').map(Number);var m=slMin(t);return new Date(p[0],p[1]-1,p[2],Math.floor(m/60),m%60).getTime()}
-  function slTimes(st,day){var T=st.slotTimes||SL_DEF;var p=day.split('-').map(Number);var w=new Date(p[0],p[1]-1,p[2]).getDay();return ((w===0||w===6?T.we:T.wd)||[]).filter(Boolean)}
+  function slTimes(st,day){if((st.dayPlan||{})[day]==='half')return ['13:40','15:45'];var T=st.slotTimes||SL_DEF;var p=day.split('-').map(Number);var w=new Date(p[0],p[1]-1,p[2]).getDay();return ((w===0||w===6?T.we:T.wd)||[]).filter(Boolean)}
   function slEnsure(st,day){st.slots=st.slots||{}; if(st.slots[day])return false; st.slots[day]=slTimes(st,day).slice(0,SL_MAX).sort(function(a,b){return slMin(a)-slMin(b)}).map(function(t,i){return {id:day.replace(/-/g,'')+'d'+i,t:t,taskId:null,st:'wait'}}); return true}
   function slOf(st,day){return ((st.slots||{})[day]||[]).slice().sort(function(a,b){return slMin(a.t)-slMin(b.t)})}
   function slCheck(list){ if(list.length>SL_MAX)return '고정 칸은 하루 '+SL_MAX+'개까지예요'; var ms=list.map(function(x){return slMin(x.t)}).sort(function(a,b){return a-b}); for(var i=1;i<ms.length;i++) if(ms[i]-ms[i-1]<SL_MIN+SL_GAP) return '너무 빡빡해요. 시작 시간끼리 1시간은 띄워주세요'; return ''}
   function slState(x,day,now){ if(x.st==='run'||x.st==='done'||x.st==='pass')return x.st; var t0=slTs(day,x.t); if(now<t0)return 'wait'; return now-t0<SL_MISS*60000?'due':'missed'}
   function slFind(st,id){var ks=Object.keys(st.slots||{}); for(var i=0;i<ks.length;i++){var f=st.slots[ks[i]].filter(function(y){return y.id===id})[0]; if(f)return f} return null}
   function slLink(st,taskId,now,slotId){var day=key(new Date(now)); slEnsure(st,day); var L=st.slots[day];
-    var x=slotId?L.filter(function(y){return y.id===slotId&&y.st!=='done'})[0]:null; if(!x)return '';
+    var x=slotId?L.filter(function(y){return y.id===slotId&&(y.st||'wait')==='wait'&&now>=slTs(day,y.t)-15*60000&&now<slTs(day,y.t)+SL_MISS*60000})[0]:null; if(!x)return '';
     x.st='run'; x.at=now; x.late=Math.max(0,Math.round((now-slTs(day,x.t))/60000)); if(taskId)x.taskId=taskId; return x.id}
   function slUnlink(st,id){var x=id&&slFind(st,id); if(x&&x.st==='run'){x.st='wait';delete x.at;delete x.late}}
   function slDone(st,id,res,bid){var x=id&&slFind(st,id); if(x){x.st='done';x.res=res;if(bid)x.blockId=bid}}
-  function slOp(st,op){var d=op.d||{}, day=d.day||TODAY; slEnsure(st,day); var L=st.slots[day], x=L.filter(function(y){return y.id===d.id})[0], free=x&&x.st!=='done'&&x.st!=='run';
+  function slOp(st,op){var now=op.at||Date.now(), d=op.d||{}, day=d.day||TODAY; slEnsure(st,day); var L=st.slots[day], x=L.filter(function(y){return y.id===d.id})[0], free=x&&x.st!=='done'&&x.st!=='run';
     var okT=function(t){return /^\d{1,2}:\d{2}$/.test(t||'')}, fix=function(t){return ('0'+t).slice(-5)};
     switch(op.type){
       case 'slotSet': if(free)x.taskId=d.taskId||null; break;
-      case 'slotTime': if(free&&(x.st||'wait')==='wait'&&Date.now()<slTs(day,x.t)&&okT(d.t)){var t=fix(d.t); if(!slCheck(L.map(function(y){return y===x?{t:t}:y}))){x.t=t;x.st='wait';delete x.n0;delete x.n1}} break;
+      case 'slotTime': if(free&&(x.st||'wait')==='wait'&&now<slTs(day,x.t)&&okT(d.t)&&now<slTs(day,fix(d.t))){var t=fix(d.t); if(!slCheck(L.map(function(y){return y===x?{t:t}:y}))){x.t=t;x.st='wait';delete x.n0;delete x.n1}} break;
       case 'slotAdd': if(!L.some(function(y){return y.id===op.id})&&okT(d.t)){var n={id:op.id,t:fix(d.t),taskId:d.taskId||null,st:'wait'}; if(!slCheck(L.concat([n])))L.push(n)} break;
-      case 'slotDel': if(free&&(x.st||'wait')==='wait'&&Date.now()<slTs(day,x.t))st.slots[day]=L.filter(function(y){return y!==x}); break;
+      case 'slotDel': if(free&&(x.st||'wait')==='wait'&&now<slTs(day,x.t))st.slots[day]=L.filter(function(y){return y!==x}); break;
       case 'slotPass': if(free)x.st='pass'; break;
       case 'slotMove': if(false){var t2=fix(d.t); if(!slCheck(L.map(function(y){return y===x?{t:t2}:y}))){x.t=t2;x.st='wait';x.moved=(x.moved||0)+1;delete x.n0;delete x.n1}} break;
     }}
@@ -338,14 +380,27 @@ function hkMain(){
     if(!x){toast('빈 고정 칸이 없어요');return}
     L.forEach(function(y){ if(y!==x&&y.taskId===taskId&&y.st!=='done'&&y.st!=='run') send('slotSet',{day:TODAY,id:y.id,taskId:null}) });
     send('slotSet',{day:TODAY,id:x.id,taskId:taskId},x.t+' 고정 칸에 넣었어요') }
-  function sendRaw(op){ LS.set('hk_data',JSON.stringify({d:D,n:NS})); fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({k:K,op:op})}).then(function(r){return r.json()}).then(function(r){ if(r&&r.ok&&typeof r.pending==='number'){D.pending=r.pending;drawSync()} else if(!r||!r.ok) toast('저장 실패: '+(r&&r.err||'다시 시도해 주세요')); }).catch(function(){toast('저장 실패: 인터넷 확인')}); }
+  /* 못 보낸 동작은 폰에 모아뒀다가 다시 보냄 (예전엔 인터넷이 끊기면 그냥 사라졌음) */
+  var Q=[]; try{Q=JSON.parse(localStorage.getItem('hk_q')||'[]')||[]}catch(e){Q=[]}
+  function qSave(){try{localStorage.setItem('hk_q',JSON.stringify(Q.slice(-200)))}catch(e){}}
+  var qBusy=false;
+  function qDrop(id){Q=Q.filter(function(o){return o.id!==id});qSave()}
+  function qFlush(){ if(qBusy||!Q.length)return; qBusy=true; var op=Q[0];
+    post(op,function(r){ qDrop(op.id); qBusy=false; if(r&&typeof r.pending==='number'){D.pending=r.pending;drawSync()} if(Q.length)qFlush(); },
+      function(err,hard){ qBusy=false;
+        if(hard||Date.now()-(op.at||0)>3*864e5){qDrop(op.id);toast('저장 실패: '+err);if(Q.length)qFlush();return}   // 서버가 거절했거나 3일 넘게 못 보낸 것만 버림 (인터넷 끊김은 계속 기다림)
+        toast('지금 못 보냈어요. 인터넷 되면 다시 보낼게요 (대기 '+Q.length+'개)'); }); }
+  function qReapply(){ var seen=D.opIds||[]; Q=Q.filter(function(op){return seen.indexOf(op.id)<0}); qSave();   // 서버가 이미 받은 건 빼고
+    Q.forEach(function(op){applyOp(D,op)}) }
+  window.addEventListener('online',function(){qFlush()});
+  setInterval(function(){ if(document.visibilityState==='visible')qFlush() },30000);
+  function post(op,ok,fail){ fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({k:K,op:op})}).then(function(r){return r.json()})
+    .then(function(r){ if(r&&r.ok) ok(r); else fail(r&&r.err||'다시 시도해 주세요', !!(r&&r.err&&!/lock|잠금|timeout|시간/i.test(r.err))); }).catch(function(){fail('인터넷 확인')}); }
+  function sendRaw(op){ Q.push(op); qSave(); LS.set('hk_data',JSON.stringify({d:D,n:NS})); qFlush(); }
   function send(type,d,msg){
     var op={id:uid(),type:type,at:Date.now(),d:d};
-    applyOp(D,op); D.pending=(D.pending||0)+1; render(); if(msg)toast(msg);
-    LS.set('hk_data',JSON.stringify({d:D,n:NS}));
-    fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({k:K,op:op})}).then(function(r){return r.json()})
-      .then(function(r){ if(r&&r.ok){ if(typeof r.pending==='number'){D.pending=r.pending;drawSync()} } else toast('저장 실패: '+(r&&r.err||'다시 시도해 주세요')); })
-      .catch(function(){toast('저장 실패: 인터넷 확인')});
+    applyOp(D,op); D.pending=(D.pending||0)+1; Q.push(op); qSave(); render(); if(msg)toast(msg);
+    LS.set('hk_data',JSON.stringify({d:D,n:NS})); qFlush();
   }
 
   function drawSync(){
@@ -616,7 +671,7 @@ function hkMain(){
       case 'slClear': send('slotSet',{day:TODAY,id:b.getAttribute('data-sid'),taskId:null},'배치 뺐어요'); break;
       case 'slTime': slTimeEd=slTimeEd===b.getAttribute('data-sid')?'':b.getAttribute('data-sid'); slPick=''; render(); break;
       case 'slTimeClose': slTimeEd=''; render(); break;
-      case 'slTimeSave': var sid1=b.getAttribute('data-sid'), tv1=($('slT')||{}).value||''; if(!tv1)break; var er1=slCheck(slOf(D,TODAY).map(function(x){return x.id===sid1?{t:tv1}:x})); if(er1){toast(er1);break} slTimeEd=''; send('slotTime',{day:TODAY,id:sid1,t:tv1},tv1+'로 옮겼어요'); break;
+      case 'slTimeSave': var sid1=b.getAttribute('data-sid'), tv1=($('slT')||{}).value||''; if(!tv1)break; var er1=slCheck(slOf(D,TODAY).map(function(x){return x.id===sid1?{t:tv1}:x})); if(er1){toast(er1);break} if(slTs(TODAY,('0'+tv1).slice(-5))<=Date.now()){toast('지난 시간으로는 못 옮겨요');break} slTimeEd=''; send('slotTime',{day:TODAY,id:sid1,t:tv1},tv1+'로 옮겼어요'); break;
       case 'slDel': slTimeEd=''; send('slotDel',{day:TODAY,id:b.getAttribute('data-sid')},'자리를 뺐어요'); break;
       case 'slAdd': var L1=slOf(D,TODAY); if(L1.length>=SL_MAX){toast('고정 칸은 하루 '+SL_MAX+'개까지예요');break} var nt1=slNextFree(''); if(!nt1){toast('오늘은 더 넣을 시간이 없어요');break} var nid=uid(); applyOp(D,{id:nid,type:'slotAdd',at:Date.now(),d:{day:TODAY,t:nt1}}); slTimeEd=nid;
         var op1={id:nid,type:'slotAdd',at:Date.now(),d:{day:TODAY,t:nt1}}; D.pending=(D.pending||0)+1; render(); toast(nt1+' 자리를 만들었어요. 시간 바꿔도 돼요'); sendRaw(op1); break;
@@ -645,7 +700,7 @@ function hkMain(){
       case 'edOpen': editId=id; startOpen=null; render(); break;
       case 'sugGo':
         var mn=+b.getAttribute('data-min'); if(D.psession||pcBusy()){toast('이미 도는 칸이 있어요');break}
-        var st0=Date.now(), xs=slOf(D,TODAY).filter(function(y){return y.taskId===id&&(y.st||'wait')==='wait'&&st0>=slTs(TODAY,y.t)-15*60000})[0]; if(xs)mn=SL_MIN; pick=null; sugMin=null; send('phoneStart',{taskId:id,startAt:st0,endAt:st0+mn*60000,min:mn,slotId:xs?xs.id:''},mn+'분 시작! 이 칸만 하자'+(xs?' (고정 칸)':'')); ($('scroller')||{}).scrollTop=0; break;
+        var st0=Date.now(), xs=slOf(D,TODAY).filter(function(y){return y.taskId===id&&(y.st||'wait')==='wait'&&st0>=slTs(TODAY,y.t)-15*60000&&st0<slTs(TODAY,y.t)+SL_MISS*60000})[0]; if(xs)mn=SL_MIN; pick=null; sugMin=null; send('phoneStart',{taskId:id,startAt:st0,endAt:st0+mn*60000,min:mn,slotId:xs?xs.id:''},mn+'분 시작! 이 칸만 하자'+(xs?' (고정 칸)':'')); ($('scroller')||{}).scrollTop=0; break;
       case 'sugSkip': if(pick===id)pick=null; skip.push(id); sugMin=null; render(); break;
       case 'skipReset': skip=[]; render(); break;
       case 'sugSnooze': if(pick===id)pick=null; sugMin=null; send('snooze',{id:id,tomorrow:tomorrow()},'내일 다시 보여줄게요'); break;
@@ -662,11 +717,14 @@ function hkMain(){
     }
   });
   window.__hkToast=toast;
-  window.__hkUpdate=function(nd,ns){ if(document.activeElement&&/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName))return;
-    D=nd||{}; NS=ns; D.tasks=D.tasks||[];D.blocks=D.blocks||[];D.memos=D.memos||[];D.notes=D.notes||{};D.med=D.med||{};D.session=D.session||{};
-    brands=D.brands&&D.brands.length?D.brands:['기타']; if(key()!==TODAY){TODAY=key();day=TODAY} drawCompose(); render(); };
-  document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible') hkFetch(function(d,n){window.__hkUpdate(d,n)}); });
-  drawCompose(); render();
+  window.__hkUpdate=function(nd,ns){ var ae=document.activeElement, kf=ae&&/INPUT|TEXTAREA|SELECT/.test(ae.tagName)&&ae.id?{id:ae.id,v:ae.value,s:ae.selectionStart}:null;   // 적던 칸은 그대로 두고 새로 받아옴
+    D=nd||{}; NS=ns; qReapply(); LS.set('hk_data',JSON.stringify({d:D,n:NS})); D.tasks=D.tasks||[];D.blocks=D.blocks||[];D.memos=D.memos||[];D.notes=D.notes||{};D.med=D.med||{};D.session=D.session||{};
+    brands=D.brands&&D.brands.length?D.brands:['기타']; if(key()!==TODAY){TODAY=key();day=TODAY} drawCompose(); render();
+    if(kf){var ke=$(kf.id); if(ke){ke.value=kf.v; ke.focus(); try{if(kf.s!=null)ke.setSelectionRange(kf.s,kf.s)}catch(e){}}} };
+  document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible'){ qFlush(); hkFetch(function(d,n){window.__hkUpdate(d,n)}); } });
+  setInterval(function(){ if(document.visibilityState==='visible'&&key()!==TODAY) hkFetch(function(d,n){window.__hkUpdate(d,n)}); },60000);   // 자정 넘으면 오늘로
+  if(window.__hkFresh) qReapply();
+  drawCompose(); render(); qFlush();
 }
 hkBoot();
 </script>
