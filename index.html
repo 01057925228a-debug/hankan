@@ -15,43 +15,59 @@
 <link rel="icon" href="icon-192.png">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
 <style>img.ico{width:1.2em;height:1.2em;vertical-align:-.24em;display:inline-block;object-fit:contain;user-select:none;pointer-events:none}body{word-break:keep-all;overflow-wrap:break-word}h1,h2,h3{text-wrap:balance}p{text-wrap:pretty}nav.tabs button img.ico{width:26px;height:26px;vertical-align:0;opacity:.55;filter:grayscale(.6)}nav.tabs button[aria-selected="true"] img.ico{opacity:1;filter:none}</style>
-<script>window.FLUENT_CDN='https://cdn.jsdelivr.net/npm/@lobehub/fluent-emoji-3d@1.1.0/assets/';</script>
+<style>svg.ico{width:1.15em;height:1.15em;vertical-align:-.2em;display:inline-block;flex:none}</style>
 <script>
-// 화면 글자 속 기본 이모티콘을 Fluent 3D 그림(fluent/*.webp, MIT)으로 바꿔 보여줌.
+// 화면 글자 속 기본 이모티콘을 선 아이콘(SVG, Lucide 모양 · ISC 라이선스)으로 바꿔 보여줌.
+// 예전 fluent.js(Fluent 3D 그림)를 대신함 — 2026-11-17 리디자인 (형: Fluent 3D 안 씀).
 // 입력칸·선택칸·알림처럼 그림을 못 넣는 곳은 그대로 둔다.
 (() => {
-  // 이모티콘: [확장 안 파일 이름, Fluent 원본 파일 이름(코드)]
-  const MAP = { '📌': 'pin:1f4cc', '⚠': 'warn:26a0-fe0f', '🔒': 'lock:1f512', '😴': 'sleep:1f634', '💊': 'pill:1f48a', '🎉': 'party:1f389', '🌴': 'palm:1f334', '📎': 'clip:1f5bc-fe0f', '🔥': 'fire:1f525',
-    '🌗': 'half:1f317', '📄': 'file:1f4c4', '⏸': 'pause:23f8-fe0f', '📁': 'folder:1f4c1', '📅': 'cal:1f4c5', '💡': 'bulb:1f4a1', '🎯': 'target:1f3af', '📣': 'mega:1f4e3', '📱': 'phone:1f4f1', '🎁': 'gift:1f381', '👍': 'thumb:1f44d', '⛔': 'stop:26d4', '✅': 'check:2705', '📷': 'camera:1f4f7' };
-  const CDN = typeof window !== 'undefined' && window.FLUENT_CDN;   // 폰: 인터넷에서 원본 이름으로
-  const src = v => { const [n, c] = v.split(':'); return CDN ? CDN + c + '.webp' : 'fluent/' + n + '.webp'; };
+  const P = {
+    pin: '<path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/>',
+    warn: '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+    lock: '<rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+    sleep: '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+    pill: '<path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/>',
+    party: '<path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/>',
+    palm: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>',
+    clip: '<rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.09-3.09a2 2 0 0 0-2.82 0L6 21"/>',
+    fire: '<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>',
+    half: '<circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20z" fill="currentColor"/>',
+    file: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/>',
+    pause: '<rect x="14" y="4" width="4" height="16" rx="1"/><rect x="6" y="4" width="4" height="16" rx="1"/>',
+    folder: '<path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/>',
+    cal: '<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>',
+    bulb: '<path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/>',
+    target: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+    mega: '<path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/>',
+    phone: '<rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/>',
+    gift: '<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/>',
+    thumb: '<path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/>',
+    stop: '<circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/>',
+    check: '<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
+    camera: '<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>'
+  };
+  const MAP = { '📌': 'pin', '⚠': 'warn', '🔒': 'lock', '😴': 'sleep', '💊': 'pill', '🎉': 'party', '🌴': 'palm', '📎': 'clip', '🔥': 'fire', '🌗': 'half', '📄': 'file', '⏸': 'pause', '📁': 'folder', '📅': 'cal', '💡': 'bulb', '🎯': 'target', '📣': 'mega', '📱': 'phone', '🎁': 'gift', '👍': 'thumb', '⛔': 'stop', '✅': 'check', '📷': 'camera' };
+  const svg = n => '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + P[n] + '</svg>';
   const RE = new RegExp('(' + Object.keys(MAP).join('|') + ')️?', 'g');
   const SKIP = new Set(['SCRIPT', 'STYLE', 'TEXTAREA', 'INPUT', 'OPTION', 'SELECT', 'TITLE', 'NOSCRIPT']);
   function swap(node) {
     const t = node.nodeValue; RE.lastIndex = 0; if (!RE.test(t)) return;
-    const p = node.parentNode; if (!p || SKIP.has(p.nodeName) || (p.closest && p.closest('[contenteditable],.no-fluent'))) return;
-    const f = document.createDocumentFragment(); let last = 0; RE.lastIndex = 0; let m;
-    while ((m = RE.exec(t))) {
-      if (m.index > last) f.appendChild(document.createTextNode(t.slice(last, m.index)));
-      const img = document.createElement('img'); img.className = 'ico'; img.src = src(MAP[m[1]]); img.alt = m[1]; img.draggable = false;
-      f.appendChild(img); last = m.index + m[0].length;
-    }
-    if (last < t.length) f.appendChild(document.createTextNode(t.slice(last)));
+    const p = node.parentNode; if (!p || SKIP.has(p.nodeName) || (p.closest && p.closest('[contenteditable],.no-fluent,svg'))) return;
+    const tmp = document.createElement('span');
+    tmp.innerHTML = t.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c])).replace(RE, (m, e) => svg(MAP[e]));
+    const f = document.createDocumentFragment(); while (tmp.firstChild) f.appendChild(tmp.firstChild);
     p.replaceChild(f, node);
   }
   function walk(root) {
-    if (root.nodeType === 3) return swap(root);
+    if (!root) return;
+    if (root.nodeType === 3) { swap(root); return; }
     if (root.nodeType !== 1 || SKIP.has(root.nodeName)) return;
-    const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); const list = [];
-    while (w.nextNode()) list.push(w.currentNode);
+    const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); const list = []; let n;
+    while ((n = w.nextNode())) list.push(n);
     list.forEach(swap);
   }
-  function start() {
-    walk(document.body);
-    new MutationObserver(ms => ms.forEach(m => { if (m.type === 'characterData') swap(m.target); else m.addedNodes.forEach(walk); }))
-      .observe(document.body, { childList: true, subtree: true, characterData: true });
-  }
-  if (document.body) start(); else document.addEventListener('DOMContentLoaded', start);
+  const go = () => { walk(document.body); new MutationObserver(ms => ms.forEach(m => { m.addedNodes.forEach(walk); if (m.type === 'characterData') swap(m.target); })).observe(document.body, { childList: true, subtree: true, characterData: true }); };
+  if (document.body) go(); else document.addEventListener('DOMContentLoaded', go);
 })();
 </script>
 <style>
@@ -232,6 +248,40 @@ body{display:flex;flex-direction:column;padding:env(safe-area-inset-top,0px) 0 0
 .setup h1{font-size:24px;margin:0 0 8px}.setup p{color:var(--muted);font-size:14px;margin:0 0 16px}
 .setup textarea{min-height:110px;font-size:16px}
 .setup .btn{width:100%;margin-top:12px;min-height:48px}
+
+/* ===== 2026-11-17 리디자인 ===== */
+:root{--warm:var(--act);--m:var(--act);--s:#A9B6FF}
+@media (prefers-color-scheme:dark){:root{--warm:var(--act);--m:var(--act);--s:#3E4A8C}}
+.decl{background:var(--soft);color:var(--ink);padding:10px 14px}
+.decl .l{color:var(--act)}.decl .t{font-size:15px}
+.sug{border:2px solid var(--act);box-shadow:0 6px 20px color-mix(in srgb,var(--act) 10%,transparent)}
+.sug .lbl{color:var(--act);font-weight:800}
+.sug .tt{font-size:24px;letter-spacing:-.5px}
+body.pcbusy .sug{opacity:.55}
+.grp{font-size:13px;font-weight:800;color:var(--muted);margin:12px 0 2px}
+.pcbar{position:absolute;left:50%;bottom:calc(100% + 10px);transform:translateX(-50%);background:#17231F;color:#fff;border-radius:999px;padding:10px 18px;display:flex;gap:10px;align-items:center;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.2);max-width:calc(100% - 24px);white-space:nowrap}
+.pcbar .pt{overflow:hidden;text-overflow:ellipsis}.pcbar b{font-size:16px;flex:none}
+.pcbar .pd{width:8px;height:8px;border-radius:50%;background:#8494FF;flex:none}
+@media (prefers-color-scheme:dark){.pcbar{background:#E6EEEA;color:#0F1412}}
+/* 넓은 화면(맥북 북마크): 세 칸 */
+body.wide .wrap{max-width:none;padding:14px 22px 8px}
+body.wide .dock{display:none}
+body.wide #scroller{padding-bottom:0}
+body.wide #compose{margin:0 0 10px;padding:0;display:flex;gap:8px;align-items:center;max-width:none}
+body.wide #compose .cb{flex:none;margin:0}body.wide #compose .ci{flex:1;margin:0}
+body.wide #compose .ci textarea{background:var(--surface);border:1px solid var(--line)}
+body.wide #scroller{overflow:hidden}
+body.wide .wrap{height:100%;display:flex;flex-direction:column}
+body.wide #view{flex:1;min-height:0}
+body.wide .wcols{height:100%;align-items:stretch}
+body.wide .wc{overflow-y:auto;min-height:0;padding-right:4px;scrollbar-width:thin}
+body.wide .wcols{display:grid;grid-template-columns:440px minmax(0,1fr) 400px;gap:12px;align-items:start}
+body.wide .wc{display:flex;flex-direction:column;gap:0;min-width:0}
+body.wide .sug .tt{font-size:28px}
+.tier-zero,.tier-low,.tier-mid,.tier-near,.tier-ok,.tier-over{color:var(--act)!important}
+.big2 .btn.m,.big2 .btn.sv{background:var(--surface);color:var(--ink);border:1.5px solid var(--line)}
+body.pcbusy #scroller{padding-bottom:72px}
+body.wide .pcbar{position:static;transform:none;display:inline-flex;margin:0 0 10px}
 </style>
 </head>
 <body>
@@ -444,9 +494,9 @@ function hkMain(){
   function nowHTML(){
     var s=D.session, m=s.mode||'idle', t=D.tasks.filter(function(x){return x.id===s.taskId})[0], ln='';
     var stale=s.endAt&&Date.now()>s.endAt;
-    if(m==='focus') ln='PC 집중 중'+(t?' · '+esc(t.title):'')+' <span class="small muted">'+hm(s.endAt)+'까지'+(stale?' (끝났을 수 있어요)':'')+'</span>';
+    if(m==='focus') ln=''; else if(false) ln='PC 집중 중'+(t?' · '+esc(t.title):'')+' <span class="small muted">'+hm(s.endAt)+'까지'+(stale?' (끝났을 수 있어요)':'')+'</span>';
     else if(m==='break') ln='PC 쉬는 중 <span class="small muted">'+hm(s.endAt)+'까지</span>';
-    else if(m==='check') ln='PC 한 칸 끝, 체크 대기'+(t?' · '+esc(t.title):'');
+    else if(m==='check') ln='';
     var v=D.med[TODAY], med;
     if(medEdit) med='<div class="ln"><span>💊</span><input type="time" id="medT" value="'+esc(v||'')+'" style="flex:1"><button class="btn s p" data-a="medSave">저장</button><button class="btn s" data-a="medClear">지우기</button><button class="btn s g" data-a="medCancel">취소</button></div>';
     else med=v?'':'<div class="ln"><span>💊</span><div class="grow"><span class="muted">오늘 약 기록 전</span></div><button class="btn s p" data-a="medNow">약 먹었어</button></div>';   // 기록하면 숨김 (위 날짜 옆 💊 누르면 수정)
@@ -561,22 +611,29 @@ function hkMain(){
       +[L.late,L.focus].filter(function(v,i,a){return a.indexOf(v)===i}).map(function(m){return '<button class="btn s p" data-a="pGo" data-id="'+t.id+'" data-min="'+m+'">'+m+'분</button>'}).join('')
       +'<input type="number" id="pMin" inputmode="numeric" min="1" max="180" placeholder="직접" style="width:76px;padding:7px 9px"><button class="btn s" data-a="pGoC" data-id="'+t.id+'">분 시작</button><span style="flex:1"></span><button class="btn s g" data-a="pClose">닫기</button></div></div>';
   }
+  function snzHTML(){
+    var sz=D.tasks.filter(function(t){return !t.done&&t.snoozeUntil&&t.snoozeUntil>TODAY}); if(!sz.length) return '';
+    return '<section class="panel snz"><div class="sl-head"><b>📅 내일 할 일 · 미룬 것</b><span class="small muted">'+sz.length+'</span><span class="grow"></span><span class="small muted">오늘로 돌리기는 PC에서</span></div>'
+      +sz.map(function(t){return '<div class="sl-row"><span class="tag'+(t.planned?' d':'')+'">'+(t.planned?'내일':'미룸')+'</span><span class="sl-body muted">'+esc(t.title)+'</span>'+(t.brand?'<span class="tag">'+esc(t.brand)+'</span>':'')+'</div>'}).join('')+'</section>';
+  }
   function tasksHTML(){
-    var op=D.tasks.filter(function(t){return !t.done&&!(t.snoozeUntil&&t.snoozeUntil>TODAY)}).sort(function(a,b){return a.created-b.created});
+    var op=D.tasks.filter(function(t){return !t.done&&!(t.snoozeUntil&&t.snoozeUntil>TODAY)}).sort(function(a,b){return ((b.dailyId?1:0)-(a.dailyId?1:0))||(a.created-b.created)});
+    var nDaily=op.filter(function(t){return t.dailyId}).length;
     var snz=D.tasks.filter(function(t){return !t.done&&t.snoozeUntil&&t.snoozeUntil>TODAY}).length;
     var h='<section class="panel"><h2>할 일 '+(op.length||'')+'</h2>'
       +'<input type="text" id="taskIn" maxlength="120" placeholder="할 일 추가" autocomplete="off">'
       +'<div class="row" style="margin-top:8px"><select id="taskB" style="flex:1">'+brandOpts('')+'</select>'
       +'<span class="seg"><button data-kind="head" aria-pressed="'+(newKind==='head')+'">머리 씀</button><button data-kind="chore" aria-pressed="'+(newKind==='chore')+'">잡무</button></span>'
       +'<button class="btn p" data-a="taskAdd">추가</button></div>';
-    h+= op.length?'<div style="margin-top:10px">'+op.map(function(t){var s=t.steps||[],dn=s.filter(function(x){return x.done}).length;
+    h+= op.length?'<div style="margin-top:10px">'+op.map(function(t,ii){return (ii===0||!!op[ii-1].dailyId!==!!t.dailyId?'<div class="grp">'+(t.dailyId?'매일 '+nDaily:'할 일 '+(op.length-nDaily))+'</div>':'')+itemOf(t)}).join('')+'</div>'
+      :'<p class="empty" style="margin-top:10px">남은 할 일이 없어요.</p>';
+    function itemOf(t){var s=t.steps||[],dn=s.filter(function(x){return x.done}).length;
       if(editId===t.id) return '<div class="item"><div class="edit"><input type="text" id="edT" value="'+esc(t.title)+'" maxlength="120">'
         +'<div class="row" style="margin-top:6px"><select id="edB" style="flex:1">'+brandOpts(t.brand)+'</select><select id="edK" style="width:auto"><option value="head" '+(t.kind!=='chore'?'selected':'')+'>머리 씀</option><option value="chore" '+(t.kind==='chore'?'selected':'')+'>잡무</option></select></div>'
         +'<div class="row" style="margin-top:6px"><button class="btn s p" data-a="edSave" data-id="'+t.id+'">저장</button><button class="btn s" data-a="edCancel">취소</button><span style="flex:1"></span>'+(t.dailyId&&!t.optional?'<span class="small muted">매일 할 일은 삭제 안 돼요</span>':'<button class="btn s g" data-a="taskDel" data-id="'+t.id+'">삭제</button>')+'</div></div></div>';
       return '<div class="item row"><div class="grow" data-pk="'+t.id+'"><div>'+esc(t.title)+'</div><div class="row" style="margin-top:3px">'+(t.dailyId?(t.optional?'<span class="tag" style="background:transparent;border:1px solid var(--warm);color:var(--warm)">선택</span>':'<span class="tag" style="background:var(--warm);color:#fff">매일 🔒</span>'):'')+kindTag(t.kind)+(t.brand?'<span class="tag n">'+esc(t.brand)+'</span>':'')+(s.length?'<span class="small muted">단계 '+dn+'/'+s.length+'</span>':'')+'</div></div>'
-        +(function(){var pl=slPlaced(t.id);return pl?'<span class="tag pin">📌 '+esc(pl.t)+'</span>':'<button class="btn s g" data-a="slPin" data-id="'+t.id+'" aria-label="고정 칸에 넣기">📌</button>'})()+'<button class="btn s g" data-a="edOpen" data-id="'+t.id+'">수정</button></div>'}).join('')+'</div>'
-      :'<p class="empty" style="margin-top:10px">남은 할 일이 없어요.</p>';
-    if(snz) h+='<p class="small muted" style="margin:8px 0 0">내일로 미룬 것 '+snz+'개 (PC에서 관리)</p>';
+        +(function(){var pl=slPlaced(t.id);return pl?'<span class="tag pin">📌 '+esc(pl.t)+'</span>':'<button class="btn s g" data-a="slPin" data-id="'+t.id+'" aria-label="고정 칸에 넣기">📌</button>'})()+'<button class="btn s g" data-a="edOpen" data-id="'+t.id+'">수정</button></div>'}
+    if(snz&&!document.body.classList.contains('wide')) h+='<p class="small muted" style="margin:8px 0 0">내일로 미룬 것 '+snz+'개 (PC에서 관리)</p>';
     h+='<p class="small muted" style="margin:8px 0 0">할 일을 누르면 오늘 탭에서 바로 시작할 수 있어요.</p>';
     return h+'</section>';
   }
@@ -619,16 +676,24 @@ function hkMain(){
     $('today').innerHTML=(D.med[TODAY]?'<button class="medchip" data-a="medEdit" title="약 시간 수정">💊 '+esc(D.med[TODAY])+'</button>':'')+esc(label(TODAY));
     var pm=pendingMemos().length, bd=$('memoBd'); bd.hidden=!pm; bd.textContent=pm;
     var v=$('view'), h='';
-    if(tab==='today') h=timerHTML()+declHTML()+slotsHTML()+panHTML()+sugHTML()+nowHTML()+missionsHTML();
+    // 2026-11-17 리디자인: 오늘 = 선포 → 지금 이거 어때 → 고정 칸 → 판 → 미션. 넓은 화면(맥북 북마크)은 세 칸으로 펼침
+    var wide=window.innerWidth>=1100; document.body.classList.toggle('wide',wide); document.body.classList.toggle('pcbusy',pcBusy());
+    var cp=$('compose'), dk=document.querySelector('.dock');
+    if(wide&&cp.parentNode===dk) $('sync').insertAdjacentElement('afterend',cp); else if(!wide&&cp.parentNode!==dk) dk.insertBefore(cp,dk.firstChild);
+    if(wide){ var so=slOpen; slOpen=true; h='<div class="wcols"><div class="wc">'+timerHTML()+declHTML()+sugHTML()+slotsHTML()+panHTML()+nowHTML()+snzHTML()+'</div><div class="wc">'+tasksHTML()+'</div><div class="wc">'+memoReviewHTML()+missionsHTML()+'</div></div>'; slOpen=so; }
+    else if(tab==='today') h=timerHTML()+declHTML()+sugHTML()+slotsHTML()+panHTML()+nowHTML()+missionsHTML();
     else if(tab==='tasks') h=tasksHTML();
     else h=memoReviewHTML();
     v.innerHTML=h; loadPhotos();
+    var pb=$('pcbar'); if(pb) pb.remove();
+    if(pcBusy()&&!D.psession){ var ss=D.session, tt=D.tasks.filter(function(x){return x.id===ss.taskId})[0]; (wide?$('sync'):dk).insertAdjacentHTML(wide?'afterend':'afterbegin','<div class="pcbar" id="pcbar"><span class="pd"></span><span class="pt">'+(ss.mode==='check'?'PC 한 칸 끝, 체크 대기':'PC 집중 중')+(tt?' · '+esc(tt.title):'')+'</span>'+(ss.mode==='focus'&&ss.endAt?'<b>'+hm(ss.endAt)+'까지</b>':'')+'</div>'); }
     var aq=$('aq'); if(aq){ aq.oninput=function(){ window.__aq=aq.value; var p=aq.selectionStart; render(); var n=$('aq'); n.focus(); try{n.setSelectionRange(p,p)}catch(e){} }; }
     var gi=$('goalIn'); if(gi) gi.onkeydown=function(e){if(e.key==='Enter'&&!e.isComposing){e.preventDefault();click('goalSave')}};
     var pi=$('panIn'); if(pi) pi.onkeydown=function(e){if(e.key==='Enter'&&!e.isComposing){e.preventDefault();click('panS')}};
     var slt=$('slT'); if(slt){ slt.onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();click('slTimeSave')}}; slt.focus(); }
     var ti=$('taskIn'); if(ti) ti.onkeydown=function(e){if(e.key==='Enter'&&!e.isComposing){e.preventDefault();click('taskAdd')}};
   }
+  var rzT; window.addEventListener('resize',function(){clearTimeout(rzT);rzT=setTimeout(function(){if(D&&(window.innerWidth>=1100)!==document.body.classList.contains('wide'))render()},200)});
   // 아래 아이디어 입력칸 (화면 바뀌어도 그대로 유지)
   $('memoB').onchange=function(){
     var mb=$('memoB');
