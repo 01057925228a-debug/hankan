@@ -700,7 +700,7 @@ function hkMain(){
     return n; }
   function render(){
     drawSync(); document.body.className='t-'+tab;
-    var sk=streakN(); $('today').innerHTML=(sk>=2?'<span class="medchip fire" title="시동 연속 (쉬는 날은 건너뜀)">🔥 시동 '+sk+'일</span>':'')+(D.med[TODAY]?'<button class="medchip" data-a="medEdit" title="약 시간 수정">💊 '+esc(D.med[TODAY])+'</button>':'')+esc(label(TODAY));
+    var sk=streakN(); $('today').innerHTML=(sk>=2?'<span class="medchip fire" title="시동 연속 (쉬는 날은 건너뜀)">🔥 시동 '+sk+'일째</span>':'')+(D.med[TODAY]?'<button class="medchip" data-a="medEdit" title="약 시간 수정">💊 '+esc(D.med[TODAY])+'</button>':'')+esc(label(TODAY));
     var pm=pendingMemos().length, bd=$('memoBd'); bd.hidden=!pm; bd.textContent=pm;
     var v=$('view'), h='';
     // 2026-11-17 리디자인: 오늘 = 선포 → 지금 이거 어때 → 고정 칸 → 판 → 미션. 넓은 화면(맥북 북마크)은 세 칸으로 펼침
