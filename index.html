@@ -287,7 +287,7 @@ body.wide .wrap{height:100%;display:flex;flex-direction:column}
 body.wide #view{flex:1;min-height:0}
 body.wide .wcols{height:100%;align-items:stretch}
 body.wide .wc{overflow-y:auto;min-height:0;padding-right:4px;scrollbar-width:thin}
-body.wide .wcols{display:grid;grid-template-columns:440px minmax(0,1fr) 400px;gap:12px;align-items:start}
+body.wide .wcols{display:grid;grid-template-columns:440px minmax(0,1fr) 400px;gap:12px;align-items:stretch;grid-template-rows:minmax(0,1fr)}   /* 2026-11-18: start면 칸이 내용만큼 늘어나 스크롤이 안 됨 → 창 높이에 묶기 */
 body.wide .wc{display:flex;flex-direction:column;gap:0;min-width:0}
 body.wide .sug .tt{font-size:28px}
 .tier-zero,.tier-low,.tier-mid,.tier-near,.tier-ok,.tier-over{color:var(--act)!important}
@@ -471,7 +471,7 @@ function hkMain(){
     if(D.syncedAt){var mins=Math.round((Date.now()-D.syncedAt)/60000);
       t='PC '+(key(new Date(D.syncedAt))!==TODAY?label(key(new Date(D.syncedAt)))+' ':'')+hm(D.syncedAt)+(mins<1?' (방금)':mins<60?' ('+mins+'분 전)':'');}
     else t='아직 PC에서 동기화 전';
-    s.innerHTML=esc(t)+' · 앱 v10'+(D.pending?' · <b>PC 반영 대기 '+D.pending+'개</b>':'');
+    s.innerHTML=esc(t)+' · 앱 v11'+(D.pending?' · <b>PC 반영 대기 '+D.pending+'개</b>':'');
     if(NS&&NS.on){var bad=NS.err&&NS.errSince&&(Date.now()-NS.errSince>3600000)||(NS.lastOk&&Date.now()-NS.lastOk>3600000);
       var warn=!bad&&NS.err;   // 방금 생긴 문제: 자동으로 다시 시도 중
       var nt=bad?'노션 ⚠ '+(NS.err||'1시간 넘게 못 보냈어요'):warn?'노션 ⚠ 다시 시도 중 · '+NS.err:NS.prog&&NS.prog[0]<NS.prog[1]?'노션 옮기는 중 '+NS.prog[0]+'/'+NS.prog[1]:'노션 ✓ '+(NS.lastOk?hm(NS.lastOk):'');
