@@ -320,7 +320,7 @@ body.wide .top .date{font-size:30px;font-weight:800;color:var(--ink);display:fle
 body.wide .top .date .dl{margin-right:4px}
 body.wide .medchip{font-size:16px;font-weight:600;padding:6px 14px;border:1px solid var(--line);background:var(--surface);color:var(--ink);margin:0;border-radius:99px}
 body.wide .medchip.fire{background:var(--soft);border-color:color-mix(in srgb,var(--act) 30%,transparent);color:var(--act)}
-body.wide .sync{margin:-8px 0 16px;font-size:14px}
+body.wide .wrap{position:relative}body.wide .sync{position:absolute;top:36px;right:40px;margin:0;font-size:14px}   /* 확장처럼 날짜 줄 한 줄만: 동기화 글씨는 오른쪽 위로 */
 body.wide .panel{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px 26px;margin:0;box-shadow:none}
 body.wide .wtop{display:flex;flex-direction:column;gap:16px;margin-bottom:16px}
 /* 선포 */
@@ -336,11 +336,11 @@ body.wide .wpan .pr small{font-size:15px;font-weight:600;color:var(--muted);marg
 body.wide .wpan .pr button{font-size:15px;color:var(--act);text-decoration:underline;font-weight:600}
 body.wide .wpan .bar{height:10px;border-radius:5px;margin:12px 0;background:var(--bg)}
 body.wide .wpan .pa{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-body.wide .wpan .pa .btn{min-height:40px;padding:6px 16px;font-size:16px;border-radius:11px;border:1.5px solid var(--line);background:var(--surface);font-weight:600}
+body.wide .wpan .pa .btn{min-height:34px;padding:4px 14px;font-size:16px;border-radius:11px;border:1.5px solid var(--line);background:var(--surface);font-weight:600}
 body.wide .wpan .pa .btn.p{background:var(--act);color:var(--act-ink);border-color:var(--act)}
-body.wide .wpan .pa input{width:200px;flex:none;font-size:16px;min-height:40px;padding:6px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg)}
+body.wide .wpan .pa input{width:200px;flex:none;font-size:16px;min-height:34px;padding:6px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg)}
 body.wide .wpan .lunch{margin-top:12px}
-@media (min-width:1700px){body.wide .wpan{display:flex;align-items:center;flex-wrap:wrap;column-gap:22px;row-gap:12px}
+@media (min-width:2300px){body.wide .wpan{display:flex;align-items:center;flex-wrap:wrap;column-gap:22px;row-gap:12px}
   body.wide .wpan .pt{display:contents}body.wide .wpan .bar{order:3;flex:1;min-width:300px;margin:0}body.wide .wpan .pr{order:4;margin:0}body.wide .wpan .pa{order:5;flex-wrap:nowrap}body.wide .wpan .lunch,body.wide .wpan .salesin{order:9;flex-basis:100%}}
 /* 아이디어 칸: [적는 칸][사진][분류][적기] */
 body.wide #compose{display:flex;gap:10px;align-items:stretch;margin:0 0 16px;padding:0;max-width:none}
@@ -379,6 +379,14 @@ body.wide .wtllab .wlb b{display:block;font-size:15px;font-weight:700;color:var(
 body.wide .wtllab .wlb span{display:block;font-size:13px;font-weight:500;color:var(--muted);margin-top:2px}
 body.wide .wtllab .wlb b em{font-style:normal;font-size:12px;font-weight:700;color:var(--done);margin-left:6px}
 body.wide .wtllab .wlb.slot b{color:var(--act)}body.wide .wtllab .wlb.slot.miss b{color:var(--muted)}
+/* 막대 밑 번호 = 이름 줄 번호 (지도 범례처럼 짝), 확장과 같은 값 */
+body.wide .wtllab{margin-top:26px;gap:10px 30px}
+body.wide .wtllab .wlb{padding-left:26px;border-radius:8px}body.wide .wtllab .wlb::before{display:none}
+body.wide .wtllab .wlb i,body.wide .wnb{position:absolute;left:0;top:0;width:19px;height:19px;border-radius:10px;background:var(--done);color:#fff;font-size:11.5px;font-weight:800;line-height:19px;font-style:normal;text-align:center}
+body.wide .wtllab .wlb.h i,body.wide .wnb.h{background:#8FA59B}body.wide .wtllab .wlb.cur i,body.wide .wnb.cur{background:var(--act)}
+body.wide .wtllab .wlb.slot i,body.wide .wnb.slot{background:var(--surface);color:var(--act);box-shadow:inset 0 0 0 2px var(--act)}body.wide .wtllab .wlb.slot.miss i,body.wide .wnb.slot.miss{color:var(--muted);box-shadow:inset 0 0 0 2px var(--muted)}
+body.wide .wnb{top:23px;left:auto;transform:translateX(calc(-50% + 10px));z-index:3}
+body.wide .wtllab .wlb.on{background:var(--soft)}body.wide .wnb.on{transform:translateX(calc(-50% + 10px)) scale(1.25)}
 /* 세 칸 */
 body.wide .wcols{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1.6fr) minmax(0,1fr);gap:22px;grid-template-rows:minmax(0,1fr);height:100%;align-items:stretch}
 @media (max-width:1400px){body.wide .wcols{grid-template-columns:1fr;height:auto}}
@@ -398,6 +406,7 @@ body.wide .sgo .btn.p{font-size:24px;padding:0 40px;background:var(--act);border
 /* 고정 칸 · 내일 할 일 */
 body.wide .slots{padding:18px 24px}
 body.wide .sl-head{font-size:16px}body.wide .sl-head b{font-size:18px}
+body.wide .sl-row{padding:6px 0;gap:6px 10px}body.wide .sl-time{padding:0 7px;line-height:27px;border-radius:8px}
 body.wide .sl-body{font-size:18px;white-space:normal;overflow:visible;word-break:keep-all;overflow-wrap:anywhere}body.wide .sl-time{font-size:19px}
 body.wide .snz{flex:1 1 0;min-height:0;overflow:auto}
 body.wide .snz .sl-head b{font-size:18px;font-weight:800}
@@ -421,7 +430,7 @@ body.wide .tls .tlist>.item:first-of-type,body.wide .tls .tlist>.grp:first-child
 body.wide .wc.side .panel{border-radius:22px;padding:22px 24px}
 body.wide .wc.side h2{font-size:17px;font-weight:700;margin:0 0 10px;display:flex;align-items:center}
 body.wide .mpan h2 .n{margin-left:auto;color:var(--muted);font-size:14.6px;font-weight:500}
-body.wide .mpan .item{padding:12px 0}
+body.wide .mpan .item{padding:9px 0}
 body.wide .mpan .item .grow{font-size:18px}
 body.wide .mpan .item .small{font-size:14.6px}
 body.wide .mpan .item .acts{display:flex;gap:4px;margin-top:10px}
@@ -433,12 +442,13 @@ body.wide .wmis .item>div[style*="font-size:16px"]{font-size:19.5px!important}
 body.wide .wmis .item .small{font-size:14.6px}
 body.wide .wmis .item div[style*="font-size:14px"],body.wide .wmis ol{font-size:16px!important}
 /* 맥북(1900 이하): 위쪽(선포·판·하루 띠)이 화면을 많이 먹어서 세 칸이 너무 납작해짐 → 화면 전체를 내리면 세 칸이 화면 높이만큼 펼쳐지고, 칸마다 따로 스크롤 */
-@media (min-width:1100px){body.wide #scroller{overflow-y:auto}body.wide .wrap{height:auto}body.wide #view{flex:none}body.wide .wcols{height:calc(100vh - 48px)}}
+@media (min-width:1700px){body.wide #view{display:flex;flex-direction:column}body.wide #view>.wcols{flex:1;min-height:0;height:auto}}   /* 본컴 창: 확장처럼 한 화면에 딱 맞춤 */
+@media (max-width:1699px){body.wide #scroller{overflow-y:auto}body.wide .wrap{height:auto}body.wide #view{flex:none}body.wide .wcols{height:calc(100vh - 48px)}}
 body.wide .wc.side h2 .ico{margin-right:6px}
-/* 2026-11-20 맥북 1440이 기준 (형: PC 화면은 맥북에서만 씀) — 위쪽을 줄여 세 칸이 위로 올라오게, 시작 버튼 한 줄. 본컴 창에서 열어도 같은 크기 */
-@media (min-width:1100px){
+/* 맥북(1700 미만): 화면이 작으니 글씨·여백을 줄여서 배치. 본컴 창(1700 이상)은 확장 대시보드 값 그대로 */
+@media (max-width:1699px){
   body.wide .wrap{padding:18px 28px 20px}
-  body.wide .top .date{font-size:24px}body.wide .medchip{font-size:14px;padding:4px 12px}body.wide .sync{margin:-6px 0 10px;font-size:12.5px}
+  body.wide .top .date{font-size:24px}body.wide .medchip{font-size:14px;padding:4px 12px}body.wide .sync{top:24px;right:28px;font-size:12.5px}
   body.wide .wtop{gap:10px;margin-bottom:10px}
   body.wide .decl{padding:9px 18px;font-size:17px}body.wide .decl .l,body.wide .decl .t{font-size:17px}
   body.wide .wpan{padding:12px 18px}body.wide .wpan .pt{font-size:16px}body.wide .wpan .pr{font-size:17px}body.wide .wpan .bar{height:8px;margin:9px 0}
@@ -449,7 +459,7 @@ body.wide .wc.side h2 .ico{margin-right:6px}
   body.wide .wcols{gap:16px}
   body.wide .sug{padding:20px 24px}body.wide .sug .lbl{font-size:17px}
   body.wide .sug .tt{font-size:40px;letter-spacing:-.8px;margin:2px 0 12px}   /* 확장도 좁은 화면에선 40px */
-  body.wide .sgo{flex-wrap:nowrap}body.wide .sgo .btn{height:56px;font-size:18px;padding:0 22px;flex:none}body.wide .sgo .btn.p{font-size:20px;padding:0 30px}
+  body.wide .sgo{flex-wrap:nowrap;gap:8px}body.wide .sgo .btn{height:56px;font-size:17px;padding:0 16px;flex:none}body.wide .sgo .btn.p{font-size:20px;padding:0 30px}
 }
 /* 스크롤 막대: 기본 대신 얇고 둥글게 (확장도 같은 모양) */
 @supports not selector(::-webkit-scrollbar){*{scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--muted) 35%,transparent) transparent}}
@@ -635,7 +645,7 @@ function hkMain(){
     if(D.syncedAt){var mins=Math.round((Date.now()-D.syncedAt)/60000);
       t='PC '+(key(new Date(D.syncedAt))!==TODAY?label(key(new Date(D.syncedAt)))+' ':'')+hm(D.syncedAt)+(mins<1?' (방금)':mins<60?' ('+mins+'분 전)':'');}
     else t='아직 PC에서 동기화 전';
-    s.innerHTML=esc(t)+' · 앱 v13'+(D.pending?' · <b>PC 반영 대기 '+D.pending+'개</b>':'');
+    s.innerHTML=esc(t)+' · 앱 v14'+(D.pending?' · <b>PC 반영 대기 '+D.pending+'개</b>':'');
     if(NS&&NS.on){var bad=NS.err&&NS.errSince&&(Date.now()-NS.errSince>3600000)||(NS.lastOk&&Date.now()-NS.lastOk>3600000);
       var warn=!bad&&NS.err;   // 방금 생긴 문제: 자동으로 다시 시도 중
       var nt=bad?'노션 ⚠ '+(NS.err||'1시간 넘게 못 보냈어요'):warn?'노션 ⚠ 다시 시도 중 · '+NS.err:NS.prog&&NS.prog[0]<NS.prog[1]?'노션 옮기는 중 '+NS.prog[0]+'/'+NS.prog[1]:'노션 ✓ '+(NS.lastOk?hm(NS.lastOk):'');
@@ -700,8 +710,8 @@ function hkMain(){
     var kept=L.filter(function(x){return x.st==='done'}).length;
     lab.sort(function(a,b){return a.x-b.x});
     return '<div class="wtlbox"><div class="wtlh">📌 <b>오늘 하루</b>'+(L.length?'<span class="wpl">고정 칸 '+kept+'/'+L.length+' 지킴</span>':'')+'<span class="grow"></span><span class="wlg"><i class="l1"></i>다 한 칸 <i class="l2"></i>반쯤 <i class="l3"></i>고정 칸 자리'+(md?' <i class="l4"></i>약 효과 구간':'')+'</span></div>'
-      +'<div class="wticks">'+tk+'</div><div class="wtl">'+h+'</div>'
-      +'<div class="wtllab">'+lab.map(function(o){return '<div class="wlb '+o.c+'"><b>'+esc(o.t)+(o.g?'<em>고정</em>':'')+'</b><span>'+esc(o.m)+'</span></div>'}).join('')+'</div></div>';
+      +'<div class="wticks">'+tk+'</div><div class="wtl">'+h+lab.map(function(o,i){return '<span class="wnb '+o.c+'" data-i="'+i+'" style="left:'+o.x+'%">'+(i+1)+'</span>'}).join('')+'</div>'
+      +'<div class="wtllab">'+lab.map(function(o,i){return '<div class="wlb '+o.c+'" data-i="'+i+'"><i>'+(i+1)+'</i><b>'+esc(o.t)+(o.g?'<em>고정</em>':'')+'</b><span>'+esc(o.m)+'</span></div>'}).join('')+'</div></div>';
   }
   function declHTML(){
     var d=(D.declarations||[]).filter(function(x){return x.day===TODAY})[0]; if(!d) return '';
@@ -925,6 +935,7 @@ function hkMain(){
     v.innerHTML=h; loadPhotos();
     var wcp=$('wcomp'); if(wide&&wcp) wcp.replaceWith(cp);   // 대시보드처럼: 선포 → 판 → 아이디어 칸 → 오늘 하루 → 세 칸
     sortable(document.querySelector('.mpan .mlist'),'memo',pendingMemos);
+    [].forEach.call(document.querySelectorAll('.wtllab .wlb,.wnb'),function(el){ var i=el.getAttribute('data-i'); var tg=function(on){[].forEach.call(document.querySelectorAll('[data-i="'+i+'"]'),function(x){if(x.classList.contains('wlb')||x.classList.contains('wnb'))x.classList.toggle('on',on)})}; el.onmouseenter=function(){tg(true)}; el.onmouseleave=function(){tg(false)}; });
     { var tb=document.querySelector('.tlist'); sortable(tb,'task',function(){return D.tasks.filter(function(t){return !t.done&&!(t.snoozeUntil&&t.snoozeUntil>TODAY)}).sort(function(a,b){return ((b.dailyId?1:0)-(a.dailyId?1:0))||(ordKey(a)-ordKey(b))})}); }
     var pb=$('pcbar'); if(pb) pb.remove();
     if(pcBusy()&&!D.psession){ var ss=D.session, tt=D.tasks.filter(function(x){return x.id===ss.taskId})[0]; (wide?$('sync'):dk).insertAdjacentHTML(wide?'afterend':'afterbegin','<div class="pcbar" id="pcbar"><span class="pd"></span><span class="pt">'+(ss.mode==='check'?'PC 한 칸 끝, 체크 대기':'PC 집중 중')+(tt?' · '+esc(tt.title):'')+'</span>'+(ss.mode==='focus'&&ss.endAt?'<b>'+hm(ss.endAt)+'까지</b>':'')+'</div>'); }
