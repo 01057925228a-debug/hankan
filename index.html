@@ -601,6 +601,32 @@ html body.wide .wmis .item div[style*="font-size:14px"],html body.wide .wmis .it
 html body.wide .tls{overflow:hidden;display:flex;flex-direction:column}
 html body.wide .tls>.rfit,html body.wide .wmis>.rfit{flex:1 1 0;min-height:0;overflow-y:auto}
 html body.wide .wmis .wmlist{overflow:visible}
+/* 2026-11-20 하루 띠: 지금 시각 = 구글 캘린더 지금 줄 짜임(2px 선 + 동그라미, 띠 안에서만), 약 효과 구간 = 막대 뒤 연한 바탕, 짝 표시 = 올린 짝만 진하게 */
+html body.wide .wtl .wzone{top:3px;height:22px;border-radius:11px;background:color-mix(in srgb,var(--act) 7%,transparent)}
+html body.wide .wtl .wnow{width:2px;top:5px;bottom:auto;height:18px;background:var(--act);border-radius:1px}
+html body.wide .wtl .wnow::before{content:'';position:absolute;left:50%;top:-6px;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:var(--act)}
+html body.wide .wtl .wnow span{background:none;color:var(--act);font-size:12px;font-weight:700;padding:0;bottom:calc(100% + 9px)}
+html body.wide .wtl>i,html body.wide .wtl>.wslot,html body.wide .wtl>.wnb,html body.wide .wtllab .wlb{transition:opacity .15s}
+html body.wide .wtl.hl>i:not(.on),html body.wide .wtl.hl>.wslot:not(.on),html body.wide .wtl.hl>.wnb:not(.on){opacity:.25}
+html body.wide .wtllab.hl .wlb:not(.on){opacity:.35}html body.wide .wtllab .wlb.on{background:none}
+/* 2026-11-20 아이폰 메모 버튼 5개(수정 추가) → 한 줄 5칸 */
+.mpan .item .acts{grid-template-columns:repeat(5,1fr);gap:5px}.mpan .item .acts .btn{font-size:13px;padding:8px 0}
+.mpan .mi.edit,.mpan .item.edit{background:none;padding-left:0;padding-right:0;border-radius:0}
+/* 2026-11-20 메모 줄 = Todoist 목록 짜임 (app.todoist.com 실제 CSS: 줄 위아래 8px · 밑줄 1px #eee · 설명·날짜 12px/18px 회색 · 버튼 24px, 줄에 마우스 올릴 때만 오른쪽 위) */
+html body.wide .mpan .mi{position:relative;padding:round(calc(8px*var(--s)),1px) 0;border-top:0;border-bottom:1px solid var(--line);cursor:grab}
+html body.wide .mpan .mlist>.mi:last-child{border-bottom:0}
+html body.wide .mpan .mt{font-size:round(calc(15px*var(--s)),1px);font-weight:600;line-height:1.4;color:var(--ink);word-break:keep-all;overflow-wrap:anywhere;text-wrap:wrap}
+html body.wide .mpan .md{font-size:round(calc(12.5px*var(--s)),1px);line-height:1.45;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html body.wide .mpan .mc{display:flex;align-items:center;gap:6px;margin-top:2px;font-size:round(calc(12.5px*var(--s)),1px);line-height:1.45;color:var(--muted)}
+html body.wide .mpan .ma{position:absolute;top:round(calc(6px*var(--s)),1px);right:0;display:flex;gap:2px;padding-left:20px;opacity:0;pointer-events:none;transition:opacity .12s;background:linear-gradient(to right,transparent 0,var(--surface) 16px)}
+html body.wide .mpan .mi:hover .ma,html body.wide .mpan .mi:focus-within .ma{opacity:1;pointer-events:auto}
+html body.wide .mpan .mb{height:round(calc(24px*var(--s)),1px);padding:0 8px;border:0;border-radius:6px;background:transparent;color:var(--muted);font:inherit;font-size:round(calc(12.5px*var(--s)),1px);font-weight:600;cursor:pointer}
+html body.wide .mpan .mb:hover{background:var(--line);color:var(--ink)}html body.wide .mpan .mb.p{color:var(--act)}
+.mpan .mi.edit{cursor:auto}.mpan .med{width:100%;box-sizing:border-box;font:inherit;font-size:15px;font-weight:600;line-height:1.4;padding:8px 10px;border:1px solid var(--act);border-radius:8px;background:var(--surface);color:var(--ink);resize:vertical}
+.mpan .mer{display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap}
+.mpan .srt-ghost{background:transparent!important;box-shadow:none!important;border-radius:0!important}
+.srt-drag.item{background:var(--surface)!important;border-radius:8px;border:0!important;padding-left:12px!important;padding-right:12px!important;margin-left:-12px;box-shadow:0 4px 10px 0 rgba(0,0,0,.1),0 8px 18px 4px rgba(0,0,0,.05)!important;opacity:1!important}
+.srt-drag .ma{display:none}
 /* 2026-11-20 줄바꿈 정리: 낱말 중간에서 안 끊기, 마지막 줄에 한 낱말만 덩그러니 남지 않게 */
 body{word-break:keep-all;overflow-wrap:anywhere}
 p,li,.mw,.mp,.mo,.mt,.tt,.sugt,.tx,.sl-body,.small{text-wrap:pretty}
@@ -675,6 +701,7 @@ function hkMain(){
       case 'delTask': var dt=st.tasks.filter(function(x){return x.id===d.id})[0]; if(dt&&dt.dailyId&&!dt.optional)break; st.tasks=st.tasks.filter(function(x){return x.id!==d.id});break;
       case 'med': if(d.time)st.med[d.day]=d.time;else delete st.med[d.day];break;
       case 'note': if(d.text)st.notes[d.day]=d.text;else delete st.notes[d.day];break;
+      case 'memoEdit': var me=st.memos.filter(function(x){return x.id===d.id})[0], tx=String(d.text||'').slice(0,2000).trim(); if(me&&tx)me.text=tx; break;   // 메모 글 고치기 (2026-11-20)
       case 'order': var oL=d.kind==='memo'?st.memos:st.tasks, ox=oL.filter(function(x){return x.id===d.id})[0]; if(ox&&isFinite(+d.rk))ox.rk=+d.rk; break;   // 순서 바꾸기 (2026-11-20)
       case 'memoAct': var m=st.memos.filter(function(x){return x.id===d.id})[0]; if(!m)break;
         if(d.act==='task'){if(m.status!=='done'){m.status='done';st.tasks.push({id:op.id,title:m.text.split('\n')[0].slice(0,120),brand:'',kind:'head',steps:[],done:false,created:op.at,doneAt:0})}}
@@ -784,7 +811,7 @@ function hkMain(){
     if(D.syncedAt){var mins=Math.round((Date.now()-D.syncedAt)/60000);
       t='PC '+(key(new Date(D.syncedAt))!==TODAY?label(key(new Date(D.syncedAt)))+' ':'')+hm(D.syncedAt)+(mins<1?' (방금)':mins<60?' ('+mins+'분 전)':'');}
     else t='아직 PC에서 동기화 전';
-    s.innerHTML=esc(t)+' · 앱 v15'+(D.pending?' · <b>PC 반영 대기 '+D.pending+'개</b>':'');
+    s.innerHTML=esc(t)+' · 앱 v16'+(D.pending?' · <b>PC 반영 대기 '+D.pending+'개</b>':'');
     if(NS&&NS.on){var bad=NS.err&&NS.errSince&&(Date.now()-NS.errSince>3600000)||(NS.lastOk&&Date.now()-NS.lastOk>3600000);
       var warn=!bad&&NS.err;   // 방금 생긴 문제: 자동으로 다시 시도 중
       var nt=bad?'노션 ⚠ '+(NS.err||'1시간 넘게 못 보냈어요'):warn?'노션 ⚠ 다시 시도 중 · '+NS.err:NS.prog&&NS.prog[0]<NS.prog[1]?'노션 옮기는 중 '+NS.prog[0]+'/'+NS.prog[1]:'노션 ✓ '+(NS.lastOk?hm(NS.lastOk):'');
@@ -847,21 +874,21 @@ function hkMain(){
   }
   function tlWideHTML(){
     var S0=360, SPAN=1080, pc=function(a){return Math.max(0,Math.min(100,a/SPAN*100))}, mOf=function(ts){var d=new Date(ts);return d.getHours()*60+d.getMinutes()}, ps=function(ts){return pc(mOf(ts)-S0)};
-    var h='', md=D.med[TODAY], L=slOf(D,TODAY), now=Date.now(), lab=[];
+    var kk=0, h='', md=D.med[TODAY], L=slOf(D,TODAY), now=Date.now(), lab=[];
     if(md){var a=slMin(md)+90,b=slMin(md)+420; h+='<span class="wzone" style="left:'+pc(a-S0)+'%;width:'+pc(b-a)+'%"></span>'}
     (D.blocks||[]).filter(function(b){return b.day===TODAY}).forEach(function(b){ var g=b.slotId&&L.some(function(x){return x.id===b.slotId}), mi=b.minutes||Math.round((b.end-b.start)/60000);
-      h+='<i class="'+(b.result==='done'?'':'half')+'" style="left:'+ps(b.start)+'%;width:'+Math.max(.4,ps(b.end)-ps(b.start))+'%"></i>';
-      lab.push({x:ps(b.start),cx:ps(b.start)+Math.max(.4,ps(b.end)-ps(b.start))/2,c:b.result==='done'?'':'h',t:b.title,m:mi+'분 · '+hm(b.start)+'–'+hm(b.end)+(b.result==='done'?'':' · 반쯤'),g:g}); });
-    var se=D.session||{}; if(se.mode==='focus'&&se.startAt){var ct=D.tasks.filter(function(x){return x.id===se.taskId})[0]; h+='<i class="cur" style="left:'+ps(se.startAt)+'%;width:'+Math.max(.4,ps(now)-ps(se.startAt))+'%"></i>'; lab.push({x:ps(se.startAt),cx:(ps(se.startAt)+ps(now))/2,c:'cur',t:ct?ct.title:'지금 칸',m:hm(se.startAt)+'부터 · 하는 중'})}
+      h+='<i data-k="'+kk+'" class="'+(b.result==='done'?'':'half')+'" style="left:'+ps(b.start)+'%;width:'+Math.max(.4,ps(b.end)-ps(b.start))+'%"></i>';
+      lab.push({x:ps(b.start),cx:ps(b.start)+Math.max(.4,ps(b.end)-ps(b.start))/2,c:b.result==='done'?'':'h',t:b.title,m:mi+'분 · '+hm(b.start)+'–'+hm(b.end)+(b.result==='done'?'':' · 반쯤'),g:g,k:kk++}); });
+    var se=D.session||{}; if(se.mode==='focus'&&se.startAt){var ct=D.tasks.filter(function(x){return x.id===se.taskId})[0]; h+='<i data-k="'+kk+'" class="cur" style="left:'+ps(se.startAt)+'%;width:'+Math.max(.4,ps(now)-ps(se.startAt))+'%"></i>'; lab.push({x:ps(se.startAt),cx:(ps(se.startAt)+ps(now))/2,c:'cur',t:ct?ct.title:'지금 칸',m:hm(se.startAt)+'부터 · 하는 중',k:kk++})}
     L.forEach(function(x){ var st=slState(x,TODAY,now); if(st==='done')return; var miss=st==='missed'||st==='pass';
-      h+='<span class="wslot'+(miss?' miss':'')+'" style="left:'+pc(slMin(x.t)-S0)+'%;width:'+pc(50)+'%"></span>'; lab.push({x:pc(slMin(x.t)-S0),cx:pc(slMin(x.t)-S0)+pc(50)/2,c:'slot'+(miss?' miss':''),t:x.t+' 고정 칸',m:st==='missed'?'놓침':st==='pass'?'패스':'50분'}) });
+      h+='<span data-k="'+kk+'" class="wslot'+(miss?' miss':'')+'" style="left:'+pc(slMin(x.t)-S0)+'%;width:'+pc(50)+'%"></span>'; lab.push({x:pc(slMin(x.t)-S0),cx:pc(slMin(x.t)-S0)+pc(50)/2,c:'slot'+(miss?' miss':''),t:x.t+' 고정 칸',m:st==='missed'?'놓침':st==='pass'?'패스':'50분',k:kk++}) });
     var nm=mOf(now), nl=nm>=S0?pc(nm-S0):-1;
     if(nl>=0) h+='<span class="wnow" style="left:'+nl+'%"><span>'+pad(Math.floor(nm/60))+':'+pad(nm%60)+'</span></span>';
     var tk=[6,9,12,15,18,21,24].map(function(x){var l=pc(x*60-S0);return '<span class="'+(nl>=0&&Math.abs(l-nl)<3?'hid':'')+'" style="left:'+l+'%">'+x+'시</span>'}).join('');
     var kept=L.filter(function(x){return x.st==='done'}).length;
     lab.sort(function(a,b){return a.x-b.x});
     return '<div class="wtlbox"><div class="wtlh">📌 <b>오늘 하루</b>'+(L.length?'<span class="wpl">고정 칸 '+kept+'/'+L.length+' 지킴</span>':'')+'<span class="wsy">'+$('sync').innerHTML+'</span><span class="grow"></span><span class="wlg"><i class="l1"></i>다 한 칸 <i class="l2"></i>반쯤 <i class="l3"></i>고정 칸 자리'+(md?' <i class="l4"></i>약 효과 구간':'')+'</span></div>'
-      +'<div class="wticks">'+tk+'</div><div class="wtl">'+h+lab.map(function(o,i){return '<span class="wnb '+o.c+'" data-i="'+i+'" style="left:'+o.cx+'%">'+(i+1)+'</span>'}).join('')+'</div>'
+      +'<div class="wticks">'+tk+'</div><div class="wtl">'+h+lab.map(function(o,i){return '<span class="wnb '+o.c+'" data-i="'+i+'" data-k="'+o.k+'" style="left:'+o.cx+'%">'+(i+1)+'</span>'}).join('')+'</div>'
       +'<div class="wtllab">'+lab.map(function(o,i){return '<div class="wlb '+o.c+'" data-i="'+i+'"><i>'+(i+1)+'</i><b>'+esc(o.t)+(o.g?'<em>고정</em>':'')+'</b><span>'+esc(o.m)+'</span></div>'}).join('')+'</div></div>';
   }
   function declHTML(){
@@ -942,20 +969,35 @@ function hkMain(){
   // 끌어서 순서 바꾸기 (SortableJS, MIT). 점 6개 손잡이로만 끌림. 놓으면 앞뒤 사이 값을 rk로 보내 본컴·맥북·폰이 같은 순서
   function rkBetween(a,b){var x=a?ordKey(a):null,y=b?ordKey(b):null; if(x==null&&y==null)return Date.now(); if(x==null)return y-1000; if(y==null)return x+1000; return (x+y)/2}
   function sortable(box,kind,getList){ if(!box||!window.Sortable)return;
-    Sortable.create(box,{draggable:'[data-ord]',filter:'button,input,select,textarea,a,label,.acts,.edit',preventOnFilter:false,delayOnTouchOnly:true,delay:220,touchStartThreshold:6,animation:160,easing:'cubic-bezier(.2,.8,.2,1)',ghostClass:'srt-ghost',chosenClass:'srt-chosen',dragClass:'srt-drag',fallbackClass:'srt-drag',scroll:true,bubbleScroll:true,scrollSensitivity:90,scrollSpeed:14,
+    Sortable.create(box,{draggable:'[data-ord]',forceFallback:true,fallbackTolerance:3,filter:'button,input,select,textarea,a,label,.acts,.edit',preventOnFilter:false,delayOnTouchOnly:true,delay:220,touchStartThreshold:6,animation:160,easing:'cubic-bezier(.2,.8,.2,1)',ghostClass:'srt-ghost',chosenClass:'srt-chosen',dragClass:'srt-drag',fallbackClass:'srt-drag',scroll:true,bubbleScroll:true,scrollSensitivity:90,scrollSpeed:14,
       onStart:function(){dragging=true},
       onEnd:function(e){ dragging=false; if(e.oldIndex===e.newIndex){render();return}
         var L=getList(), vis=[].map.call(box.querySelectorAll('[data-ord]'),function(x){return x.getAttribute('data-ord')}), id=e.item.getAttribute('data-ord');
         var ids=vis.concat(L.map(function(x){return x.id}).filter(function(x){return vis.indexOf(x)<0})), at=ids.indexOf(id), by=function(i){return L.filter(function(x){return x.id===ids[i]})[0]};
         send('order',{kind:kind,id:id,rk:rkBetween(by(at-1),by(at+1))},'순서 바꿨어요'); } }); }
   var dragging=false, memoAll=false;
+  var memoEd=null;   // 2026-11-20 메모 고치는 중인 id
+  function memoCtx(m){ return label(m.day)+' · '+hm(m.at)+(m.ctx?' · '+(m.ctx==='폰'?'폰에서':'"'+esc(m.ctx)+'" 하다가'):''); }
+  function memoEditHTML(m){ var tx=String(m.text||'');
+    return '<div class="item mi edit" data-ord="'+m.id+'"><textarea class="med" id="med-'+m.id+'" data-id="'+m.id+'" rows="'+Math.min(6,tx.split('\n').length+1)+'" maxlength="2000">'+esc(tx)+'</textarea>'
+      +'<div class="mer"><button class="btn s p" data-a="mSave" data-id="'+m.id+'">저장</button><button class="btn s g" data-a="mCancel">취소</button>'+(document.body.classList.contains('wide')?'<span class="small muted">엔터 저장 · Esc 취소</span>':'')+'</div></div>'; }
   function memoReviewHTML(){
     var ms=pendingMemos();
     if(!ms.length)return '<section class="panel"><h2>메모 정리</h2><p class="empty">정리할 메모가 없어요. 아래 칸에 바로 적으면 여기 모여요.<br>보관한 메모는 노션 보관함에서 봐요.</p></section>';
     var wd=document.body.classList.contains('wide'), sh=wd&&!memoAll?ms.slice(0,3):ms;
-    return '<section class="panel mpan"><h2>메모 정리<span class="n">'+ms.length+(wd?'개':'')+'</span></h2><div class="mlist">'+sh.map(function(m){return '<div class="item" data-ord="'+m.id+'"><div class="mrow"><div style="font-weight:600;white-space:pre-wrap" class="grow">'+esc(m.text)+(!wd&&m.bp&&m.brand&&(m.text||'').indexOf(m.brand)<0?' <span class="tag n">'+esc(m.brand)+'</span>':'')+'</div></div>'+photoBtn(m.imgs)
-      +'<div class="small muted" style="margin-top:3px">'+(wd&&m.bp&&m.brand&&(m.text||'').indexOf(m.brand)<0?'<span class="tag n">'+esc(m.brand)+'</span> ':'')+label(m.day)+' · '+hm(m.at)+(m.ctx?' · '+(m.ctx==='폰'?'폰에서':'"'+esc(m.ctx)+'" 하다가'):'')+'</div>'
-      +'<div class="acts"><button class="btn p" data-a="mTask" data-id="'+m.id+'">할 일로</button><button class="btn" data-a="mKeep" data-id="'+m.id+'">보관</button><button class="btn" data-a="mLater" data-id="'+m.id+'">내일</button><button class="btn g" data-a="mDrop" data-id="'+m.id+'">버리기</button></div></div>'}).join('')+'</div>'+(wd&&ms.length>3?'<button class="btn s g mmore" data-a="mAll">'+(memoAll?'접기':'메모 '+(ms.length-3)+'개 더 보기')+'</button>':'')+'</section>';
+    var pill=function(m){return m.bp&&m.brand&&(m.text||'').indexOf(m.brand)<0?'<span class="tag n">'+esc(m.brand)+'</span>':''};
+    var row=wd?function(m){   // 넓은 화면: Todoist 목록 짜임 (윗줄 첫 줄 글 · 회색 한 줄 · 날짜 줄, 버튼은 마우스 올릴 때 오른쪽 위)
+        if(memoEd===m.id)return memoEditHTML(m);
+        var tx=String(m.text||''), nl=tx.indexOf('\n'), first=nl<0?tx:tx.slice(0,nl), rest=nl<0?'':tx.slice(nl+1).replace(/\s*\n\s*/g,' · ').trim();
+        return '<div class="item mi" data-ord="'+m.id+'"><div class="mt">'+esc(first)+'</div>'+(rest?'<div class="md">'+esc(rest)+'</div>':'')+photoBtn(m.imgs)
+          +'<div class="mc">'+pill(m)+'<span>'+memoCtx(m)+'</span></div>'
+          +'<div class="ma"><button class="mb p" data-a="mTask" data-id="'+m.id+'">할 일로</button><button class="mb" data-a="mKeep" data-id="'+m.id+'">보관</button><button class="mb" data-a="mLater" data-id="'+m.id+'">내일</button><button class="mb" data-a="mEdit" data-id="'+m.id+'">수정</button><button class="mb" data-a="mDrop" data-id="'+m.id+'">버리기</button></div></div>'; }
+      :function(m){
+        if(memoEd===m.id)return memoEditHTML(m);
+        return '<div class="item" data-ord="'+m.id+'"><div class="mrow"><div style="font-weight:600;white-space:pre-wrap" class="grow">'+esc(m.text)+(pill(m)?' '+pill(m):'')+'</div></div>'+photoBtn(m.imgs)
+          +'<div class="small muted" style="margin-top:3px">'+memoCtx(m)+'</div>'
+          +'<div class="acts"><button class="btn p" data-a="mTask" data-id="'+m.id+'">할 일로</button><button class="btn" data-a="mKeep" data-id="'+m.id+'">보관</button><button class="btn" data-a="mLater" data-id="'+m.id+'">내일</button><button class="btn" data-a="mEdit" data-id="'+m.id+'">수정</button><button class="btn g" data-a="mDrop" data-id="'+m.id+'">버리기</button></div></div>'; };
+    return '<section class="panel mpan"><h2>메모 정리<span class="n">'+ms.length+(wd?'개':'')+'</span></h2><div class="mlist">'+sh.map(row).join('')+'</div>'+(wd&&ms.length>3?'<button class="btn s g mmore" data-a="mAll">'+(memoAll?'접기':'메모 '+(ms.length-3)+'개 더 보기')+'</button>':'')+'</section>';
   }
   function archHTML(){
     var q=(window.__aq||'').toLowerCase(), all=D.memos.filter(function(m){return m.status==='kept'}).sort(function(a,b){return b.at-a.at});
@@ -1109,7 +1151,8 @@ function hkMain(){
     var wcp=$('wcomp'); if(wide&&wcp) wcp.replaceWith(cp);
     fitZoom(); fitSug(); fitRows();   // 대시보드처럼: 선포 → 판 → 아이디어 칸 → 오늘 하루 → 세 칸
     sortable(document.querySelector('.mpan .mlist'),'memo',pendingMemos);
-    [].forEach.call(document.querySelectorAll('.wtllab .wlb,.wnb'),function(el){ var i=el.getAttribute('data-i'); var tg=function(on){[].forEach.call(document.querySelectorAll('[data-i="'+i+'"]'),function(x){if(x.classList.contains('wlb')||x.classList.contains('wnb'))x.classList.toggle('on',on)});
+    document.querySelectorAll('textarea.med').forEach(function(t){ t.addEventListener('keydown',function(e){ if(e.isComposing)return; if(e.key==='Escape'){e.preventDefault();memoEd=null;render();} else if(e.key==='Enter'&&!e.shiftKey&&document.body.classList.contains('wide')){e.preventDefault();var b=document.querySelector('[data-a="mSave"][data-id="'+t.dataset.id+'"]'); if(b)b.click();} }); });
+    [].forEach.call(document.querySelectorAll('.wtllab .wlb,.wnb'),function(el){ var i=el.getAttribute('data-i'); var tg=function(on){[].forEach.call(document.querySelectorAll('[data-i="'+i+'"]'),function(x){if(x.classList.contains('wlb')||x.classList.contains('wnb'))x.classList.toggle('on',on)}); var kq=el.getAttribute('data-k')||(document.querySelector('.wnb[data-i="'+i+'"]')||{getAttribute:function(){return null}}).getAttribute('data-k'); [].forEach.call(document.querySelectorAll('.wtl [data-k]:not(.wnb)'),function(x){x.classList.toggle('on',on&&x.getAttribute('data-k')===kq)}); [].forEach.call(document.querySelectorAll('.wtl,.wtllab'),function(x){x.classList.toggle('hl',on)});
         var bx=document.querySelector('.wtlbox'), lab=document.querySelector('.wtllab'), tp=document.querySelector('.wtip'); if(tp)tp.remove();
         if(on&&el.classList.contains('wnb')&&lab&&getComputedStyle(lab).display==='none'){ var src=lab.querySelector('.wlb[data-i="'+i+'"]'); if(!src)return; tp=document.createElement('div'); tp.className='wtip'; tp.appendChild(src.cloneNode(true)); bx.appendChild(tp);
           var r=el.getBoundingClientRect(), b0=bx.getBoundingClientRect(), x=Math.min(Math.max(0,r.left-b0.left-24),bx.clientWidth-tp.offsetWidth); tp.style.left=x+'px'; tp.style.top=(r.bottom-b0.top+6)+'px'; } };   // 맥북: 이름 줄 대신 번호에 마우스 올리면 이름표
@@ -1183,6 +1226,9 @@ function hkMain(){
       case 'picDel': memoPics.splice(+b.getAttribute('data-i'),1); drawPics(); break;
       case 'panSOpen': salesOpen=!salesOpen; render(); if(salesOpen){var x=$('panIn'); if(x)x.focus()} break;
       case 'mAll': memoAll=!memoAll; render(); break;
+      case 'mEdit': memoEd=id; render(); var mt0=$('med-'+id); if(mt0){mt0.focus(); mt0.setSelectionRange(mt0.value.length,mt0.value.length);} break;
+      case 'mCancel': memoEd=null; render(); break;
+      case 'mSave': var mt1=$('med-'+id), mv=mt1?mt1.value.trim().slice(0,2000):''; memoEd=null; if(mv)send('memoEdit',{id:id,text:mv},'메모 고쳤어요'); else render(); break;
       case 'wPop': panPop=!panPop; goalEdit=false; render(); if(panPop){var wi=$('panIn'); if(wi)wi.focus()} break;
       case 'mTask': send('memoAct',{id:id,act:'task'},'할 일로 보냈어요'); break;
       case 'mLater': send('memoAct',{id:id,act:'later',tomorrow:tomorrow()},'내일 다시 보여줄게요'); break;
