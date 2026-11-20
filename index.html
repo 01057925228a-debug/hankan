@@ -41,6 +41,15 @@
 .jchip.on{background:var(--act);color:var(--act-ink);border-color:var(--act)}.jchip.add{border-style:dashed;color:var(--muted)}
 .jend .btn{min-height:50px}.jend .btn:disabled{opacity:.45}
 .fixp{border:2px solid var(--act)}.fixt{font-size:19px;font-weight:800;margin-top:2px}
+/* 2026-11-21 셀프 곤장 (2단계 — 디테일 디자인은 마지막에) */
+.gjt{font-size:11px;font-weight:800;padding:1px 7px;border-radius:6px;background:#1F2A6B;color:#fff;vertical-align:1px}
+.gjs{display:flex;align-items:center;gap:8px;margin:0 0 8px;padding:9px 12px;border-radius:12px;font-size:14px;flex-wrap:wrap}
+.gjs.ok{background:#F3F7EE}.gjs.no{background:#FFF5F4;border:1.5px solid #F2B8B5}.gjs.wt{background:var(--bg);color:var(--muted)}
+.gjs .grow{flex:1;min-width:0}.gjs b{color:var(--ink)}.gjs .lt{color:#C62828;font-weight:700}
+.gjpick{display:flex;flex-direction:column;gap:10px}.gp{display:flex;flex-direction:column;gap:8px;padding:10px 12px;border:1.5px solid var(--line);border-radius:12px}
+.gp.on{border-color:var(--act);box-shadow:0 0 0 2px rgba(43,69,232,.12)}.gp .gt{display:flex;gap:8px;align-items:center}
+.gp .gpc{width:28px;height:28px;border-radius:8px;border:1.5px solid var(--line);background:var(--surface);font-weight:800;color:#fff;flex:none}.gp .gpc.on{background:var(--act);border-color:var(--act)}
+.gp select{flex:1;min-width:0;padding:9px 10px;border:1.5px solid var(--line);border-radius:10px;font:inherit;font-size:15px;background:var(--surface);color:var(--ink)}
 </style>
 <style>svg.ico{width:1.15em;height:1.15em;vertical-align:-.2em;display:inline-block;flex:none}</style>
 <script>
@@ -724,6 +733,12 @@ function hkMain(){
       case 'jeom': if(d.day&&d.rec){st.jeom=st.jeom||{}; st.jeom[d.day]=d.rec} break;
       case 'jeomDefer': st.jeomMeta=st.jeomMeta||{}; st.jeomMeta.defer=d.day; st.jeomMeta.used=d.day; break;
       case 'jeomReason': var jr=String(d.name||'').trim().slice(0,12); if(jr){var JL=jReasons().slice(); if(JL.indexOf(jr)<0)JL.push(jr); st.jeomReasons=JL} break;
+      case 'gjSet': if(d.day&&d.items&&d.items.length===2){ st.gonjang=st.gonjang||{}; var go=st.gonjang[d.day]; st.gonjang[d.day]={items:d.items.map(function(x){var o=go&&(go.items||[]).filter(function(y){return y.sid===x.sid})[0]; return {sid:x.sid,i:+x.i||0,t:x.t,taskId:x.taskId,title:x.title,con:x.con,rew:x.rew,moved:o?o.moved||0:0,proof:o?o.proof||'':'',proofAt:o?o.proofAt||0:0,got:o?o.got||0:0}}),at:op.at,ok:d.ok?op.at:(go&&go.ok)||0};
+        slEnsure(st,d.day); d.items.forEach(function(x){var sl=st.slots[d.day].filter(function(y){return y.id===x.sid})[0]; if(sl&&sl.st!=='done'&&sl.st!=='run')sl.taskId=x.taskId}); } break;   // 곤장 칸 (2026-11-21)
+      case 'gjOk': var gk=(st.gonjang||{})[d.day]; if(gk)gk.ok=op.at; break;
+      case 'gjGot': var gg2=gjItemOf(st,d.day,d.sid); if(gg2&&!gg2.got)gg2.got=op.at; break;
+      case 'gjProof': var gp2=gjItemOf(st,d.day,d.sid); if(gp2&&!gp2.proof&&d.img){gp2.proof=d.img;gp2.proofAt=op.at; if(d.drive){st.imgDrive=st.imgDrive||{}; Object.keys(d.drive).forEach(function(k2){st.imgDrive[k2]=d.drive[k2]})}} break;
+      case 'gjList': var gv=String(d.v||'').trim().slice(0,30); if(gv&&(d.k==='con'||d.k==='rew')){var GL=(d.k==='con'?gjCons():gjRews()).slice(); if(GL.indexOf(gv)<0)GL.push(gv); st[d.k==='con'?'gjCons':'gjRews']=GL} break;
       case 'missionAdd': var mm=st.missionDay&&(st.missionDay.items||[]).filter(function(x){return x.id===d.id})[0]; if(!mm||mm.added)break;
         mm.added=true; st.tasks.push({id:op.id,title:mm.task_title,brand:mm.brand||'',kind:'head',steps:(mm.steps||[]).map(function(t){return {t:t,done:false}}),done:false,created:op.at,doneAt:0});break;
     }}
@@ -746,15 +761,41 @@ function hkMain(){
     var okT=function(t){return /^\d{1,2}:\d{2}$/.test(t||'')}, fix=function(t){return ('0'+t).slice(-5)};
     switch(op.type){
       case 'slotSet': if(free)x.taskId=d.taskId||null; break;
-      case 'slotTime': if(free&&(x.st||'wait')==='wait'&&now<slTs(day,x.t)&&okT(d.t)&&now<slTs(day,fix(d.t))){var t=fix(d.t); if(!slCheck(L.map(function(y){return y===x?{t:t}:y}))){x.t=t;x.st='wait';delete x.n0;delete x.n1}} break;
+      case 'slotTime': if(free&&(x.st||'wait')==='wait'&&now<slTs(day,x.t)&&okT(d.t)&&now<slTs(day,fix(d.t))){var t=fix(d.t); if(!slCheck(L.map(function(y){return y===x?{t:t}:y}))){x.t=t;x.st='wait';delete x.n0;delete x.n1; var gm=gjItemOf(st,day,x.id); if(gm)gm.moved=(gm.moved||0)+1}} break;
       case 'slotAdd': if(!L.some(function(y){return y.id===op.id})&&okT(d.t)){var n={id:op.id,t:fix(d.t),taskId:d.taskId||null,st:'wait'}; if(!slCheck(L.concat([n])))L.push(n)} break;
-      case 'slotDel': if(free&&(x.st||'wait')==='wait'&&now<slTs(day,x.t))st.slots[day]=L.filter(function(y){return y!==x}); break;
+      case 'slotDel': if(free&&(x.st||'wait')==='wait'&&now<slTs(day,x.t)&&!gjItemOf(st,day,x.id))st.slots[day]=L.filter(function(y){return y!==x}); break;
       case 'slotPass': if(free)x.st='pass'; break;
       case 'slotMove': if(false){var t2=fix(d.t); if(!slCheck(L.map(function(y){return y===x?{t:t2}:y}))){x.t=t2;x.st='wait';x.moved=(x.moved||0)+1;delete x.n0;delete x.n1}} break;
     }}
   function slNextFree(id){var others=slOf(D,TODAY).filter(function(x){return x.id!==id}).map(function(x){return slMin(x.t)}); var d=new Date(), m=Math.ceil((d.getHours()*60+d.getMinutes()+5)/10)*10;
     for(;m<=22*60;m+=10) if(others.every(function(o){return Math.abs(o-m)>=SL_MIN+SL_GAP})) return pad(Math.floor(m/60))+':'+pad(m%60); return ''}
   function slPlaced(id){return slOf(D,TODAY).filter(function(x){return x.taskId===id&&x.st!=='done'&&x.st!=='pass'})[0]}
+  /* ===== 셀프 곤장 (2026-11-21 2단계) — PC(core.js)와 같은 규칙 ===== */
+  var GJ_N=2, GJ_CONS=['스쿼트 30개','계단 10층','찬물 샤워 1분','턱걸이 30개'], GJ_REWS=['루키랑 30분 놀기','멍때리며 20분 음악 듣기','산책 20분','간식으로 배달'], GJ_BAD=/유튜브|youtube|쇼츠|숏츠|릴스|영상|넷플|netflix|게임|티비|tv|웹툰|틱톡/i;
+  function gjCons(){return D.gjCons&&D.gjCons.length?D.gjCons:GJ_CONS} function gjRews(){return D.gjRews&&D.gjRews.length?D.gjRews:GJ_REWS}
+  function gjItemOf(st,day,sid){var g=(st.gonjang||{})[day]; return g?(g.items||[]).filter(function(x){return x.sid===sid})[0]||null:null}
+  function gjDayPrev(k,n){var p=k.split('-').map(Number); return key(new Date(p[0],p[1]-1,p[2]+n))}
+  function gjRest(k){var pp=(D.pan||{})[k]||{}; return !!pp.rest||(D.dayPlan||{})[k]==='rest'}
+  function gjState(day,it,now){ var L=(D.slots||{})[day]||[], x=L.filter(function(y){return y.id===it.sid})[0], t0=slTs(day,x?x.t:it.t);
+    var same=function(b){return b&&b.day===day&&(b.taskId?b.taskId===it.taskId:b.title===it.title)}, full=function(b){return b&&(b.minutes||0)>=SL_MIN-1};
+    if(x&&x.st==='done'){var b=(D.blocks||[]).filter(function(y){return x.blockId?y.id===x.blockId:y.slotId===x.id})[0]; if(same(b)&&full(b))return 'kept'}
+    if((D.blocks||[]).some(function(b){return same(b)&&full(b)&&b.slotId!==it.sid&&b.start<t0}))return 'kept';
+    if(!x) return now<t0?'wait':'miss';
+    var k=slState(x,day,now); if(k==='run') return x.taskId===it.taskId?'run':'miss'; if(k==='wait'||k==='due')return k; return 'miss' }
+  function gjMult(day,it){var n=1,k=day; for(var g=0;g<60&&n<3;g++){k=gjDayPrev(k,-1); if(gjRest(k))continue; var pg=(D.gonjang||{})[k], pi=pg&&(pg.items||[]).filter(function(y){return y.i===it.i})[0]; if(!pi||gjState(k,pi,new Date(k+'T23:59:59').getTime())!=='miss')break; n++} return n}
+  function gjConX(c,m){return m>1?String(c).replace(/\d+/,function(v){return String(+v*m)}):String(c)}
+  function gjLockOf(day){var g=(D.gonjang||{})[day]; if(!g)return []; return (g.items||[]).filter(function(it){return !it.proof&&gjState(day,it,Date.now())==='miss'})}
+  function gjProofBtns(day,it){return '<button class="btn s p" data-a="gjAlbum" data-sid="'+it.sid+'" data-day="'+day+'">앨범</button><button class="btn s" data-a="gjCam" data-sid="'+it.sid+'" data-day="'+day+'">찍기</button>'}
+  function gjLine(day,it){var k=gjState(day,it,Date.now()), m=gjMult(day,it);
+    if(k==='kept') return it.got?'<div class="gjs ok">✓ 지켰어 · 보상 <b>'+esc(it.rew)+'</b> 받음</div>':'<div class="gjs ok">🎁 <span class="grow">지켰어 · 보상 <b>'+esc(it.rew)+'</b></span><button class="btn s p" data-a="gjGot" data-sid="'+it.sid+'" data-day="'+day+'">받음</button></div>';
+    if(k==='miss') return it.proof?'<div class="gjs ok">✓ 인증 끝 · <b>'+esc(gjConX(it.con,m))+'</b></div>':'<div class="gjs no"><span class="grow lt">🔒 못 지킴 · 제약 <b>'+esc(gjConX(it.con,m))+'</b>'+(m>1?' ('+m+'번째 ×'+m+')':'')+' · 연차·보상 사이트 잠김</span>'+gjProofBtns(day,it)+'</div>';
+    return '<div class="gjs wt">못 지키면 <b>'+esc(gjConX(it.con,m))+'</b> · 지키면 <b>'+esc(it.rew)+'</b></div>'}
+  var gjBusy=false;
+  function gjUpload(day,sid,cam){ if(gjBusy)return; var inp=document.createElement('input'); inp.type='file'; inp.accept='image/*'; if(cam)inp.setAttribute('capture','environment');
+    inp.onchange=function(){ var f=inp.files[0]; if(!f)return; gjBusy=true; toast('올리는 중');
+      shrink(f,function(u){ if(!u){gjBusy=false;toast('사진을 못 읽었어요');return} var id='gj'+day.replace(/-/g,'')+uid().slice(0,6)+Date.now().toString(36).slice(-4);
+        upPic({id:id,u:u},function(fid){ gjBusy=false; imgCache[fid]=u; var dr={}; dr[id]=fid; send('gjProof',{day:day,sid:sid,img:id,drive:dr},'인증 끝. 잠금 풀렸어') },function(e){ gjBusy=false; toast('올리기 실패: '+(e||'다시 눌러줘요')) }) },1280) };
+    inp.click() }
   var slPick='', slTimeEd='', slOpen=false;
   function slotsHTML(){
     slEnsure(D,TODAY); var L=slOf(D,TODAY), now=Date.now(); if(!L.length) return '<section class="panel slots"><div class="sl-head"><b>오늘의 고정 칸</b><span class="grow"></span><button class="btn s g" data-a="slAdd">+ 자리</button></div></section>';
@@ -766,7 +807,8 @@ function hkMain(){
     var missed=sts.filter(function(x){return x==='missed'}).length, nx=ni>=0?L[ni]:null, need=nx&&!nx.taskId&&!busy;
     var h='<section class="panel slots'+(need?' need':'')+'"><div class="sl-head"><b>📌 고정 칸</b><span class="small muted">'+(kept?kept+'/'+L.length+' 지킴':placed+'/'+L.length+' 배치')+(missed?' · 놓침 '+missed:'')+'</span><span class="grow"></span>'+(slOpen&&L.length<SL_MAX?'<button class="btn s g" data-a="slAdd">+ 자리</button>':'')+'<button class="btn s g" data-a="slFold">'+(slOpen?'접기 ▴':'전체 ▾')+'</button></div>';
     L.forEach(function(x,i){
-      if(!(slOpen||i===ni||slPick===x.id||slTimeEd===x.id)) return;
+      var gi=gjItemOf(D,TODAY,x.id), gk=gi?gjState(TODAY,gi,now):'';
+      if(!(slOpen||i===ni||slPick===x.id||slTimeEd===x.id||(gi&&((gk==='kept'&&!gi.got)||(gk==='miss'&&!gi.proof))))) return;
       var s=slState(x,TODAY,now), t=x.taskId&&D.tasks.filter(function(y){return y.id===x.taskId})[0];
       var title=t?'<span class="sl-t">'+esc(t.title)+'</span>'+(t.brand&&t.title.indexOf(t.brand)<0?' <span class="sl-b">'+esc(t.brand)+'</span>':''):x.taskId?'<span class="sl-t muted">(지운 할 일)</span>':(s==='done'||s==='pass'||s==='missed')?'<span class="sl-t muted">(빈 자리)</span>':'<button class="sl-pick" data-a="slPick" data-sid="'+x.id+'">+ 할 일 배치하기</button>';
       var right='';
@@ -775,8 +817,9 @@ function hkMain(){
       else if(s==='pass') right='<span class="sl-st muted">패스</span>';
       else if(s==='missed') right='<span class="sl-st miss">놓침</span><button class="btn s g" data-a="slPass" data-sid="'+x.id+'">패스</button>';
       else right=(s==='due'?'<button class="btn s p" data-a="slStart" data-sid="'+x.id+'"'+(busy?' disabled':'')+'>⏵ 50분 시작</button>':'')+(t?'<button class="btn s g" data-a="slClear" data-sid="'+x.id+'" aria-label="배치 빼기">✕</button>':'');
+      if(gi&&s==='done'&&gk==='miss'){var bb=(D.blocks||[]).filter(function(y){return x.blockId?y.id===x.blockId:y.slotId===x.id})[0]; right='<span class="sl-st miss">'+(bb?bb.minutes+'분 · ':'')+'곤장 못 채움</span>'}
       var can=s==='wait';
-      h+='<div class="sl-row s-'+s+'"><button class="sl-time" data-a="slTime" data-sid="'+x.id+'"'+(can?'':' disabled')+'>'+esc(x.t)+'</button><span class="small muted">50분</span><span class="sl-body">'+(i===0&&!t&&(s==='wait'||s==='due')?'<span class="sl-hint">순익 일 추천</span>':'')+title+'</span><span class="sl-act">'+right+'</span></div>';
+      h+='<div class="sl-row s-'+s+'"><button class="sl-time" data-a="slTime" data-sid="'+x.id+'"'+(can?'':' disabled')+'>'+esc(x.t)+'</button><span class="small muted">50분</span><span class="sl-body">'+(i===0&&!t&&!gi&&(s==='wait'||s==='due')?'<span class="sl-hint">순익 일 추천</span>':'')+title+(gi?' <span class="gjt">곤장</span>':'')+'</span><span class="sl-act">'+right+'</span></div>'+(gi?gjLine(TODAY,gi):'');
       if(slPick===x.id) h+='<div class="sl-list">'+(open.length?open.slice(0,12).map(function(o){return '<button class="opt" data-a="slSet" data-sid="'+x.id+'" data-id="'+o.id+'">'+esc(o.title)+(o.brand&&o.title.indexOf(o.brand)<0?' <span class="sl-b">'+esc(o.brand)+'</span>':'')+'</button>'}).join(''):'<span class="small muted">배치할 할 일이 없어요</span>')+'<button class="btn s g" data-a="slPickClose">닫기</button></div>';
       if(slTimeEd===x.id) h+='<div class="sl-list"><div class="row"><input type="time" id="slT" value="'+esc(x.t)+'" style="flex:1"><button class="btn s p" data-a="slTimeSave" data-sid="'+x.id+'">저장</button></div><div class="row"><button class="btn s g" data-a="slDel" data-sid="'+x.id+'">자리 빼기</button><span class="grow"></span><button class="btn s g" data-a="slTimeClose">취소</button></div></div>';
     });
@@ -811,7 +854,7 @@ function hkMain(){
     if(g0&&g0.cur&&((+d.dm||0)>0||(+d.ds||0)>0)){ var n1=g0.now+(+d.dm||0)*20000+(+d.ds||0), c1=null; g0.g.stages.forEach(function(x){ if(!c1&&n1<x.v)c1=x; });   // 단계 올라감
       if(!c1||c1.n!==g0.cur.n) msg=!c1?'🎉 '+g0.g.label+' '+g0.last.n+' 깼어!':'🎉 '+g0.cur.n+' 깼어! 이제 '+c1.n+' '+manS(c1.v); }
     applyOp(D,op); D.pending=(D.pending||0)+1; Q.push(op); qSave(); render(); if(msg)toast(msg);
-    LS.set('hk_data',JSON.stringify({d:D,n:NS})); qFlush();
+    LS.set('hk_data',JSON.stringify({d:D,n:NS})); qFlush(); return op;
   }
 
   function drawSync(){
@@ -819,7 +862,7 @@ function hkMain(){
     if(D.syncedAt){var mins=Math.round((Date.now()-D.syncedAt)/60000);
       t='PC 마지막 변경 '+(key(new Date(D.syncedAt))!==TODAY?label(key(new Date(D.syncedAt)))+' ':'')+hm(D.syncedAt)+(mins<1?' (방금)':mins<60?' ('+mins+'분 전)':'');}
     else t='아직 PC에서 동기화 전';
-    s.innerHTML=esc(t)+' · 앱 v20'+(D.pending?' · <b>PC 반영 대기 '+D.pending+'개</b>':'');
+    s.innerHTML=esc(t)+' · 앱 v21'+(D.pending?' · <b>PC 반영 대기 '+D.pending+'개</b>':'');
     if(NS&&NS.on){var bad=NS.err&&NS.errSince&&(Date.now()-NS.errSince>3600000)||(NS.lastOk&&Date.now()-NS.lastOk>3600000);
       var warn=!bad&&NS.err;   // 방금 생긴 문제: 자동으로 다시 시도 중
       var nt=bad?'노션 ⚠ '+(NS.err||'1시간 넘게 못 보냈어요'):warn?'노션 ⚠ 다시 시도 중 · '+NS.err:NS.prog&&NS.prog[0]<NS.prog[1]?'노션 옮기는 중 '+NS.prog[0]+'/'+NS.prog[1]:'노션 ✓ '+(NS.lastOk?hm(NS.lastOk):'');
@@ -855,12 +898,29 @@ function hkMain(){
     var pp=(D.pan||{})[y]||{}; if(pp.rest||(D.dayPlan||{})[y]==='rest')return '';
     return (D.ignitions||[]).some(function(i){return i.day===y&&!i.rest})?y:''; }
   function jDay(){ var o=jOpenDay(); if(o&&!jOf(o))return {day:o,late:false}; var m=jMissed(); return m?{day:m,late:true}:null; }
-  function jMiss(fx){ var n=0; if(!JD.ok)n++; if(fx&&JD.kept==null)n++; if(!JD.reason)n++; ['rnote','could','fix'].forEach(function(f){if(!(JD[f]||'').trim())n++}); if((D.weekQ||'').trim()&&!(JD.wqa||'').trim())n++; return n; }
+  function jMiss(fx){ var n=gjLockOf(JD.day||'').length?1:0; if(!JD.ok)n++; if(fx&&JD.kept==null)n++; if(!JD.reason)n++; ['rnote','could','fix'].forEach(function(f){if(!(JD[f]||'').trim())n++}); if((D.weekQ||'').trim()&&!(JD.wqa||'').trim())n++; return n; }
+  function gjNeed2(day){ var nd=gjDayPrev(day,1); return !(D.gonjang||{})[nd]&&!gjRest(nd) }
+  function gjSlots(day){ var L=(D.slots||{})[day]; if(L&&L.length) return slOf(D,day).map(function(x,i){return {id:x.id,t:x.t,i:i}}); return slTimes(D,day).slice(0,SL_MAX).sort(function(a,b){return slMin(a)-slMin(b)}).map(function(t,i){return {id:day.replace(/-/g,'')+'d'+i,t:t,i:i}}) }
+  function gjOnOf(sid){ var g=(JD.gj||{})[sid]; if(g&&g.on!=null)return !!g.on; var S=gjSlots(gjDayPrev(JD.day,1)); return S.slice(0,GJ_N).some(function(x){return x.id===sid}) }
+  function gjPickPhone(day){ var nd=gjDayPrev(day,1), S=gjSlots(nd), tasks=D.tasks.filter(function(t){return !t.done&&!t.dailyId});
+    return S.map(function(x){ var g=(JD.gj||{})[x.id]||{}, on=gjOnOf(x.id);
+      return '<div class="gp'+(on?' on':'')+'"><div class="gt"><button class="gpc'+(on?' on':'')+'" data-a="gjOn" data-sid="'+x.id+'" aria-label="'+x.t+' 곤장 칸">'+(on?'✓':'')+'</button><b>'+x.t+'</b><select class="gps" data-sid="'+x.id+'"><option value="">할 일 고르기</option>'+tasks.map(function(t){return '<option value="'+t.id+'"'+(g.taskId===t.id?' selected':'')+'>'+esc(t.title)+'</option>'}).join('')+'<option value="__new">+ 새 할 일 적기</option></select></div>'
+        +(on?'<div class="jl" style="font-size:13px">못 지키면</div><div class="jchips">'+gjCons().map(function(v){return '<button class="jchip'+(g.con===v?' on':'')+'" data-a="gjChip" data-k="con" data-sid="'+x.id+'" data-v="'+esc(v)+'">'+esc(v)+'</button>'}).join('')+'<button class="jchip add" data-a="gjAdd" data-k="con">+ 추가</button></div>'
+        +'<div class="jl" style="font-size:13px">지키면</div><div class="jchips">'+gjRews().map(function(v){return '<button class="jchip'+(g.rew===v?' on':'')+'" data-a="gjChip" data-k="rew" data-sid="'+x.id+'" data-v="'+esc(v)+'">'+esc(v)+'</button>'}).join('')+'<button class="jchip add" data-a="gjAdd" data-k="rew">+ 추가</button></div>':'')+'</div>' }).join('') }
+  function gjPickRead(day){ var nd=gjDayPrev(day,1), S=gjSlots(nd).filter(function(x){return gjOnOf(x.id)}); if(S.length!==GJ_N) return {err:'곤장 칸은 딱 '+GJ_N+'칸 골라줘 (지금 '+S.length+'칸)'};
+    var items=[]; for(var i=0;i<S.length;i++){ var x=S[i], g=(JD.gj||{})[x.id]||{}, t=D.tasks.filter(function(y){return y.id===g.taskId})[0];
+      if(!t) return {err:x.t+' 칸 할 일을 골라줘'}; if(!g.con) return {err:x.t+' 칸 제약을 골라줘'}; if(!g.rew) return {err:x.t+' 칸 보상을 골라줘'};
+      if(items.some(function(y){return y.taskId===t.id})) return {err:'두 칸에 같은 일을 넣었어'};
+      items.push({sid:x.id,i:x.i,t:x.t,taskId:t.id,title:t.title,con:g.con,rew:g.rew,moved:0}) }
+    return {items:items,day:nd} }
   function jeomHTML(){ var J=jDay(); if(!J)return ''; if(JD.day!==J.day){JD={day:J.day}; jFixOpen=false}
     var p=(D.pan||{})[J.day]||{}, fx=(jOf(jPrev(J.day))||{}).fix||'', wq=(D.weekQ||'').trim(), n=jMiss(fx), jm=D.jeomMeta||{};
     var inp=function(f,ph,mx){return '<input type="text" class="jin" id="jq_'+f+'" data-jf="'+f+'" maxlength="'+mx+'" placeholder="'+ph+'" value="'+esc(JD[f]||'')+'">'};
     var ms=(+J.day.slice(5,7))+'월 '+(+J.day.slice(8))+'일';
-    return '<section class="panel jeomp"><div class="jh"><b>🌙 점호</b><span class="small muted">'+(J.late?ms+' 놓친 점호 · 시동 전에 먼저':'24:00까지')+'</span></div>'
+    var lock=gjLockOf(J.day).map(function(it){return '<div class="gjs no"><span class="grow lt">🔒 '+esc(it.t)+' 곤장 못 지킴 · <b>'+esc(gjConX(it.con,gjMult(J.day,it)))+'</b> 인증부터 해야 점호가 끝나</span>'+gjProofBtns(J.day,it)+'</div>'}).join('');
+    var gd=(D.gonjang||{})[J.day], mv=gd?(gd.items||[]).reduce(function(a2,y){return a2+(y.moved||0)},0):0;
+    if(JD.step===2&&gjNeed2(J.day)) return '<section class="panel jeomp">'+lock+'<div class="jh"><b>🌙 점호 · 2/2</b><span class="small muted">'+(gjDayPrev(J.day,1)===TODAY?'오늘':'내일')+' 곤장 칸 '+GJ_N+'개 고르기</span></div><div class="gjpick">'+gjPickPhone(J.day)+'</div><div class="small" style="color:#C62828;min-height:18px;margin-top:8px" id="gjMsg"></div><div class="jrow jend"><button class="btn" data-a="jBack">← 세 줄로</button><button class="btn p grow" data-a="jSave"'+(lock?' disabled':'')+'>점호 끝</button></div></section>';
+    return '<section class="panel jeomp">'+lock+'<div class="jh"><b>🌙 점호'+(gjNeed2(J.day)?' · 1/2':'')+'</b><span class="small muted">'+(J.late?ms+' 놓친 점호 · 시동 전에 먼저':'24:00까지')+'</span></div>'
       +'<div class="jq"><div class="jl">'+(J.late?'그날':'오늘')+' 합계 맞아?</div><div class="jrow"><span class="grow">순익 <b>'+manS(p.s||0)+'</b> · 물길 <b>'+pM(p)+'</b>개</span><button class="btn'+(JD.ok?' p':'')+'" data-a="jOk">맞아</button><button class="btn" data-a="jFix">고치기</button></div>'
       +(jFixOpen?'<div class="jrow"><input type="number" class="jin" id="jq_s" inputmode="numeric" value="'+(p.s||0)+'" placeholder="순익 합계(원)"><input type="number" class="jin" id="jq_m" inputmode="numeric" value="'+pM(p)+'" placeholder="물길" style="max-width:80px"><button class="btn p" data-a="jFixSave">이걸로</button></div>':'')+'</div>'
       +(fx?'<div class="jq"><div class="jl">어제 정한 것 · '+esc(fx)+'</div><div class="jrow"><button class="btn'+(JD.kept===true?' p':'')+'" data-a="jKept" data-v="1">지켰어</button><button class="btn'+(JD.kept===false?' p':'')+'" data-a="jKept" data-v="0">못 지켰어</button></div></div>':'')
@@ -868,8 +928,8 @@ function hkMain(){
       +'<div class="jq"><div class="jl">② 그 시간에 할 수 있었던 것</div>'+inp('could','예: 체험단 모집글 1곳 더 올리기',200)+'</div>'
       +'<div class="jq"><div class="jl">③ 내일 고칠 행동 하나</div>'+inp('fix','예: 점심 끝나면 폰 서랍에 넣고 바로 칸 시작',120)+'</div>'
       +(wq?'<div class="jq"><div class="jl">이번 주 질문 · '+esc(wq)+'</div>'+inp('wqa','한 줄',200)+'</div>':'')
-      +'<div class="jrow jend"><button class="btn p grow" data-a="jSave" id="jSaveB"'+(n?' disabled':'')+'>점호 끝'+(n?' (빈 칸 '+n+'개)':'')+'</button>'+(!J.late&&J.day===TODAY&&jm.used!==TODAY?'<button class="btn" data-a="jDefer">1시까지 미루기</button>':'')+'</div></section>'; }
-  function jRefreshBtn(){ var b=$('jSaveB'); if(!b)return; var fx=(jOf(jPrev(JD.day))||{}).fix||'', n=jMiss(fx); b.disabled=n>0; b.textContent='점호 끝'+(n?' (빈 칸 '+n+'개)':''); }
+      +'<div class="jrow jend"><button class="btn p grow" data-a="'+(gjNeed2(J.day)?'jNext':'jSave')+'" id="jSaveB"'+(n?' disabled':'')+'>'+(gjNeed2(J.day)?'다음 · 곤장 칸 고르기':'점호 끝')+(n?' (빈 칸 '+n+'개)':'')+'</button>'+(!J.late&&J.day===TODAY&&jm.used!==TODAY?'<button class="btn" data-a="jDefer">1시까지 미루기</button>':'')+'</div></section>'; }
+  function jRefreshBtn(){ var b=$('jSaveB'); if(!b)return; var fx=(jOf(jPrev(JD.day))||{}).fix||'', n=jMiss(fx); b.disabled=n>0; b.textContent=(gjNeed2(JD.day)?'다음 · 곤장 칸 고르기':'점호 끝')+(n?' (빈 칸 '+n+'개)':''); }
   function fixCardHTML(){ var o=jDay(); if(o)return ''; var f=(jOf(jPrev(TODAY))||{}).fix; return f?'<section class="panel fixp"><div class="small muted">어젯밤 정한 오늘 고칠 행동</div><div class="fixt">'+esc(f)+'</div></section>':''; }
   function panHTML(){
     var p=(D.pan||{})[TODAY]||{}, def=gDaily()||D.panGoal||500000, G=p.g||def, m=pM(p), sv=p.s||0, mw=m*20000, tot=mw+sv, f=function(n){return Math.round(n).toLocaleString('ko-KR')}, mn=function(n){return !n?'0':n%10000===0?(n/10000).toLocaleString('ko-KR')+'만':f(n)};
@@ -953,6 +1013,7 @@ function hkMain(){
   function openList(){return D.tasks.filter(function(t){return !t.done&&!(t.snoozeUntil&&t.snoozeUntil>TODAY)})}
   function sugTask(){var op=openList(); if(pick){var pk=op.filter(function(t){return t.id===pick})[0]; if(pk)return pk; pick=null}
     op=op.filter(function(t){return skip.indexOf(t.id)<0}); if(!op.length)return null;
+    var g=(D.gonjang||{})[TODAY], gt=g?(g.items||[]).filter(function(it){var k=gjState(TODAY,it,Date.now()); return k!=='kept'&&k!=='miss'}).map(function(it){return op.filter(function(t){return t.id===it.taskId})[0]}).filter(Boolean):[]; if(gt.length)return gt[0];   // 곤장 칸 일이 먼저
     var dl=op.filter(function(t){return t.dailyId&&!t.optional}); return (dl.length?dl:op).sort(function(a,b){return a.created-b.created})[0]}
   function sugHTML(){
     if(D.psession) return '';
@@ -979,7 +1040,7 @@ function hkMain(){
   function drawPics(){ var el=$('memoPics'); if(!el)return; el.hidden=!memoPics.length; el.innerHTML=memoPics.map(function(p,i){return '<span class="mp">'+(p.n?'<span class="mf">📄 '+esc(p.n)+' · '+fsz(p.s)+'</span>':'<img src="'+p.u+'" alt="첨부할 사진">')+'<button type="button" data-a="picDel" data-i="'+i+'" aria-label="첨부 빼기">✕</button></span>'}).join('') }
   var FILE_MAX=4.8*1024*1024;   /* 노션 무료 한도(5MB)보다 살짝 작게: 넘으면 아예 못 넣음 */
   function fsz(b){ b=+b||0; return b>=1048576?(b/1048576).toFixed(1)+'MB':Math.max(1,Math.round(b/1024))+'KB' }
-  function shrink(file,cb){ var r=new FileReader(); r.onload=function(){ var im=new Image(); im.onload=function(){ var w=im.naturalWidth,h=im.naturalHeight,s=Math.min(1,1600/Math.max(w,h)); var c=document.createElement('canvas'); c.width=Math.max(1,Math.round(w*s)); c.height=Math.max(1,Math.round(h*s)); var g=c.getContext('2d'); g.fillStyle='#fff'; g.fillRect(0,0,c.width,c.height); g.drawImage(im,0,0,c.width,c.height); cb(c.toDataURL('image/jpeg',0.8)) }; im.onerror=function(){cb(null)}; im.src=r.result }; r.onerror=function(){cb(null)}; r.readAsDataURL(file) }
+  function shrink(file,cb,mx){ var r=new FileReader(); r.onload=function(){ var im=new Image(); im.onload=function(){ var w=im.naturalWidth,h=im.naturalHeight,s=Math.min(1,(mx||1600)/Math.max(w,h)); var c=document.createElement('canvas'); c.width=Math.max(1,Math.round(w*s)); c.height=Math.max(1,Math.round(h*s)); var g=c.getContext('2d'); g.fillStyle='#fff'; g.fillRect(0,0,c.width,c.height); g.drawImage(im,0,0,c.width,c.height); cb(c.toDataURL('image/jpeg',0.8)) }; im.onerror=function(){cb(null)}; im.src=r.result }; r.onerror=function(){cb(null)}; r.readAsDataURL(file) }
   function upPic(p,ok,bad){ fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({k:K,img:p.n?{id:p.id,mime:p.m,data:p.u.split(',')[1],name:p.n}:{id:p.id,mime:'image/jpeg',data:p.u.split(',')[1]}})}).then(function(r){return r.json()}).then(function(r){ if(r&&r.ok&&r.fileId) ok(r.fileId); else bad(r&&r.err) }).catch(function(){bad('인터넷 확인')}) }
   function memoSubmit(){
     var mv=$('memoIn').value.trim(), mbv=$('memoB').value, br=mbv==='__new__'?'':mbv;
@@ -1192,6 +1253,9 @@ function hkMain(){
   function memoGrow(){ var t=$('memoIn'); if(!t)return; t.style.height='auto'; if(t.value) t.style.height=Math.min(t.scrollHeight+3,132)+'px' }
   $('memoIn').addEventListener('input',memoGrow);
   document.addEventListener('input',function(e){ var f=e.target&&e.target.getAttribute&&e.target.getAttribute('data-jf'); if(f){JD[f]=e.target.value; jRefreshBtn();} });
+  document.addEventListener('change',function(e){ var el=e.target; if(!el||!el.classList||!el.classList.contains('gps'))return; var sid=el.getAttribute('data-sid'); JD.gj=JD.gj||{}; JD.gj[sid]=JD.gj[sid]||{};
+    if(el.value==='__new'){ var nv=(prompt('새 할 일')||'').trim().slice(0,120); if(!nv){el.value=JD.gj[sid].taskId||'';return} var op=send('addTask',{title:nv,brand:'',kind:'head'},'할 일 넣었어'); JD.gj[sid].taskId=op.id; JD.gj[sid].on=true; render(); return }
+    JD.gj[sid].taskId=el.value; JD.gj[sid].on=true; });   // 곤장 칸 할 일 고르기
   function setTabs(){Array.prototype.forEach.call(document.querySelectorAll('nav.tabs button'),function(x){x.setAttribute('aria-selected',x.getAttribute('data-t')===tab?'true':'false')})}
   // 폰 칸 타이머: 1초마다 숫자만 갱신, 끝나는 순간 진동
   var buzzed=null;
@@ -1234,6 +1298,14 @@ function hkMain(){
         var s3=Date.now(); send('phoneStart',{taskId:tid3,startAt:s3,endAt:s3+SL_MIN*60000,min:SL_MIN,slotId:sid3},'50분 시작! 이 칸만 하자'); break;
       case 'memoAdd': memoSubmit(); break;
       case 'picDel': memoPics.splice(+b.getAttribute('data-i'),1); drawPics(); break;
+      case 'gjGot': send('gjGot',{day:b.getAttribute('data-day'),sid:b.getAttribute('data-sid')},'🎁 보상 받았어. 기록했어'); break;
+      case 'gjAlbum': gjUpload(b.getAttribute('data-day'),b.getAttribute('data-sid'),false); break;
+      case 'gjCam': gjUpload(b.getAttribute('data-day'),b.getAttribute('data-sid'),true); break;
+      case 'gjChip': var gs0=b.getAttribute('data-sid'), gk0=b.getAttribute('data-k'); JD.gj=JD.gj||{}; JD.gj[gs0]=JD.gj[gs0]||{}; JD.gj[gs0][gk0]=b.getAttribute('data-v'); JD.gj[gs0].on=true; render(); break;
+      case 'gjOn': var gs1=b.getAttribute('data-sid'); JD.gj=JD.gj||{}; JD.gj[gs1]=JD.gj[gs1]||{}; JD.gj[gs1].on=!gjOnOf(gs1); render(); break;
+      case 'gjAdd': var gk1=b.getAttribute('data-k'), gnv=(prompt(gk1==='con'?'새 제약 (숫자가 있어야 ×2·×3)':'새 보상')||'').trim().slice(0,30); if(!gnv)break; if(gk1==='rew'&&GJ_BAD.test(gnv)&&!confirm('이건 흐름 끊기는 보상이야. 그래도 넣을래?'))break; send('gjList',{k:gk1,v:gnv},'목록에 넣었어'); break;
+      case 'jNext': JD.step=2; render(); break;
+      case 'jBack': JD.step=1; render(); break;
       case 'jOk': JD.ok=true; render(); break;
       case 'jFix': jFixOpen=!jFixOpen; render(); break;
       case 'jFixSave': var js=Math.max(0,Math.round(+(($('jq_s')||{}).value||0))), jmv=Math.max(0,Math.round(+(($('jq_m')||{}).value||0))); jFixOpen=false; JD.ok=true; send('panSet',{day:JD.day,s:js,m:jmv},'합계 고쳤어'); break;
@@ -1241,7 +1313,9 @@ function hkMain(){
       case 'jReason': JD.reason=b.getAttribute('data-v'); render(); break;
       case 'jReasonAdd': var nr=(prompt('새 이유 (12자까지)')||'').trim().slice(0,12); if(!nr)break; JD.reason=nr; send('jeomReason',{name:nr}); break;
       case 'jDefer': send('jeomDefer',{day:TODAY},'1시까지 미뤘어. 한 번만 돼'); break;
-      case 'jSave': var jfx=(jOf(jPrev(JD.day))||{}).fix||''; if(jMiss(jfx)){toast('빈 칸부터 채워줘');break}
+      case 'jSave': var jfx=(jOf(jPrev(JD.day))||{}).fix||''; if(jMiss(jfx)){toast(gjLockOf(JD.day).length?'곤장 인증부터 해줘':'빈 칸부터 채워줘');break}
+        var gjr=null; if(gjNeed2(JD.day)){ gjr=gjPickRead(JD.day); if(gjr.err){ var gm2=$('gjMsg'); if(gm2)gm2.textContent=gjr.err; else{JD.step=2;render()} break } }
+        if(gjr) send('gjSet',{day:gjr.day,items:gjr.items,ok:gjr.day===TODAY});
         var jj=jDay(), rec={at:Date.now(),ok:true,kept:JD.kept==null?null:JD.kept,reason:JD.reason,rnote:(JD.rnote||'').trim(),could:(JD.could||'').trim(),fix:(JD.fix||'').trim(),wq:(D.weekQ||'').trim(),wqa:(JD.wqa||'').trim(),late:!!(jj&&jj.late)};
         var jdd=JD.day; JD={}; send('jeom',{day:jdd,rec:rec},'점호 끝. 내일 아침 시동에 ③이 떠'); break;
       case 'panSOpen': salesOpen=!salesOpen; render(); if(salesOpen){var x=$('panIn'); if(x)x.focus()} break;
