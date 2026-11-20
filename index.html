@@ -29,6 +29,18 @@
 .srt-chosen{cursor:grabbing}
 .mrow{display:flex;align-items:flex-start}
 .mmore{width:100%;margin-top:6px}
+/* 2026-11-21 골 줄 · 월백 점호 (1단계 — 디테일 디자인은 마지막에) */
+.gline{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:8px}.gline b{color:var(--ink)}
+.wgoal{padding:0 4px 6px}.wgoal .gline{margin-top:0}
+.jeomp{border:2px solid var(--act)}.jeomp .jh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}.jeomp .jh b{font-size:18px;color:var(--act)}
+.jeomp .jq{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}.jeomp .jl{font-size:14px;font-weight:700}
+.jrow{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.jrow .grow{flex:1}
+.jin{width:100%;box-sizing:border-box;padding:11px 12px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font:inherit;font-size:16px}
+.jrow .jin{flex:1;width:auto;min-width:0}
+.jchips{display:flex;gap:6px;flex-wrap:wrap}.jchip{padding:8px 14px;border-radius:99px;border:1.5px solid var(--line);background:var(--surface);font-weight:600;font-size:14px}
+.jchip.on{background:var(--act);color:var(--act-ink);border-color:var(--act)}.jchip.add{border-style:dashed;color:var(--muted)}
+.jend .btn{min-height:50px}.jend .btn:disabled{opacity:.45}
+.fixp{border:2px solid var(--act)}.fixt{font-size:19px;font-weight:800;margin-top:2px}
 </style>
 <style>svg.ico{width:1.15em;height:1.15em;vertical-align:-.2em;display:inline-block;flex:none}</style>
 <script>
@@ -477,7 +489,7 @@ body.wide .top,body.wide .sync{display:none}
 body.wide .wrap{padding:14px 32px 14px}
 body.wide #view{display:flex;flex-direction:column}body.wide #view>.wcols{flex:1;min-height:0;height:auto}
 body.wide .wrap>*{margin-bottom:10px}body.wide .wrap>#view{margin-bottom:0}
-/* 맨 위 한 줄: 날짜·칩 | 선포 | 판(물길·매출·막대·달성률·버튼) */
+/* 맨 위 한 줄: 날짜·칩 | 선포 | 판(물길·순익·막대·달성률·버튼) */
 body.wide .wbar{display:flex;align-items:center;gap:14px;height:56px;margin-bottom:10px}
 body.wide .wbar .wdate{font-size:26px;font-weight:800;white-space:nowrap;display:flex;align-items:center;gap:8px}
 body.wide .wbar .wdate .medchip{font-size:14px;padding:4px 11px}
@@ -706,7 +718,12 @@ function hkMain(){
         slDone(st,ps.slotId,d.result==='done'?'done':'half',op.id);
         if(d.result==='done'){var ft=st.tasks.filter(function(x){return x.id===ps.taskId})[0]; if(ft&&!ft.done){ft.done=true;ft.doneAt=pe}}
         if(st.psession&&st.psession.id===ps.id)st.psession=null; break;
-      case 'pan': st.pan=st.pan||{}; var pp=st.pan[d.day]||{m:0,s:0}; if(d.g)pp.g=d.g; pp.m=Math.max(0,(pp.m||0)+(+d.dm||0)); pp.s=Math.max(0,(pp.s||0)+(+d.ds||0)); st.pan[d.day]=pp; break;
+      case 'pan': st.pan=st.pan||{}; var pp=st.pan[d.day]||{m:0,s:0}; if(d.g)pp.g=d.g; pp.m=Math.max(-(pp.ma||0),(pp.m||0)+(+d.dm||0)); pp.s=Math.max(0,(pp.s||0)+(+d.ds||0)); st.pan[d.day]=pp; break;
+      case 'panSet': st.pan=st.pan||{}; var qs=st.pan[d.day]||{m:0,s:0}; qs.s=Math.max(0,Math.round(+d.s||0)); qs.m=Math.max(0,Math.round(+d.m||0))-(qs.ma||0); st.pan[d.day]=qs; break;   // 점호 합계 고치기 (2026-11-21)
+      case 'mulgilAuto': st.pan=st.pan||{}; var qa=st.pan[d.day]||{m:0,s:0}; qa.ma=Math.max(0,Math.round(+d.n||0)); if((qa.m||0)<-qa.ma)qa.m=-qa.ma; st.pan[d.day]=qa; break;
+      case 'jeom': if(d.day&&d.rec){st.jeom=st.jeom||{}; st.jeom[d.day]=d.rec} break;
+      case 'jeomDefer': st.jeomMeta=st.jeomMeta||{}; st.jeomMeta.defer=d.day; st.jeomMeta.used=d.day; break;
+      case 'jeomReason': var jr=String(d.name||'').trim().slice(0,12); if(jr){var JL=jReasons().slice(); if(JL.indexOf(jr)<0)JL.push(jr); st.jeomReasons=JL} break;
       case 'missionAdd': var mm=st.missionDay&&(st.missionDay.items||[]).filter(function(x){return x.id===d.id})[0]; if(!mm||mm.added)break;
         mm.added=true; st.tasks.push({id:op.id,title:mm.task_title,brand:mm.brand||'',kind:'head',steps:(mm.steps||[]).map(function(t){return {t:t,done:false}}),done:false,created:op.at,doneAt:0});break;
     }}
@@ -759,7 +776,7 @@ function hkMain(){
       else if(s==='missed') right='<span class="sl-st miss">놓침</span><button class="btn s g" data-a="slPass" data-sid="'+x.id+'">패스</button>';
       else right=(s==='due'?'<button class="btn s p" data-a="slStart" data-sid="'+x.id+'"'+(busy?' disabled':'')+'>⏵ 50분 시작</button>':'')+(t?'<button class="btn s g" data-a="slClear" data-sid="'+x.id+'" aria-label="배치 빼기">✕</button>':'');
       var can=s==='wait';
-      h+='<div class="sl-row s-'+s+'"><button class="sl-time" data-a="slTime" data-sid="'+x.id+'"'+(can?'':' disabled')+'>'+esc(x.t)+'</button><span class="small muted">50분</span><span class="sl-body">'+(i===0&&!t&&(s==='wait'||s==='due')?'<span class="sl-hint">매출 일 추천</span>':'')+title+'</span><span class="sl-act">'+right+'</span></div>';
+      h+='<div class="sl-row s-'+s+'"><button class="sl-time" data-a="slTime" data-sid="'+x.id+'"'+(can?'':' disabled')+'>'+esc(x.t)+'</button><span class="small muted">50분</span><span class="sl-body">'+(i===0&&!t&&(s==='wait'||s==='due')?'<span class="sl-hint">순익 일 추천</span>':'')+title+'</span><span class="sl-act">'+right+'</span></div>';
       if(slPick===x.id) h+='<div class="sl-list">'+(open.length?open.slice(0,12).map(function(o){return '<button class="opt" data-a="slSet" data-sid="'+x.id+'" data-id="'+o.id+'">'+esc(o.title)+(o.brand&&o.title.indexOf(o.brand)<0?' <span class="sl-b">'+esc(o.brand)+'</span>':'')+'</button>'}).join(''):'<span class="small muted">배치할 할 일이 없어요</span>')+'<button class="btn s g" data-a="slPickClose">닫기</button></div>';
       if(slTimeEd===x.id) h+='<div class="sl-list"><div class="row"><input type="time" id="slT" value="'+esc(x.t)+'" style="flex:1"><button class="btn s p" data-a="slTimeSave" data-sid="'+x.id+'">저장</button></div><div class="row"><button class="btn s g" data-a="slDel" data-sid="'+x.id+'">자리 빼기</button><span class="grow"></span><button class="btn s g" data-a="slTimeClose">취소</button></div></div>';
     });
@@ -789,7 +806,10 @@ function hkMain(){
     .then(function(r){ if(r&&r.ok) ok(r); else fail(r&&r.err||'다시 시도해 주세요', !!(r&&r.err&&!/lock|잠금|timeout|시간/i.test(r.err))); }).catch(function(){fail('인터넷 확인')}); }
   function sendRaw(op){ Q.push(op); qSave(); LS.set('hk_data',JSON.stringify({d:D,n:NS})); qFlush(); }
   function send(type,d,msg){
+    var g0=type==='pan'&&d.day===TODAY?gStat():null;
     var op={id:uid(),type:type,at:Date.now(),d:d};
+    if(g0&&g0.cur&&((+d.dm||0)>0||(+d.ds||0)>0)){ var n1=g0.now+(+d.dm||0)*20000+(+d.ds||0), c1=null; g0.g.stages.forEach(function(x){ if(!c1&&n1<x.v)c1=x; });   // 단계 올라감
+      if(!c1||c1.n!==g0.cur.n) msg=!c1?'🎉 '+g0.g.label+' '+g0.last.n+' 깼어!':'🎉 '+g0.cur.n+' 깼어! 이제 '+c1.n+' '+manS(c1.v); }
     applyOp(D,op); D.pending=(D.pending||0)+1; Q.push(op); qSave(); render(); if(msg)toast(msg);
     LS.set('hk_data',JSON.stringify({d:D,n:NS})); qFlush();
   }
@@ -799,7 +819,7 @@ function hkMain(){
     if(D.syncedAt){var mins=Math.round((Date.now()-D.syncedAt)/60000);
       t='PC 마지막 변경 '+(key(new Date(D.syncedAt))!==TODAY?label(key(new Date(D.syncedAt)))+' ':'')+hm(D.syncedAt)+(mins<1?' (방금)':mins<60?' ('+mins+'분 전)':'');}
     else t='아직 PC에서 동기화 전';
-    s.innerHTML=esc(t)+' · 앱 v19'+(D.pending?' · <b>PC 반영 대기 '+D.pending+'개</b>':'');
+    s.innerHTML=esc(t)+' · 앱 v20'+(D.pending?' · <b>PC 반영 대기 '+D.pending+'개</b>':'');
     if(NS&&NS.on){var bad=NS.err&&NS.errSince&&(Date.now()-NS.errSince>3600000)||(NS.lastOk&&Date.now()-NS.lastOk>3600000);
       var warn=!bad&&NS.err;   // 방금 생긴 문제: 자동으로 다시 시도 중
       var nt=bad?'노션 ⚠ '+(NS.err||'1시간 넘게 못 보냈어요'):warn?'노션 ⚠ 다시 시도 중 · '+NS.err:NS.prog&&NS.prog[0]<NS.prog[1]?'노션 옮기는 중 '+NS.prog[0]+'/'+NS.prog[1]:'노션 ✓ '+(NS.lastOk?hm(NS.lastOk):'');
@@ -815,18 +835,54 @@ function hkMain(){
 
   function WIDE(){ return window.matchMedia && window.matchMedia('(min-width:1000px)').matches; }
   var goalEdit=false;
+  /* ===== 골 · 월백 점호 (2026-11-21 1단계) — PC(core.js)와 같은 규칙 ===== */
+  function pM(p){ return Math.max(0,(p.m||0)+(p.ma||0)); }   // ma = 내 물길 시트에서 자동으로 센 개수
+  function manS(n){ n=Math.round(n||0); return n>=10000?(Math.round(n/1000)/10).toLocaleString('ko-KR')+'만':n.toLocaleString('ko-KR'); }
+  function gNow(){ var g=D.goalNow; return g&&g.day===TODAY?g:null; }
+  function gDaily(){ var p=(D.pan||{})[TODAY]||{}, g=gNow(); return p.dg||(g&&g.daily)||0; }
+  function gStat(){ var g=gNow(); if(!g)return null; var p=(D.pan||{})[TODAY]||{}, now=g.before+pM(p)*20000+(p.s||0), cur=null;
+    for(var i=0;i<g.stages.length;i++){ if(now<g.stages[i].v){cur=g.stages[i];break} } return {g:g,now:now,cur:cur,last:g.stages[g.stages.length-1]}; }
+  function goalLine(compact){ var x=gStat(); if(!x)return '';
+    if(!x.cur) return '<div class="gline"><b>'+esc(x.g.label)+' '+esc(x.last.n)+' 깼어 🎉</b> · 합계 <b>'+manS(x.now)+'</b></div>';
+    return '<div class="gline"><span><b>'+esc(x.g.label)+' '+esc(x.cur.n)+'</b> '+manS(x.cur.v)+' 중 <b>'+manS(x.now)+'</b> · '+Math.floor(x.now/x.cur.v*100)+'%</span>'+(compact?'':'<span>'+esc(x.cur.n)+'까지 <b>'+manS(x.cur.v-x.now)+'</b> · 남은 날 '+x.g.left+'일</span>')+'</div>'; }
+  var J_DEF=['폰','유튜브','잠','잡일','딴생각'], JD={}, jFixOpen=false;
+  function jReasons(){ return D.jeomReasons&&D.jeomReasons.length?D.jeomReasons:J_DEF; }
+  function jOf(k){ return (D.jeom||{})[k]||null; }
+  function jPrev(k){ var d=new Date(k+'T12:00:00'); d.setDate(d.getDate()-1); return key(d); }
+  function jOpenDay(){ var n=new Date(), mi=n.getHours()*60+n.getMinutes(), y=jPrev(TODAY), jm=D.jeomMeta||{};
+    if(mi>=21*60) return TODAY; if(mi<60&&jm.defer===y) return y; return ''; }
+  function jMissed(){ var y=jPrev(TODAY), jm=D.jeomMeta||{}; if(!jm.since||y<jm.since||jOf(y)||jOpenDay()===y)return '';
+    var pp=(D.pan||{})[y]||{}; if(pp.rest||(D.dayPlan||{})[y]==='rest')return '';
+    return (D.ignitions||[]).some(function(i){return i.day===y&&!i.rest})?y:''; }
+  function jDay(){ var o=jOpenDay(); if(o&&!jOf(o))return {day:o,late:false}; var m=jMissed(); return m?{day:m,late:true}:null; }
+  function jMiss(fx){ var n=0; if(!JD.ok)n++; if(fx&&JD.kept==null)n++; if(!JD.reason)n++; ['rnote','could','fix'].forEach(function(f){if(!(JD[f]||'').trim())n++}); if((D.weekQ||'').trim()&&!(JD.wqa||'').trim())n++; return n; }
+  function jeomHTML(){ var J=jDay(); if(!J)return ''; if(JD.day!==J.day){JD={day:J.day}; jFixOpen=false}
+    var p=(D.pan||{})[J.day]||{}, fx=(jOf(jPrev(J.day))||{}).fix||'', wq=(D.weekQ||'').trim(), n=jMiss(fx), jm=D.jeomMeta||{};
+    var inp=function(f,ph,mx){return '<input type="text" class="jin" id="jq_'+f+'" data-jf="'+f+'" maxlength="'+mx+'" placeholder="'+ph+'" value="'+esc(JD[f]||'')+'">'};
+    var ms=(+J.day.slice(5,7))+'월 '+(+J.day.slice(8))+'일';
+    return '<section class="panel jeomp"><div class="jh"><b>🌙 점호</b><span class="small muted">'+(J.late?ms+' 놓친 점호 · 시동 전에 먼저':'24:00까지')+'</span></div>'
+      +'<div class="jq"><div class="jl">'+(J.late?'그날':'오늘')+' 합계 맞아?</div><div class="jrow"><span class="grow">순익 <b>'+manS(p.s||0)+'</b> · 물길 <b>'+pM(p)+'</b>개</span><button class="btn'+(JD.ok?' p':'')+'" data-a="jOk">맞아</button><button class="btn" data-a="jFix">고치기</button></div>'
+      +(jFixOpen?'<div class="jrow"><input type="number" class="jin" id="jq_s" inputmode="numeric" value="'+(p.s||0)+'" placeholder="순익 합계(원)"><input type="number" class="jin" id="jq_m" inputmode="numeric" value="'+pM(p)+'" placeholder="물길" style="max-width:80px"><button class="btn p" data-a="jFixSave">이걸로</button></div>':'')+'</div>'
+      +(fx?'<div class="jq"><div class="jl">어제 정한 것 · '+esc(fx)+'</div><div class="jrow"><button class="btn'+(JD.kept===true?' p':'')+'" data-a="jKept" data-v="1">지켰어</button><button class="btn'+(JD.kept===false?' p':'')+'" data-a="jKept" data-v="0">못 지켰어</button></div></div>':'')
+      +'<div class="jq"><div class="jl">① 흐름 끊긴 이유</div><div class="jchips">'+jReasons().map(function(r){return '<button class="jchip'+(JD.reason===r?' on':'')+'" data-a="jReason" data-v="'+esc(r)+'">'+esc(r)+'</button>'}).join('')+'<button class="jchip add" data-a="jReasonAdd">+ 추가</button></div>'+inp('rnote','한 줄 (예: 점심 먹고 폰 보다 40분 날림)',200)+'</div>'
+      +'<div class="jq"><div class="jl">② 그 시간에 할 수 있었던 것</div>'+inp('could','예: 체험단 모집글 1곳 더 올리기',200)+'</div>'
+      +'<div class="jq"><div class="jl">③ 내일 고칠 행동 하나</div>'+inp('fix','예: 점심 끝나면 폰 서랍에 넣고 바로 칸 시작',120)+'</div>'
+      +(wq?'<div class="jq"><div class="jl">이번 주 질문 · '+esc(wq)+'</div>'+inp('wqa','한 줄',200)+'</div>':'')
+      +'<div class="jrow jend"><button class="btn p grow" data-a="jSave" id="jSaveB"'+(n?' disabled':'')+'>점호 끝'+(n?' (빈 칸 '+n+'개)':'')+'</button>'+(!J.late&&J.day===TODAY&&jm.used!==TODAY?'<button class="btn" data-a="jDefer">1시까지 미루기</button>':'')+'</div></section>'; }
+  function jRefreshBtn(){ var b=$('jSaveB'); if(!b)return; var fx=(jOf(jPrev(JD.day))||{}).fix||'', n=jMiss(fx); b.disabled=n>0; b.textContent='점호 끝'+(n?' (빈 칸 '+n+'개)':''); }
+  function fixCardHTML(){ var o=jDay(); if(o)return ''; var f=(jOf(jPrev(TODAY))||{}).fix; return f?'<section class="panel fixp"><div class="small muted">어젯밤 정한 오늘 고칠 행동</div><div class="fixt">'+esc(f)+'</div></section>':''; }
   function panHTML(){
-    var p=(D.pan||{})[TODAY]||{}, def=D.panGoal||500000, G=p.g||def, m=p.m||0, sv=p.s||0, mw=m*20000, tot=mw+sv, f=function(n){return Math.round(n).toLocaleString('ko-KR')}, mn=function(n){return !n?'0':n%10000===0?(n/10000).toLocaleString('ko-KR')+'만':f(n)};
+    var p=(D.pan||{})[TODAY]||{}, def=gDaily()||D.panGoal||500000, G=p.g||def, m=pM(p), sv=p.s||0, mw=m*20000, tot=mw+sv, f=function(n){return Math.round(n).toLocaleString('ko-KR')}, mn=function(n){return !n?'0':n%10000===0?(n/10000).toLocaleString('ko-KR')+'만':f(n)};
     var pct=Math.round(tot/G*100), bs=Math.max(G,tot)/100;
     var tier=tot>G?'over':tot>=G?'ok':pct>=75?'near':pct>=50?'mid':pct>0?'low':'zero';
     var head='<div class="ph"><div>'+(p.rest?'<div class="pct" style="font-size:28px">😴 쉬는 날</div>':'<div class="pct tier-'+tier+'">'+pct+'%<small>'+(tot>G?'🔥':tot>=G?'🎉':'')+'</small><span class="sum">'+mn(tot)+' / '+mn(G)+'</span></div>')+'</div>'
-      +'<div class="nums"><div><i style="background:var(--m)"></i>물길 <b>'+m+'</b>개</div><div><i style="background:var(--s)"></i>매출 <b>'+mn(sv)+'</b>원</div></div></div>';
+      +'<div class="nums"><div><i style="background:var(--m)"></i>물길 <b>'+m+'</b>개</div><div><i style="background:var(--s)"></i>순익 <b>'+mn(sv)+'</b>원</div></div></div>';
     return '<section class="panel pan">'+head
       +'<div class="bar"><i style="background:var(--m);width:'+(mw/bs)+'%"></i><i style="background:var(--s);width:'+(sv/bs)+'%"></i></div>'
-      +'<div class="big2"><button class="btn m" data-a="panM">+ 물길</button><button class="btn sv" data-a="panSOpen">+ 매출</button></div>'
-      +(salesOpen?'<div class="salesin"><input type="number" id="panIn" inputmode="numeric" placeholder="매출 금액 (원)"><button class="btn p" data-a="panS">더하기</button><button class="btn" data-a="panSm">빼기</button></div>':'')
-      +(goalEdit?'<div class="salesin"><input type="number" id="goalIn" inputmode="numeric" step="10000" value="'+G+'" placeholder="오늘 목표 (원)"><button class="btn p" data-a="goalSave">저장</button>'+(p.g?'<button class="btn" data-a="goalReset">기본 '+mn(def)+'</button>':'')+'</div>':'')
-      +'<div class="minor"><button data-a="panMm"'+(m?'':' disabled')+'>− 물길 하나 빼기</button><button data-a="goalOpen">🎯 오늘 목표 '+mn(G)+' 바꾸기</button></div>'+lunchHTML()+'</section>';
+      +'<div class="big2"><button class="btn m" data-a="panM">+ 물길</button><button class="btn sv" data-a="panSOpen">+ 순익</button></div>'
+      +(salesOpen?'<div class="salesin"><input type="number" id="panIn" inputmode="numeric" placeholder="순익 금액 (원)"><button class="btn p" data-a="panS">더하기</button><button class="btn" data-a="panSm">빼기</button></div>':'')
+      +(goalEdit?'<div class="salesin"><input type="number" id="goalIn" inputmode="numeric" step="10000" value="'+G+'" placeholder="오늘 목표 (원)"><button class="btn p" data-a="goalSave">저장</button>'+(p.g?'<button class="btn" data-a="goalReset">골 기준 '+mn(def)+'</button>':'')+'</div>':'')
+      +goalLine(false)+'<div class="minor"><button data-a="panMm"'+(m?'':' disabled')+'>− 물길 하나 빼기</button><button data-a="goalOpen">🎯 오늘 목표 '+mn(G)+' 바꾸기</button></div>'+lunchHTML()+'</section>';
   }
   // 런칭 판(/lunching) 다음 할 일 — PC 큰 화면과 같은 줄. 같은 이름 할 일이 있으면 '할 일에 있음', 끝냈으면 초록 + 채팅에 칠 말
   function lunchHTML(){
@@ -839,26 +895,26 @@ function hkMain(){
 
   /* ===== 2026-11-20 넓은 화면 = 확장 대시보드 짜임: 판 한 줄 · 오늘 하루 띠 ===== */
   function panWideHTML(){
-    var p=(D.pan||{})[TODAY]||{}, def=D.panGoal||500000, G=p.g||def, m=p.m||0, sv=p.s||0, mw=m*20000, tot=mw+sv, f=function(n){return Math.round(n).toLocaleString('ko-KR')}, mn=function(n){return !n?'0':n%10000===0?(n/10000).toLocaleString('ko-KR')+'만':f(n)};
+    var p=(D.pan||{})[TODAY]||{}, def=gDaily()||D.panGoal||500000, G=p.g||def, m=pM(p), sv=p.s||0, mw=m*20000, tot=mw+sv, f=function(n){return Math.round(n).toLocaleString('ko-KR')}, mn=function(n){return !n?'0':n%10000===0?(n/10000).toLocaleString('ko-KR')+'만':f(n)};
     var pct=Math.round(tot/G*100), bs=Math.max(G,tot)/100;
-    return '<section class="panel wpan"><div class="pt"><span><i style="background:var(--act)"></i>물길 '+m+'개 · '+f(mw)+'원</span><span><i style="background:color-mix(in srgb,var(--act) 40%,var(--surface))"></i>매출 '+f(sv)+'원</span>'
+    return '<section class="panel wpan"><div class="pt"><span><i style="background:var(--act)"></i>물길 '+m+'개 · '+f(mw)+'원</span><span><i style="background:color-mix(in srgb,var(--act) 40%,var(--surface))"></i>순익 '+f(sv)+'원</span>'
       +(p.rest?'<span class="pr">😴 쉬는 날</span>':'<span class="pr">달성률 '+pct+'%<small>/ '+mn(G)+'</small> <button data-a="goalOpen">바꾸기</button></span>')+'</div>'
       +'<div class="bar"><i style="background:var(--act);width:'+(mw/bs)+'%"></i><i style="background:color-mix(in srgb,var(--act) 40%,var(--surface));width:'+(sv/bs)+'%"></i></div>'
-      +'<div class="pa"><button class="btn p" data-a="panM">+물길</button><button class="btn" data-a="panMm"'+(m?'':' disabled')+'>−물길</button><input type="number" id="panIn" inputmode="numeric" placeholder="매출 금액"><button class="btn" data-a="panS">+매출</button><button class="btn" data-a="panSm">−매출</button></div>'
-      +(goalEdit?'<div class="salesin"><input type="number" id="goalIn" inputmode="numeric" step="10000" value="'+G+'" placeholder="오늘 목표 (원)"><button class="btn p" data-a="goalSave">저장</button>'+(p.g?'<button class="btn" data-a="goalReset">기본 '+mn(def)+'</button>':'')+'</div>':'')
-      +lunchHTML()+'</section>';
+      +'<div class="pa"><button class="btn p" data-a="panM">+물길</button><button class="btn" data-a="panMm"'+(m?'':' disabled')+'>−물길</button><input type="number" id="panIn" inputmode="numeric" placeholder="순익 금액"><button class="btn" data-a="panS">+순익</button><button class="btn" data-a="panSm">−순익</button></div>'
+      +(goalEdit?'<div class="salesin"><input type="number" id="goalIn" inputmode="numeric" step="10000" value="'+G+'" placeholder="오늘 목표 (원)"><button class="btn p" data-a="goalSave">저장</button>'+(p.g?'<button class="btn" data-a="goalReset">골 기준 '+mn(def)+'</button>':'')+'</div>':'')
+      +goalLine(false)+lunchHTML()+'</section>';
   }
   var panPop=false;
   function wbarHTML(){
-    var p=(D.pan||{})[TODAY]||{}, def=D.panGoal||500000, G=p.g||def, m=p.m||0, sv=p.s||0, mw=m*20000, tot=mw+sv, f=function(n){return Math.round(n).toLocaleString('ko-KR')}, mn=function(n){return !n?'0':n%10000===0?(n/10000).toLocaleString('ko-KR')+'만':f(n)};
+    var p=(D.pan||{})[TODAY]||{}, def=gDaily()||D.panGoal||500000, G=p.g||def, m=pM(p), sv=p.s||0, mw=m*20000, tot=mw+sv, f=function(n){return Math.round(n).toLocaleString('ko-KR')}, mn=function(n){return !n?'0':n%10000===0?(n/10000).toLocaleString('ko-KR')+'만':f(n)};
     var pct=Math.round(tot/G*100), bs=Math.max(G,tot)/100;
-    var pm='<div class="wpm"><span class="n"><i style="background:var(--act)"></i>물길 '+m+'개</span><span class="n"><i style="background:color-mix(in srgb,var(--act) 40%,var(--surface))"></i>매출 '+mn(sv)+'원</span>'
+    var pm='<div class="wpm"><span class="n"><i style="background:var(--act)"></i>물길 '+m+'개</span><span class="n"><i style="background:color-mix(in srgb,var(--act) 40%,var(--surface))"></i>순익 '+mn(sv)+'원</span>'
       +'<div class="bar"><i style="background:var(--act);width:'+(mw/bs)+'%"></i><i style="background:color-mix(in srgb,var(--act) 40%,var(--surface));width:'+(sv/bs)+'%"></i></div>'
       +(p.rest?'<span class="pc">쉬는 날</span>':'<button class="pc" data-a="goalOpen" title="오늘 목표 바꾸기">'+pct+'%<small> / '+mn(G)+'</small></button>')
-      +'<button class="btn p" data-a="panM">+물길</button><button class="btn" data-a="wPop">+매출</button>'
-      +(panPop?'<div class="pop"><input type="number" id="panIn" inputmode="numeric" placeholder="매출 금액 (원)"><button class="btn p" data-a="panS">더하기</button><button class="btn" data-a="panSm">빼기</button><button class="btn" data-a="panMm"'+(m?'':' disabled')+'>−물길 하나</button><span class="sm">달성률 숫자를 누르면 오늘 목표를 바꿔요</span></div>':'')
-      +(goalEdit?'<div class="pop"><input type="number" id="goalIn" inputmode="numeric" step="10000" value="'+G+'" placeholder="오늘 목표 (원)"><button class="btn p" data-a="goalSave">저장</button>'+(p.g?'<button class="btn" data-a="goalReset">기본 '+mn(def)+'</button>':'')+'</div>':'')+'</div>';
-    return '<div class="wbar"><div class="wdate">'+$('today').innerHTML+'</div>'+declHTML()+pm+'</div>';
+      +'<button class="btn p" data-a="panM">+물길</button><button class="btn" data-a="wPop">+순익</button>'
+      +(panPop?'<div class="pop"><input type="number" id="panIn" inputmode="numeric" placeholder="순익 금액 (원)"><button class="btn p" data-a="panS">더하기</button><button class="btn" data-a="panSm">빼기</button><button class="btn" data-a="panMm"'+(m?'':' disabled')+'>−물길 하나</button><span class="sm">달성률 숫자를 누르면 오늘 목표를 바꿔요</span></div>':'')
+      +(goalEdit?'<div class="pop"><input type="number" id="goalIn" inputmode="numeric" step="10000" value="'+G+'" placeholder="오늘 목표 (원)"><button class="btn p" data-a="goalSave">저장</button>'+(p.g?'<button class="btn" data-a="goalReset">골 기준 '+mn(def)+'</button>':'')+'</div>':'')+'</div>';
+    return '<div class="wbar"><div class="wdate">'+$('today').innerHTML+'</div>'+declHTML()+pm+'</div>'+(gNow()?'<div class="wgoal">'+goalLine(false)+'</div>':'');
   }
   function tlWideHTML(){
     var S0=360, SPAN=1080, pc=function(a){return Math.max(0,Math.min(100,a/SPAN*100))}, mOf=function(ts){var d=new Date(ts);return d.getHours()*60+d.getMinutes()}, ps=function(ts){return pc(mOf(ts)-S0)};
@@ -1101,8 +1157,8 @@ function hkMain(){
     var cp=$('compose'), dk=document.querySelector('.dock');
     if(wide&&cp.parentNode!==document.querySelector('.wrap')) $('sync').insertAdjacentElement('afterend',cp); else if(!wide&&cp.parentNode!==dk) dk.insertBefore(cp,dk.firstChild);
     if(wide){ var so=slOpen, mac=window.innerWidth<1700; slOpen=true; var sz=snzHTML().replace('<section class="panel snz">','<div class="snzin">').replace(/<\/section>$/,'</div>'), tk=tasksHTML().replace(/<\/section>$/,sz+'</section>');
-      h=wbarHTML()+'<div id="wcomp"></div>'+tlWideHTML()+'<div class="wcols"><div class="wc">'+timerHTML()+sugHTML()+slotsHTML()+nowHTML()+'</div><div class="wc mid">'+tk+'</div><div class="wc side">'+memoReviewHTML()+'</div></div>'; slOpen=so; }   // 내일 할 일·미룬 것은 할 일 목록 맨 밑에 (같은 목록이라 같이 스크롤, 왼쪽 칸은 안 잘림)
-    else if(tab==='today') h=timerHTML()+declHTML()+sugHTML()+slotsHTML()+panHTML()+nowHTML();   // 2026-11-20 아이폰(좁은 화면)은 오늘의 미션 안 보임 (형 결정)
+      h=wbarHTML()+'<div id="wcomp"></div>'+tlWideHTML()+'<div class="wcols"><div class="wc">'+jeomHTML()+fixCardHTML()+timerHTML()+sugHTML()+slotsHTML()+nowHTML()+'</div><div class="wc mid">'+tk+'</div><div class="wc side">'+memoReviewHTML()+'</div></div>'; slOpen=so; }   // 내일 할 일·미룬 것은 할 일 목록 맨 밑에 (같은 목록이라 같이 스크롤, 왼쪽 칸은 안 잘림)
+    else if(tab==='today') h=jeomHTML()+fixCardHTML()+timerHTML()+declHTML()+sugHTML()+slotsHTML()+panHTML()+nowHTML();   // 점호(21~24시·놓친 날 아침)는 맨 위   // 2026-11-20 아이폰(좁은 화면)은 오늘의 미션 안 보임 (형 결정)
     else if(tab==='tasks') h=tasksHTML();
     else h=memoReviewHTML();
     v.innerHTML=h; loadPhotos();
@@ -1135,6 +1191,7 @@ function hkMain(){
   /* 엔터 = 줄바꿈, 저장은 「적기」 버튼. 줄이 늘면 칸도 커짐 (5줄까지, 그 뒤는 칸 안에서 스크롤) */
   function memoGrow(){ var t=$('memoIn'); if(!t)return; t.style.height='auto'; if(t.value) t.style.height=Math.min(t.scrollHeight+3,132)+'px' }
   $('memoIn').addEventListener('input',memoGrow);
+  document.addEventListener('input',function(e){ var f=e.target&&e.target.getAttribute&&e.target.getAttribute('data-jf'); if(f){JD[f]=e.target.value; jRefreshBtn();} });
   function setTabs(){Array.prototype.forEach.call(document.querySelectorAll('nav.tabs button'),function(x){x.setAttribute('aria-selected',x.getAttribute('data-t')===tab?'true':'false')})}
   // 폰 칸 타이머: 1초마다 숫자만 갱신, 끝나는 순간 진동
   var buzzed=null;
@@ -1177,6 +1234,16 @@ function hkMain(){
         var s3=Date.now(); send('phoneStart',{taskId:tid3,startAt:s3,endAt:s3+SL_MIN*60000,min:SL_MIN,slotId:sid3},'50분 시작! 이 칸만 하자'); break;
       case 'memoAdd': memoSubmit(); break;
       case 'picDel': memoPics.splice(+b.getAttribute('data-i'),1); drawPics(); break;
+      case 'jOk': JD.ok=true; render(); break;
+      case 'jFix': jFixOpen=!jFixOpen; render(); break;
+      case 'jFixSave': var js=Math.max(0,Math.round(+(($('jq_s')||{}).value||0))), jmv=Math.max(0,Math.round(+(($('jq_m')||{}).value||0))); jFixOpen=false; JD.ok=true; send('panSet',{day:JD.day,s:js,m:jmv},'합계 고쳤어'); break;
+      case 'jKept': JD.kept=b.getAttribute('data-v')==='1'; render(); break;
+      case 'jReason': JD.reason=b.getAttribute('data-v'); render(); break;
+      case 'jReasonAdd': var nr=(prompt('새 이유 (12자까지)')||'').trim().slice(0,12); if(!nr)break; JD.reason=nr; send('jeomReason',{name:nr}); break;
+      case 'jDefer': send('jeomDefer',{day:TODAY},'1시까지 미뤘어. 한 번만 돼'); break;
+      case 'jSave': var jfx=(jOf(jPrev(JD.day))||{}).fix||''; if(jMiss(jfx)){toast('빈 칸부터 채워줘');break}
+        var jj=jDay(), rec={at:Date.now(),ok:true,kept:JD.kept==null?null:JD.kept,reason:JD.reason,rnote:(JD.rnote||'').trim(),could:(JD.could||'').trim(),fix:(JD.fix||'').trim(),wq:(D.weekQ||'').trim(),wqa:(JD.wqa||'').trim(),late:!!(jj&&jj.late)};
+        var jdd=JD.day; JD={}; send('jeom',{day:jdd,rec:rec},'점호 끝. 내일 아침 시동에 ③이 떠'); break;
       case 'panSOpen': salesOpen=!salesOpen; render(); if(salesOpen){var x=$('panIn'); if(x)x.focus()} break;
       case 'mAll': memoAll=!memoAll; render(); break;
       case 'mEdit': memoEd=id; render(); var mt0=$('med-'+id); if(mt0){mt0.focus(); mt0.setSelectionRange(mt0.value.length,mt0.value.length);} break;
@@ -1187,8 +1254,8 @@ function hkMain(){
       case 'mLater': send('memoAct',{id:id,act:'later',tomorrow:tomorrow()},'내일 다시 보여줄게요'); break;
       case 'panM': send('pan',{day:TODAY,dm:1,ds:0},'물길 +1 · +20,000'); break;
       case 'panMm': send('pan',{day:TODAY,dm:-1,ds:0},'물길 −1'); break;
-      case 'panS': var pv=Math.round(+String(($('panIn')||{}).value||'').replace(/[^0-9]/g,'')); if(!pv){$('panIn')&&$('panIn').focus();break} salesOpen=false; panPop=false; send('pan',{day:TODAY,dm:0,ds:pv},'매출 +'+pv.toLocaleString('ko-KR')+'원'); break;
-      case 'panSm': var nv=Math.round(+String(($('panIn')||{}).value||'').replace(/[^0-9]/g,'')); if(!nv){toast('뺄 금액을 먼저 적어줘');$('panIn')&&$('panIn').focus();break} salesOpen=false; panPop=false; send('pan',{day:TODAY,dm:0,ds:-nv},'매출 −'+nv.toLocaleString('ko-KR')+'원'); break;
+      case 'panS': var pv=Math.round(+String(($('panIn')||{}).value||'').replace(/[^0-9]/g,'')); if(!pv){$('panIn')&&$('panIn').focus();break} salesOpen=false; panPop=false; send('pan',{day:TODAY,dm:0,ds:pv},'순익 +'+pv.toLocaleString('ko-KR')+'원'); break;
+      case 'panSm': var nv=Math.round(+String(($('panIn')||{}).value||'').replace(/[^0-9]/g,'')); if(!nv){toast('뺄 금액을 먼저 적어줘');$('panIn')&&$('panIn').focus();break} salesOpen=false; panPop=false; send('pan',{day:TODAY,dm:0,ds:-nv},'순익 −'+nv.toLocaleString('ko-KR')+'원'); break;
       case 'mKeep': send('memoAct',{id:id,act:'keep'},'보관함에 넣었어요'); break;
       case 'mDrop': send('memoAct',{id:id,act:'drop'}); break;
       case 'lunchTask': var lv=(D.lunch||{})[b.getAttribute('data-k')]; if(lv&&lv.next) send('addTask',{title:lv.next,brand:lv.brand||'',kind:'head'},'할 일에 넣었어요'); break;
