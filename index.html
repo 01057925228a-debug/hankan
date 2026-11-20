@@ -23,7 +23,9 @@
 [data-ord]{cursor:grab;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}   /* 폰에서 꾹 누를 때 글자 선택·메뉴가 떠서 끊기던 것 막음 */
 .srt-ghost{background:var(--soft)!important;border-radius:6px;box-shadow:0 0 0 10px var(--soft),0 0 0 12px color-mix(in srgb,var(--act) 30%,transparent)}
 .srt-ghost>*{visibility:hidden}
-.srt-drag{background:var(--surface)!important;border-radius:12px;box-shadow:0 0 0 12px var(--surface),0 14px 34px 10px rgba(0,0,0,.16);opacity:1!important}
+/* 2026-11-20 끌 때 빈 자리 = Todoist 짜임 (파란 상자 없이 내용만 숨긴 빈칸) — 메모·할 일 똑같이 */
+.srt-ghost{background:transparent!important;box-shadow:none!important;border-radius:0!important;outline:0!important}
+.srt-drag{background:var(--surface)!important;opacity:1!important;border-radius:8px!important;box-shadow:0 4px 10px 0 rgba(0,0,0,.1),0 8px 18px 4px rgba(0,0,0,.05)!important}
 .srt-chosen{cursor:grabbing}
 .mrow{display:flex;align-items:flex-start}
 .mmore{width:100%;margin-top:6px}
@@ -609,18 +611,19 @@ html body.wide .wtl .wnow span{background:none;color:var(--act);font-size:12px;f
 html body.wide .wtl>i,html body.wide .wtl>.wslot,html body.wide .wtl>.wnb,html body.wide .wtllab .wlb{transition:opacity .15s}
 html body.wide .wtl.hl>i:not(.on),html body.wide .wtl.hl>.wslot:not(.on),html body.wide .wtl.hl>.wnb:not(.on){opacity:.25}
 html body.wide .wtllab.hl .wlb:not(.on){opacity:.35}html body.wide .wtllab .wlb.on{background:none}
+/* 2026-11-20 '오늘 하루' 줄은 흰 상자로 묶어서 밑 시간 눈금과 안 섞이게 */
+html body.wide .wtlh .wbx{display:inline-flex;align-items:center;gap:10px;padding:6px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
 /* 2026-11-20 아이폰 메모 버튼 5개(수정 추가) → 한 줄 5칸 */
 .mpan .item .acts{grid-template-columns:repeat(5,1fr);gap:5px}.mpan .item .acts .btn{font-size:13px;padding:8px 0}
 .mpan .mi.edit,.mpan .item.edit{background:none;padding-left:0;padding-right:0;border-radius:0}
 /* 2026-11-20 메모 줄 = Todoist 목록 짜임 (app.todoist.com 실제 CSS: 줄 위아래 8px · 밑줄 1px #eee · 설명·날짜 12px/18px 회색 · 버튼 24px, 줄에 마우스 올릴 때만 오른쪽 위) */
-html body.wide .mpan .mi{position:relative;padding:round(calc(8px*var(--s)),1px) 0;border-top:0;border-bottom:1px solid var(--line);cursor:grab}
+html body.wide .mpan .mi{position:relative;padding:round(calc(10px*var(--s)),1px) 0;border-top:0;border-bottom:1px solid var(--line);cursor:grab}
 html body.wide .mpan .mlist>.mi:last-child{border-bottom:0}
-html body.wide .mpan .mt{font-size:round(calc(15px*var(--s)),1px);font-weight:600;line-height:1.4;color:var(--ink);word-break:keep-all;overflow-wrap:anywhere;text-wrap:wrap}
-html body.wide .mpan .md{font-size:round(calc(12.5px*var(--s)),1px);line-height:1.45;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-html body.wide .mpan .mc{display:flex;align-items:center;gap:6px;margin-top:2px;font-size:round(calc(12.5px*var(--s)),1px);line-height:1.45;color:var(--muted)}
-html body.wide .mpan .ma{position:absolute;top:round(calc(6px*var(--s)),1px);right:0;display:flex;gap:2px;padding-left:20px;opacity:0;pointer-events:none;transition:opacity .12s;background:linear-gradient(to right,transparent 0,var(--surface) 16px)}
-html body.wide .mpan .mi:hover .ma,html body.wide .mpan .mi:focus-within .ma{opacity:1;pointer-events:auto}
-html body.wide .mpan .mb{height:round(calc(24px*var(--s)),1px);padding:0 8px;border:0;border-radius:6px;background:transparent;color:var(--muted);font:inherit;font-size:round(calc(12.5px*var(--s)),1px);font-weight:600;cursor:pointer}
+html body.wide .mpan .mt{font-size:round(calc(14px*var(--s)),1px);font-weight:600;line-height:1.4;color:var(--ink);word-break:keep-all;overflow-wrap:anywhere;text-wrap:wrap}
+html body.wide .mpan .md{font-size:round(calc(12px*var(--s)),1px);line-height:1.45;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html body.wide .mpan .mc{display:flex;align-items:center;flex-wrap:wrap;gap:2px 6px;margin-top:3px;font-size:round(calc(12px*var(--s)),1px);line-height:1.45;color:var(--muted)}
+html body.wide .mpan .ma{display:flex;gap:2px;margin:6px 0 0 -7px}   /* 2026-11-20 형 결정(A안 보완): 버튼은 늘 보이게, 날짜 밑 작은 글자 줄 (날짜 옆이면 맥북에서 날짜가 밀려 잘림) */
+html body.wide .mpan .mb{height:round(calc(24px*var(--s)),1px);padding:0 7px;border:0;border-radius:6px;background:transparent;color:var(--muted);font:inherit;font-size:round(calc(12px*var(--s)),1px);font-weight:600;cursor:pointer}
 html body.wide .mpan .mb:hover{background:var(--line);color:var(--ink)}html body.wide .mpan .mb.p{color:var(--act)}
 .mpan .mi.edit{cursor:auto}.mpan .med{width:100%;box-sizing:border-box;font:inherit;font-size:15px;font-weight:600;line-height:1.4;padding:8px 10px;border:1px solid var(--act);border-radius:8px;background:var(--surface);color:var(--ink);resize:vertical}
 .mpan .mer{display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap}
@@ -809,9 +812,9 @@ function hkMain(){
   function drawSync(){
     var s=$('sync'), t='';
     if(D.syncedAt){var mins=Math.round((Date.now()-D.syncedAt)/60000);
-      t='PC '+(key(new Date(D.syncedAt))!==TODAY?label(key(new Date(D.syncedAt)))+' ':'')+hm(D.syncedAt)+(mins<1?' (방금)':mins<60?' ('+mins+'분 전)':'');}
+      t='PC 마지막 변경 '+(key(new Date(D.syncedAt))!==TODAY?label(key(new Date(D.syncedAt)))+' ':'')+hm(D.syncedAt)+(mins<1?' (방금)':mins<60?' ('+mins+'분 전)':'');}
     else t='아직 PC에서 동기화 전';
-    s.innerHTML=esc(t)+' · 앱 v16'+(D.pending?' · <b>PC 반영 대기 '+D.pending+'개</b>':'');
+    s.innerHTML=esc(t)+' · 앱 v17'+(D.pending?' · <b>PC 반영 대기 '+D.pending+'개</b>':'');
     if(NS&&NS.on){var bad=NS.err&&NS.errSince&&(Date.now()-NS.errSince>3600000)||(NS.lastOk&&Date.now()-NS.lastOk>3600000);
       var warn=!bad&&NS.err;   // 방금 생긴 문제: 자동으로 다시 시도 중
       var nt=bad?'노션 ⚠ '+(NS.err||'1시간 넘게 못 보냈어요'):warn?'노션 ⚠ 다시 시도 중 · '+NS.err:NS.prog&&NS.prog[0]<NS.prog[1]?'노션 옮기는 중 '+NS.prog[0]+'/'+NS.prog[1]:'노션 ✓ '+(NS.lastOk?hm(NS.lastOk):'');
@@ -887,7 +890,7 @@ function hkMain(){
     var tk=[6,9,12,15,18,21,24].map(function(x){var l=pc(x*60-S0);return '<span class="'+(nl>=0&&Math.abs(l-nl)<3?'hid':'')+'" style="left:'+l+'%">'+x+'시</span>'}).join('');
     var kept=L.filter(function(x){return x.st==='done'}).length;
     lab.sort(function(a,b){return a.x-b.x});
-    return '<div class="wtlbox"><div class="wtlh">📌 <b>오늘 하루</b>'+(L.length?'<span class="wpl">고정 칸 '+kept+'/'+L.length+' 지킴</span>':'')+'<span class="wsy">'+$('sync').innerHTML+'</span><span class="grow"></span><span class="wlg"><i class="l1"></i>다 한 칸 <i class="l2"></i>반쯤 <i class="l3"></i>고정 칸 자리'+(md?' <i class="l4"></i>약 효과 구간':'')+'</span></div>'
+    return '<div class="wtlbox"><div class="wtlh"><span class="wbx">📌 <b>오늘 하루</b>'+(L.length?'<span class="wpl">고정 칸 '+kept+'/'+L.length+' 지킴</span>':'')+'<span class="wsy">'+$('sync').innerHTML+'</span></span><span class="grow"></span><span class="wlg"><i class="l1"></i>다 한 칸 <i class="l2"></i>반쯤 <i class="l3"></i>고정 칸 자리'+(md?' <i class="l4"></i>약 효과 구간':'')+'</span></div>'
       +'<div class="wticks">'+tk+'</div><div class="wtl">'+h+lab.map(function(o,i){return '<span class="wnb '+o.c+'" data-i="'+i+'" data-k="'+o.k+'" style="left:'+o.cx+'%">'+(i+1)+'</span>'}).join('')+'</div>'
       +'<div class="wtllab">'+lab.map(function(o,i){return '<div class="wlb '+o.c+'" data-i="'+i+'"><i>'+(i+1)+'</i><b>'+esc(o.t)+(o.g?'<em>고정</em>':'')+'</b><span>'+esc(o.m)+'</span></div>'}).join('')+'</div></div>';
   }
