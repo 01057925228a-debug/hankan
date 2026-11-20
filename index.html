@@ -320,7 +320,7 @@ body.wide .top .date{font-size:30px;font-weight:800;color:var(--ink);display:fle
 body.wide .top .date .dl{margin-right:4px}
 body.wide .medchip{font-size:16px;font-weight:600;padding:6px 14px;border:1px solid var(--line);background:var(--surface);color:var(--ink);margin:0;border-radius:99px}
 body.wide .medchip.fire{background:var(--soft);border-color:color-mix(in srgb,var(--act) 30%,transparent);color:var(--act)}
-body.wide .wrap{position:relative}body.wide .sync{position:absolute;top:36px;right:40px;margin:0;font-size:14px}   /* 확장처럼 날짜 줄 한 줄만: 동기화 글씨는 오른쪽 위로 */
+body.wide .wrap{position:relative}body.wide .wrap>#view{margin-bottom:0}body.wide .sync{position:absolute;top:36px;right:40px;margin:0;font-size:14px}   /* 확장처럼 날짜 줄 한 줄만: 동기화 글씨는 오른쪽 위로 */
 body.wide .panel{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px 26px;margin:0;box-shadow:none}
 body.wide .wtop{display:flex;flex-direction:column;gap:16px;margin-bottom:16px}
 /* 선포 */
@@ -385,8 +385,8 @@ body.wide .wtllab .wlb{padding-left:26px;border-radius:8px}body.wide .wtllab .wl
 body.wide .wtllab .wlb i,body.wide .wnb{position:absolute;left:0;top:0;width:19px;height:19px;border-radius:10px;background:var(--done);color:#fff;font-size:11.5px;font-weight:800;line-height:19px;font-style:normal;text-align:center}
 body.wide .wtllab .wlb.h i,body.wide .wnb.h{background:#8FA59B}body.wide .wtllab .wlb.cur i,body.wide .wnb.cur{background:var(--act)}
 body.wide .wtllab .wlb.slot i,body.wide .wnb.slot{background:var(--surface);color:var(--act);box-shadow:inset 0 0 0 2px var(--act)}body.wide .wtllab .wlb.slot.miss i,body.wide .wnb.slot.miss{color:var(--muted);box-shadow:inset 0 0 0 2px var(--muted)}
-body.wide .wnb{top:23px;left:auto;transform:translateX(calc(-50% + 10px));z-index:3}
-body.wide .wtllab .wlb.on{background:var(--soft)}body.wide .wnb.on{transform:translateX(calc(-50% + 10px)) scale(1.25)}
+body.wide .wnb{top:23px;transform:translateX(-50%);z-index:3}
+body.wide .wtllab .wlb.on{background:var(--soft)}body.wide .wnb.on{transform:translateX(-50%) scale(1.25)}
 /* 세 칸 */
 body.wide .wcols{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1.6fr) minmax(0,1fr);gap:22px;grid-template-rows:minmax(0,1fr);height:100%;align-items:stretch}
 @media (max-width:1400px){body.wide .wcols{grid-template-columns:1fr;height:auto}}
@@ -442,8 +442,6 @@ body.wide .wmis .item>div[style*="font-size:16px"]{font-size:19.5px!important}
 body.wide .wmis .item .small{font-size:14.6px}
 body.wide .wmis .item div[style*="font-size:14px"],body.wide .wmis ol{font-size:16px!important}
 /* 맥북(1900 이하): 위쪽(선포·판·하루 띠)이 화면을 많이 먹어서 세 칸이 너무 납작해짐 → 화면 전체를 내리면 세 칸이 화면 높이만큼 펼쳐지고, 칸마다 따로 스크롤 */
-@media (min-width:1700px){body.wide #view{display:flex;flex-direction:column}body.wide #view>.wcols{flex:1;min-height:0;height:auto}}   /* 본컴 창: 확장처럼 한 화면에 딱 맞춤 */
-@media (max-width:1699px){body.wide #scroller{overflow-y:auto}body.wide .wrap{height:auto}body.wide #view{flex:none}body.wide .wcols{height:calc(100vh - 48px)}}
 body.wide .wc.side h2 .ico{margin-right:6px}
 /* 맥북(1700 미만): 화면이 작으니 글씨·여백을 줄여서 배치. 본컴 창(1700 이상)은 확장 대시보드 값 그대로 */
 @media (max-width:1699px){
@@ -455,7 +453,8 @@ body.wide .wc.side h2 .ico{margin-right:6px}
   body.wide .wpan .pa .btn,body.wide .wpan .pa input{min-height:34px;font-size:14px;padding:4px 12px}body.wide .wpan .pa input{width:160px}
   body.wide #compose{margin-bottom:12px;gap:8px}body.wide #compose #memoIn{min-height:46px;font-size:16px;padding:10px 14px;line-height:24px}
   body.wide #compose .picb,body.wide #compose select,body.wide #compose [data-a="memoAdd"]{min-height:46px}body.wide #compose .picb{width:46px}body.wide #compose [data-a="memoAdd"]{font-size:16px;padding:0 22px}
-  body.wide .wtlbox{margin-bottom:14px}body.wide .wtlh{margin-bottom:8px}
+  body.wide .wtlbox{margin-bottom:12px}body.wide .wtlh{margin-bottom:6px}body.wide .wtllab{margin-top:22px;gap:6px 26px}
+  body.wide .wpan{display:flex;align-items:center;flex-wrap:wrap;column-gap:16px;row-gap:8px}body.wide .wpan .pt{display:contents}body.wide .wpan .bar{order:3;flex:1;min-width:160px;margin:0}body.wide .wpan .pr{order:4;margin:0}body.wide .wpan .pa{order:5;flex-wrap:nowrap}body.wide .wpan .pa input{width:120px}body.wide .wpan .lunch,body.wide .wpan .salesin{order:9;flex-basis:100%}
   body.wide .wcols{gap:16px}
   body.wide .sug{padding:20px 24px}body.wide .sug .lbl{font-size:17px}
   body.wide .sug .tt{font-size:40px;letter-spacing:-.8px;margin:2px 0 12px}   /* 확장도 좁은 화면에선 40px */
@@ -467,6 +466,146 @@ body.wide .wc.side h2 .ico{margin-right:6px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--muted) 30%,transparent);border-radius:99px;border:3px solid transparent;background-clip:padding-box}
 ::-webkit-scrollbar-thumb:hover{background-color:color-mix(in srgb,var(--muted) 55%,transparent)}
+
+/* 2026-11-20 본컴 크롬: 확장 큰 화면과 똑같은 짜임 그대로, 크롬 줄만큼 짧아진 세로에 맞춰 화면 전체를 같은 비율로 줄임 (아래 fitZoom) */
+/* 2026-11-20 확장과 재서 다른 곳 맞춤: 판 113px(윗줄 19·막대 10·버튼 34), 아이디어 칸 53px */
+body.wide .wpan .pt,body.wide .wpan .pr{line-height:19px}body.wide .wpan .bar{margin:7px 0 8px}
+body.wide .wpan .pa .btn,body.wide .wpan .pa input{height:34px;min-height:0;box-sizing:border-box}
+@media (min-width:1700px){body.wide #compose #memoIn,body.wide #compose .picb,body.wide #compose select,body.wide #compose [data-a="memoAdd"]{min-height:53px;height:53px;box-sizing:border-box}body.wide #compose #memoIn{padding:13px 16px}}
+/* 왼쪽 칸: 지금 이거 어때·고정 칸은 안 줄고, '내일 할 일·미룬 것'만 남는 자리만큼 (넘치면 그 안에서 스크롤) — 확장과 같은 방식 */
+body.wide .wc:first-child>section{flex:none}body.wide .wc:first-child>.snz{flex:1 1 0;min-height:96px;overflow-y:auto}
+/* ===== 2026-11-20 넓은 화면 새 배치 (형: 똑같이가 아니라 예쁘게 보이는 배치가 먼저) =====
+   본컴 크롬 2040×940 · 맥북 1440×690 기준. 위쪽은 얇게(맨 위 한 줄 + 아이디어 칸 + 하루 띠), 화면 대부분은 세 칸, 글씨는 안 줄이고, 잘림 0 */
+body.wide .top,body.wide .sync{display:none}
+body.wide .wrap{padding:14px 32px 14px}
+body.wide #view{display:flex;flex-direction:column}body.wide #view>.wcols{flex:1;min-height:0;height:auto}
+body.wide .wrap>*{margin-bottom:10px}body.wide .wrap>#view{margin-bottom:0}
+/* 맨 위 한 줄: 날짜·칩 | 선포 | 판(물길·매출·막대·달성률·버튼) */
+body.wide .wbar{display:flex;align-items:center;gap:14px;height:56px;margin-bottom:10px}
+body.wide .wbar .wdate{font-size:26px;font-weight:800;white-space:nowrap;display:flex;align-items:center;gap:8px}
+body.wide .wbar .wdate .medchip{font-size:14px;padding:4px 11px}
+body.wide .wbar .decl{flex:1 1 auto;min-width:0;height:100%;display:flex;align-items:center;padding:0 20px;border-radius:14px;margin:0}
+body.wide .wbar .decl .l,body.wide .wbar .decl .t{font-size:18px}
+body.wide .wbar .wpm{flex:none;height:100%;display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:0 10px 0 16px;position:relative}
+body.wide .wpm .n{font-size:15px;font-weight:700;white-space:nowrap}body.wide .wpm .n i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:1px}
+body.wide .wpm .bar{width:160px;height:8px;margin:0;border-radius:4px;background:var(--bg)}
+body.wide .wpm .pc{font-size:17px;font-weight:800;color:var(--act);white-space:nowrap;background:none;border:0;padding:0;cursor:pointer}body.wide .wpm .pc small{font-size:13px;color:var(--muted);font-weight:600;margin-left:0}
+body.wide .wpm .btn{height:36px;min-height:0;padding:0 14px;font-size:14px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);font-weight:700}
+body.wide .wpm .btn.p{background:var(--act);color:var(--act-ink);border-color:var(--act)}
+body.wide .wpm .pop{position:absolute;right:0;top:calc(100% + 8px);z-index:30;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.14);padding:12px;display:flex;flex-wrap:wrap;gap:8px;width:420px}
+body.wide .wpm .pop input{flex:1;min-width:150px;height:38px;font-size:15px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg)}
+body.wide .wpm .pop .btn{height:38px}body.wide .wpm .pop .sm{flex-basis:100%;font-size:12.5px;color:var(--muted)}
+/* 아이디어 칸 */
+body.wide #compose{margin-bottom:10px}
+body.wide #compose #memoIn,body.wide #compose .picb,body.wide #compose select,body.wide #compose [data-a="memoAdd"]{height:50px;min-height:0;box-sizing:border-box}
+body.wide #compose #memoIn{padding:12px 16px;font-size:17px;line-height:24px}body.wide #compose .picb{width:50px}
+/* 하루 띠 */
+body.wide .wtlbox{margin-bottom:12px}body.wide .wtlh{margin-bottom:4px}
+body.wide .wtlh .wsy{font-size:12.5px;color:var(--muted);margin-left:8px}
+body.wide .wticks{height:18px;margin-bottom:2px}
+body.wide .wtllab{margin-top:24px;gap:6px 30px}
+/* 왼쪽 칸: 카드 크기는 그대로, 내일 할 일·미룬 것만 남는 자리에서 스크롤 */
+body.wide .wc{gap:12px}body.wide .wc:first-child{overflow:hidden}
+body.wide .wc:first-child>section{flex:none}
+body.wide .snzin{margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}body.wide .snzin .sl-head b{font-size:16px;font-weight:800}body.wide .snzin .sl-row{font-size:16px;padding:8px 0}
+/* 맥북 (1700 미만) */
+@media (max-width:1699px){
+  body.wide .wrap{padding:10px 20px 10px}
+  body.wide .wbar{height:48px;gap:10px;margin-bottom:8px}
+  body.wide .wbar .wdate{font-size:20px;gap:6px}body.wide .wbar .wdate .medchip{font-size:12.5px;padding:3px 9px}
+  body.wide .wbar .decl{padding:0 14px}body.wide .wbar .decl .l,body.wide .wbar .decl .t{font-size:15px}
+  body.wide .wbar .wpm{gap:9px;padding:0 8px 0 12px}body.wide .wpm .n{font-size:13px}body.wide .wpm .bar{width:90px}body.wide .wpm .pc{font-size:15px}body.wide .wpm .btn{height:32px;padding:0 10px;font-size:13px}
+  body.wide #compose{margin-bottom:8px}body.wide #compose #memoIn,body.wide #compose .picb,body.wide #compose select,body.wide #compose [data-a="memoAdd"]{height:44px}body.wide #compose #memoIn{padding:10px 14px;font-size:15px;line-height:22px}body.wide #compose .picb{width:44px}
+  body.wide .wtlbox{margin-bottom:10px;position:relative}body.wide .wtlh{font-size:13px}body.wide .wtlh b{font-size:15px}body.wide .wtllab{display:none}body.wide .wtl{margin-bottom:22px}
+  body.wide .wcols{gap:14px}
+  body.wide .sug{padding:18px 22px}body.wide .sug .tt{font-size:36px;margin:2px 0 10px}body.wide .sug .row{margin-bottom:8px!important}
+  body.wide .slots{padding:12px 18px}body.wide .sl-row{padding:3px 0}
+  body.wide .sug{padding:16px 20px}body.wide .sug .lbl{font-size:15px}body.wide .sug .seg button{padding:5px 13px;font-size:15px}
+  body.wide .sgo .btn{height:48px;font-size:16px;padding:0 16px}body.wide .sgo .btn.p{font-size:18px;padding:0 22px}
+  body.wide .wc{gap:10px}body.wide .sl-head{margin-bottom:2px}body.wide .sl-time{line-height:24px}
+}
+body.wide .wtip{position:absolute;z-index:20;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 12px 8px 38px;box-shadow:0 8px 24px rgba(0,0,0,.12);white-space:nowrap;pointer-events:none}
+body.wide .wtip .wlb{position:relative;padding:0;display:block;line-height:1.3}
+body.wide .wtip .wlb i{position:absolute;left:-28px;top:1px;width:19px;height:19px;border-radius:10px;background:var(--done);color:#fff;font-size:11.5px;font-weight:800;line-height:19px;font-style:normal;text-align:center}
+body.wide .wtip .wlb.h i{background:#8FA59B}body.wide .wtip .wlb.cur i{background:var(--act)}body.wide .wtip .wlb.slot i{background:var(--surface);color:var(--act);box-shadow:inset 0 0 0 2px var(--act)}
+body.wide .wtip .wlb b{display:block;font-size:14px;font-weight:700;color:var(--ink)}body.wide .wtip .wlb b em{font-style:normal;font-size:12px;font-weight:700;color:var(--done);margin-left:6px}
+body.wide .wtip .wlb span{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}body.wide .wtip .wlb.slot b{color:var(--act)}
+/* 2026-11-20 알약(태그) 모양을 확장과 똑같이: 회색 바탕+테두리, '매일'만 옅은 파랑, 분류(브랜드)는 테두리만 */
+body.wide .tag{font-size:13.4px;padding:0 10px;line-height:20px;border:1px solid var(--line);background:var(--bg);color:var(--muted);font-weight:700}
+body.wide .tag.n,body.wide .tag[style*="transparent"]{background:transparent!important;color:var(--muted)!important;border-color:var(--line)!important}
+body.wide .tag[style*="--warm"]{background:var(--soft)!important;color:var(--act)!important;border-color:color-mix(in srgb,var(--act) 30%,transparent)!important}
+body.wide .tag.pin{background:var(--soft);color:var(--act);border-color:color-mix(in srgb,var(--act) 30%,transparent)}
+body.wide .tag.g{background:var(--bg);color:var(--muted)}
+body.wide .sug .tag{font-size:15px;padding:0 12px;line-height:27px}
+/* ===== 2026-11-20 넓은 화면 글자·여백 규칙 하나로 정리 (형: 줄맞춤·정렬·색이 제각각이면 거슬림) =====
+   역할별로 크기 하나만 씀. --s 는 맥북 1(작은 화면), 본컴 크롬 1.13
+   카드 제목 15 / 제목 옆 개수 13 / 본문 줄 15 / 보조 12.5 / 알약 12 / 작은 버튼 13 / 큰 버튼 16 / 추천 제목 34 / 날짜 20 */
+html body.wide{--s:1;--cpad:16px 18px;--crad:16px;--cgap:12px}
+@media (min-width:1700px){html body.wide{--s:1.13;--cpad:20px 22px;--crad:18px;--cgap:14px}}
+html body.wide .wcols{gap:var(--cgap)}html body.wide .wc{gap:var(--cgap)}
+html body.wide .wc>section.panel,html body.wide .wc>.panel{padding:var(--cpad);border-radius:var(--crad)}
+/* 카드 제목: 같은 크기·굵기·색 */
+html body.wide .wtlh b,html body.wide .sug .lbl,html body.wide .sl-head b,html body.wide .tin h2,html body.wide .wc.side h2{font-size:round(calc(15px*var(--s)),1px);font-weight:800;color:var(--ink);letter-spacing:-.2px;line-height:1.4;margin:0}
+html body.wide .sug .lbl{color:var(--act)}
+html body.wide .tin h2,html body.wide .wc.side h2,html body.wide .sl-head{display:flex;align-items:center;gap:8px;margin:0 0 10px}
+/* 제목 옆 개수·상태 */
+html body.wide .tin h2 b,html body.wide .wc.side h2 .n,html body.wide .sl-head .small{font-size:round(calc(13px*var(--s)),1px);font-weight:600;color:var(--muted);margin:0}
+html body.wide .wc.side h2 .n{margin-left:auto}
+/* 본문 줄: 할 일 이름 · 메모 글 · 고정 칸 할 일 이름 */
+html body.wide .tls .item .grow>div:first-child,html body.wide .mpan .item .grow,html body.wide .sl-body,html body.wide .sl-t{font-size:round(calc(15px*var(--s)),1px);font-weight:600;color:var(--ink);line-height:1.45}
+html body.wide .s-done .sl-t,html body.wide .s-pass .sl-t{color:var(--muted)}
+html body.wide .wmis .item>div[style*="font-size:16px"]{font-size:round(calc(16px*var(--s)),1px)!important;font-weight:800!important}
+html body.wide .wmis .item div[style*="font-size:14px"],html body.wide .wmis ol{font-size:round(calc(13.5px*var(--s)),1px)!important}
+/* 보조 글씨: 시간·메타·눈금·범례 */
+html body.wide .small,html body.wide .wticks,html body.wide .wtlh .wlg,html body.wide .wtlh .wsy,html body.wide .mpan .item .small,html body.wide .sl-row>.small,html body.wide .sl-b{font-size:round(calc(12.5px*var(--s)),1px);font-weight:500}
+html body.wide .wtllab .wlb b{font-size:round(calc(14px*var(--s)),1px)}html body.wide .wtllab .wlb span{font-size:round(calc(12.5px*var(--s)),1px)}
+/* 알약 */
+html body.wide .tag{font-size:round(calc(12px*var(--s)),1px);line-height:round(calc(20px*var(--s)),1px);padding:0 round(calc(9px*var(--s)),1px)}
+html body.wide .wtlh .wpl{font-weight:700;font-size:round(calc(12px*var(--s)),1px);line-height:round(calc(20px*var(--s)),1px);padding:0 round(calc(9px*var(--s)),1px)}
+/* 작은 버튼: 수정·보관·내일·버리기·할 일로·+자리·접기·오늘로·추가·머리 씀/잡무 */
+html body.wide .btn.s,html body.wide .mpan .acts .btn,html body.wide .tin .btn,html body.wide .tin .seg button,html body.wide .sug .seg button,html body.wide .snzin .btn{font-size:round(calc(13px*var(--s)),1px);font-weight:600;height:round(calc(32px*var(--s)),1px);min-height:0;padding:0 round(calc(11px*var(--s)),1px);line-height:1}
+html body.wide .tin input,html body.wide .tin select{height:round(calc(38px*var(--s)),1px);min-height:0;font-size:round(calc(14.5px*var(--s)),1px)}
+/* 큰 버튼 · 추천 제목 · 고정 칸 시각 · 날짜 */
+html body.wide .sgo .btn{height:round(calc(46px*var(--s)),1px);font-size:round(calc(16px*var(--s)),1px);font-weight:700;padding:0 round(calc(18px*var(--s)),1px)}
+html body.wide .sgo .btn.p{font-size:round(calc(17px*var(--s)),1px);padding:0 round(calc(24px*var(--s)),1px)}
+html body.wide .sug .tt{font-size:round(calc(34px*var(--s)),1px);letter-spacing:-.8px;line-height:1.18;margin:round(calc(4px*var(--s)),1px) 0 round(calc(10px*var(--s)),1px)}
+html body.wide .sl-time{font-size:round(calc(16px*var(--s)),1px);font-weight:800;line-height:round(calc(26px*var(--s)),1px)}
+html body.wide .wbar .wdate{font-size:round(calc(20px*var(--s)),1px)}
+html body.wide .sug .row{margin-bottom:round(calc(10px*var(--s)),1px)!important}
+html body.wide .tls .item{padding:round(calc(10px*var(--s)),1px) 0}html body.wide .mpan .item{padding:round(calc(10px*var(--s)),1px) 0}
+html body.wide .mpan .item .acts{margin-top:round(calc(8px*var(--s)),1px)}
+html body.wide .sug .row .small[style*="--warm"],html body.wide .sug .row span[style*="--warm"]{font-weight:600}
+html body.wide .wcols .tag,html body.wide .sug .row .tag,html body.wide .tls .tag,html body.wide .mpan .tag{font-size:round(calc(12px*var(--s)),1px);line-height:round(calc(20px*var(--s)),1px);padding:0 round(calc(9px*var(--s)),1px);font-weight:700}
+html body.wide .wcols .btn.s,html body.wide .tls .btn.s{font-size:round(calc(13px*var(--s)),1px)}
+html body.wide .wc.side>.panel{padding:var(--cpad);border-radius:var(--crad)}
+html body.wide .sl-t,html body.wide .sl-body{font-weight:600}
+html body.wide .wpm .btn{font-weight:600}
+html body.wide .tls .tlist{margin-top:0!important}html body.wide .tls .tlist>.item:first-of-type{padding-top:2px}
+html body.wide .snzin .sl-head b{font-size:round(calc(15px*var(--s)),1px);font-weight:800}
+html body.wide .snzin .sl-row,html body.wide .snzin .sl-body{font-size:round(calc(15px*var(--s)),1px);font-weight:600}
+html body.wide .wmis .item .small,html body.wide .wmis .item div[style*="color:var(--act)"]{font-size:round(calc(12.5px*var(--s)),1px)!important}
+html body.wide .wmis .item div[style*="font-size:14px"]{font-weight:500}
+html body.wide .wtllab .wlb b{font-size:round(calc(14px*var(--s)),1px);font-weight:700}
+html body.wide .tls .item.row{align-items:center}   /* 할 일 줄: 핀·시각·수정 버튼을 줄 가운데에 맞춤 */
+/* 2026-11-20 세 칸 밑줄 맞춤 + 안 잘림: 왼쪽 마지막 카드는 칸 밑까지, 오른쪽 미션 카드는 남은 높이를 채우고 안에서 스크롤 */
+html body.wide .wc:first-child>section:last-child{flex:1 1 auto}
+html body.wide .wc.side{overflow:hidden}
+html body.wide .wc.side>.mpan{flex:none}
+html body.wide .wc.side>.wmis{flex:1 1 0;min-height:0;display:flex;flex-direction:column}
+html body.wide .wmis .wmlist{flex:1;min-height:0;overflow-y:auto}
+html body.wide .wmis .item>div[style*="font-size:16px"]{font-size:round(calc(15px*var(--s)),1px)!important;font-weight:700!important}
+html body.wide .wmis .item div[style*="font-size:14px"],html body.wide .wmis .item ol{font-size:round(calc(13.5px*var(--s)),1px)!important}
+/* 2026-11-20 맥북(1700 미만): 오른쪽 칸이 모자라 오늘의 미션은 안 보임 (형 결정). 메모 카드가 칸 밑까지 */
+@media (max-width:1699px){html body.wide .wc.side>.wmis{display:none}html body.wide .wc.side>.mpan{flex:1 1 auto}}
+/* 2026-11-20 줄 단위 스크롤: 카드는 칸 밑까지 그대로, 안쪽 .rfit 만 스크롤 (높이는 fitRows가 줄 끝에 맞춤) */
+html body.wide .tls{overflow:hidden;display:flex;flex-direction:column}
+html body.wide .tls>.rfit,html body.wide .wmis>.rfit{flex:1 1 0;min-height:0;overflow-y:auto}
+html body.wide .wmis .wmlist{overflow:visible}
+/* 2026-11-20 줄바꿈 정리: 낱말 중간에서 안 끊기, 마지막 줄에 한 낱말만 덩그러니 남지 않게 */
+body{word-break:keep-all;overflow-wrap:anywhere}
+p,li,.mw,.mp,.mo,.mt,.tt,.sugt,.tx,.sl-body,.small{text-wrap:pretty}
+h1,h2,h3,.sugt,.mt{text-wrap:balance}
+.row>.tag,.row>.small{align-self:center;line-height:1.5}
 </style>
 </head>
 <body>
@@ -645,7 +784,7 @@ function hkMain(){
     if(D.syncedAt){var mins=Math.round((Date.now()-D.syncedAt)/60000);
       t='PC '+(key(new Date(D.syncedAt))!==TODAY?label(key(new Date(D.syncedAt)))+' ':'')+hm(D.syncedAt)+(mins<1?' (방금)':mins<60?' ('+mins+'분 전)':'');}
     else t='아직 PC에서 동기화 전';
-    s.innerHTML=esc(t)+' · 앱 v14'+(D.pending?' · <b>PC 반영 대기 '+D.pending+'개</b>':'');
+    s.innerHTML=esc(t)+' · 앱 v15'+(D.pending?' · <b>PC 반영 대기 '+D.pending+'개</b>':'');
     if(NS&&NS.on){var bad=NS.err&&NS.errSince&&(Date.now()-NS.errSince>3600000)||(NS.lastOk&&Date.now()-NS.lastOk>3600000);
       var warn=!bad&&NS.err;   // 방금 생긴 문제: 자동으로 다시 시도 중
       var nt=bad?'노션 ⚠ '+(NS.err||'1시간 넘게 못 보냈어요'):warn?'노션 ⚠ 다시 시도 중 · '+NS.err:NS.prog&&NS.prog[0]<NS.prog[1]?'노션 옮기는 중 '+NS.prog[0]+'/'+NS.prog[1]:'노션 ✓ '+(NS.lastOk?hm(NS.lastOk):'');
@@ -694,23 +833,35 @@ function hkMain(){
       +(goalEdit?'<div class="salesin"><input type="number" id="goalIn" inputmode="numeric" step="10000" value="'+G+'" placeholder="오늘 목표 (원)"><button class="btn p" data-a="goalSave">저장</button>'+(p.g?'<button class="btn" data-a="goalReset">기본 '+mn(def)+'</button>':'')+'</div>':'')
       +lunchHTML()+'</section>';
   }
+  var panPop=false;
+  function wbarHTML(){
+    var p=(D.pan||{})[TODAY]||{}, def=D.panGoal||500000, G=p.g||def, m=p.m||0, sv=p.s||0, mw=m*20000, tot=mw+sv, f=function(n){return Math.round(n).toLocaleString('ko-KR')}, mn=function(n){return !n?'0':n%10000===0?(n/10000).toLocaleString('ko-KR')+'만':f(n)};
+    var pct=Math.round(tot/G*100), bs=Math.max(G,tot)/100;
+    var pm='<div class="wpm"><span class="n"><i style="background:var(--act)"></i>물길 '+m+'개</span><span class="n"><i style="background:color-mix(in srgb,var(--act) 40%,var(--surface))"></i>매출 '+mn(sv)+'원</span>'
+      +'<div class="bar"><i style="background:var(--act);width:'+(mw/bs)+'%"></i><i style="background:color-mix(in srgb,var(--act) 40%,var(--surface));width:'+(sv/bs)+'%"></i></div>'
+      +(p.rest?'<span class="pc">쉬는 날</span>':'<button class="pc" data-a="goalOpen" title="오늘 목표 바꾸기">'+pct+'%<small> / '+mn(G)+'</small></button>')
+      +'<button class="btn p" data-a="panM">+물길</button><button class="btn" data-a="wPop">+매출</button>'
+      +(panPop?'<div class="pop"><input type="number" id="panIn" inputmode="numeric" placeholder="매출 금액 (원)"><button class="btn p" data-a="panS">더하기</button><button class="btn" data-a="panSm">빼기</button><button class="btn" data-a="panMm"'+(m?'':' disabled')+'>−물길 하나</button><span class="sm">달성률 숫자를 누르면 오늘 목표를 바꿔요</span></div>':'')
+      +(goalEdit?'<div class="pop"><input type="number" id="goalIn" inputmode="numeric" step="10000" value="'+G+'" placeholder="오늘 목표 (원)"><button class="btn p" data-a="goalSave">저장</button>'+(p.g?'<button class="btn" data-a="goalReset">기본 '+mn(def)+'</button>':'')+'</div>':'')+'</div>';
+    return '<div class="wbar"><div class="wdate">'+$('today').innerHTML+'</div>'+declHTML()+pm+'</div>';
+  }
   function tlWideHTML(){
     var S0=360, SPAN=1080, pc=function(a){return Math.max(0,Math.min(100,a/SPAN*100))}, mOf=function(ts){var d=new Date(ts);return d.getHours()*60+d.getMinutes()}, ps=function(ts){return pc(mOf(ts)-S0)};
     var h='', md=D.med[TODAY], L=slOf(D,TODAY), now=Date.now(), lab=[];
     if(md){var a=slMin(md)+90,b=slMin(md)+420; h+='<span class="wzone" style="left:'+pc(a-S0)+'%;width:'+pc(b-a)+'%"></span>'}
     (D.blocks||[]).filter(function(b){return b.day===TODAY}).forEach(function(b){ var g=b.slotId&&L.some(function(x){return x.id===b.slotId}), mi=b.minutes||Math.round((b.end-b.start)/60000);
       h+='<i class="'+(b.result==='done'?'':'half')+'" style="left:'+ps(b.start)+'%;width:'+Math.max(.4,ps(b.end)-ps(b.start))+'%"></i>';
-      lab.push({x:ps(b.start),c:b.result==='done'?'':'h',t:b.title,m:mi+'분 · '+hm(b.start)+'–'+hm(b.end)+(b.result==='done'?'':' · 반쯤'),g:g}); });
-    var se=D.session||{}; if(se.mode==='focus'&&se.startAt){var ct=D.tasks.filter(function(x){return x.id===se.taskId})[0]; h+='<i class="cur" style="left:'+ps(se.startAt)+'%;width:'+Math.max(.4,ps(now)-ps(se.startAt))+'%"></i>'; lab.push({x:ps(se.startAt),c:'cur',t:ct?ct.title:'지금 칸',m:hm(se.startAt)+'부터 · 하는 중'})}
+      lab.push({x:ps(b.start),cx:ps(b.start)+Math.max(.4,ps(b.end)-ps(b.start))/2,c:b.result==='done'?'':'h',t:b.title,m:mi+'분 · '+hm(b.start)+'–'+hm(b.end)+(b.result==='done'?'':' · 반쯤'),g:g}); });
+    var se=D.session||{}; if(se.mode==='focus'&&se.startAt){var ct=D.tasks.filter(function(x){return x.id===se.taskId})[0]; h+='<i class="cur" style="left:'+ps(se.startAt)+'%;width:'+Math.max(.4,ps(now)-ps(se.startAt))+'%"></i>'; lab.push({x:ps(se.startAt),cx:(ps(se.startAt)+ps(now))/2,c:'cur',t:ct?ct.title:'지금 칸',m:hm(se.startAt)+'부터 · 하는 중'})}
     L.forEach(function(x){ var st=slState(x,TODAY,now); if(st==='done')return; var miss=st==='missed'||st==='pass';
-      h+='<span class="wslot'+(miss?' miss':'')+'" style="left:'+pc(slMin(x.t)-S0)+'%;width:'+pc(50)+'%"></span>'; lab.push({x:pc(slMin(x.t)-S0),c:'slot'+(miss?' miss':''),t:x.t+' 고정 칸',m:st==='missed'?'놓침':st==='pass'?'패스':'50분'}) });
+      h+='<span class="wslot'+(miss?' miss':'')+'" style="left:'+pc(slMin(x.t)-S0)+'%;width:'+pc(50)+'%"></span>'; lab.push({x:pc(slMin(x.t)-S0),cx:pc(slMin(x.t)-S0)+pc(50)/2,c:'slot'+(miss?' miss':''),t:x.t+' 고정 칸',m:st==='missed'?'놓침':st==='pass'?'패스':'50분'}) });
     var nm=mOf(now), nl=nm>=S0?pc(nm-S0):-1;
     if(nl>=0) h+='<span class="wnow" style="left:'+nl+'%"><span>'+pad(Math.floor(nm/60))+':'+pad(nm%60)+'</span></span>';
     var tk=[6,9,12,15,18,21,24].map(function(x){var l=pc(x*60-S0);return '<span class="'+(nl>=0&&Math.abs(l-nl)<3?'hid':'')+'" style="left:'+l+'%">'+x+'시</span>'}).join('');
     var kept=L.filter(function(x){return x.st==='done'}).length;
     lab.sort(function(a,b){return a.x-b.x});
-    return '<div class="wtlbox"><div class="wtlh">📌 <b>오늘 하루</b>'+(L.length?'<span class="wpl">고정 칸 '+kept+'/'+L.length+' 지킴</span>':'')+'<span class="grow"></span><span class="wlg"><i class="l1"></i>다 한 칸 <i class="l2"></i>반쯤 <i class="l3"></i>고정 칸 자리'+(md?' <i class="l4"></i>약 효과 구간':'')+'</span></div>'
-      +'<div class="wticks">'+tk+'</div><div class="wtl">'+h+lab.map(function(o,i){return '<span class="wnb '+o.c+'" data-i="'+i+'" style="left:'+o.x+'%">'+(i+1)+'</span>'}).join('')+'</div>'
+    return '<div class="wtlbox"><div class="wtlh">📌 <b>오늘 하루</b>'+(L.length?'<span class="wpl">고정 칸 '+kept+'/'+L.length+' 지킴</span>':'')+'<span class="wsy">'+$('sync').innerHTML+'</span><span class="grow"></span><span class="wlg"><i class="l1"></i>다 한 칸 <i class="l2"></i>반쯤 <i class="l3"></i>고정 칸 자리'+(md?' <i class="l4"></i>약 효과 구간':'')+'</span></div>'
+      +'<div class="wticks">'+tk+'</div><div class="wtl">'+h+lab.map(function(o,i){return '<span class="wnb '+o.c+'" data-i="'+i+'" style="left:'+o.cx+'%">'+(i+1)+'</span>'}).join('')+'</div>'
       +'<div class="wtllab">'+lab.map(function(o,i){return '<div class="wlb '+o.c+'" data-i="'+i+'"><i>'+(i+1)+'</i><b>'+esc(o.t)+(o.g?'<em>고정</em>':'')+'</b><span>'+esc(o.m)+'</span></div>'}).join('')+'</div></div>';
   }
   function declHTML(){
@@ -802,8 +953,8 @@ function hkMain(){
     var ms=pendingMemos();
     if(!ms.length)return '<section class="panel"><h2>메모 정리</h2><p class="empty">정리할 메모가 없어요. 아래 칸에 바로 적으면 여기 모여요.<br>보관한 메모는 노션 보관함에서 봐요.</p></section>';
     var wd=document.body.classList.contains('wide'), sh=wd&&!memoAll?ms.slice(0,3):ms;
-    return '<section class="panel mpan"><h2>메모 정리<span class="n">'+ms.length+(wd?'개':'')+'</span></h2><div class="mlist">'+sh.map(function(m){return '<div class="item" data-ord="'+m.id+'"><div class="mrow"><div style="font-weight:600;white-space:pre-wrap" class="grow">'+esc(m.text)+(m.bp&&m.brand&&(m.text||'').indexOf(m.brand)<0?' <span class="tag n">'+esc(m.brand)+'</span>':'')+'</div></div>'+photoBtn(m.imgs)
-      +'<div class="small muted" style="margin-top:3px">'+(m.day!==TODAY?label(m.day)+' · ':'')+hm(m.at)+(m.ctx?' · '+(m.ctx==='폰'?'폰에서':'"'+esc(m.ctx)+'" 하다가'):'')+'</div>'
+    return '<section class="panel mpan"><h2>메모 정리<span class="n">'+ms.length+(wd?'개':'')+'</span></h2><div class="mlist">'+sh.map(function(m){return '<div class="item" data-ord="'+m.id+'"><div class="mrow"><div style="font-weight:600;white-space:pre-wrap" class="grow">'+esc(m.text)+(!wd&&m.bp&&m.brand&&(m.text||'').indexOf(m.brand)<0?' <span class="tag n">'+esc(m.brand)+'</span>':'')+'</div></div>'+photoBtn(m.imgs)
+      +'<div class="small muted" style="margin-top:3px">'+(wd&&m.bp&&m.brand&&(m.text||'').indexOf(m.brand)<0?'<span class="tag n">'+esc(m.brand)+'</span> ':'')+label(m.day)+' · '+hm(m.at)+(m.ctx?' · '+(m.ctx==='폰'?'폰에서':'"'+esc(m.ctx)+'" 하다가'):'')+'</div>'
       +'<div class="acts"><button class="btn p" data-a="mTask" data-id="'+m.id+'">할 일로</button><button class="btn" data-a="mKeep" data-id="'+m.id+'">보관</button><button class="btn" data-a="mLater" data-id="'+m.id+'">내일</button><button class="btn g" data-a="mDrop" data-id="'+m.id+'">버리기</button></div></div>'}).join('')+'</div>'+(wd&&ms.length>3?'<button class="btn s g mmore" data-a="mAll">'+(memoAll?'접기':'메모 '+(ms.length-3)+'개 더 보기')+'</button>':'')+'</section>';
   }
   function archHTML(){
@@ -821,7 +972,7 @@ function hkMain(){
     var md=D.missionDay; if(!md||md.day!==TODAY||!(md.items||[]).length) return '';
     var items=md.items, lb=items[items.length-1].batch||items[items.length-1].id;
     var cur=items.filter(function(m){return (m.batch||m.id)===lb});
-    return '<section class="panel wmis"><h2>🎯 오늘의 미션</h2>'+cur.map(function(m){
+    return '<section class="panel wmis"><h2>🎯 오늘의 미션'+(document.body.classList.contains('wide')?'<span class="n">'+cur.length+'개</span>':'')+'</h2><div class="wmlist">'+cur.map(function(m){
       var kl=m.kind==='gap'?'빈 곳 채우기':m.kind==='flow'?'흐름 채우기':'미션';
       return '<div class="item"><div class="row"><span class="tag '+(m.kind==='gap'?'g':'')+'">'+kl+'</span><span class="small muted">'+esc(m.zone)+'</span></div>'
         +'<div style="font-weight:700;font-size:16px;margin:6px 0 4px">'+esc(m.mission_title)+'</div>'
@@ -829,8 +980,8 @@ function hkMain(){
         +(m.why?'<div class="small" style="color:var(--act);font-weight:700;margin-top:8px">왜 이 미션</div><div style="font-size:14px">'+esc(m.why)+'</div>':'')
         +(m.practice?'<div class="small" style="color:var(--act);font-weight:700;margin-top:8px">오늘 실전</div><div style="font-size:14px;font-weight:600">'+esc(m.practice)+'</div>':'')
         +((m.steps||[]).length?'<div class="small" style="color:var(--act);font-weight:700;margin-top:8px">단계 '+m.steps.length+'개</div><ol style="margin:4px 0 0;padding-left:20px;font-size:14px">'+m.steps.map(function(t){return '<li>'+esc(t)+'</li>'}).join('')+'</ol>':'')
-        +'<div class="row" style="margin-top:10px">'+(m.added?'<span class="small" style="color:var(--done);font-weight:600">할 일에 추가됨 ✓</span>':'<button class="btn s p" data-a="mAdd" data-id="'+m.id+'">할 일로 추가</button>')+'</div></div>'}).join('')
-      +'<p class="small muted" style="margin:8px 0 0">새 미션 받기는 PC에서만 돼요.</p></section>';
+        +'<div class="row" style="margin-top:10px">'+(m.added?'<span class="small" style="color:var(--done);font-weight:600">할 일에 추가됨 ✓</span>':'<button class="btn s p" data-a="mAdd" data-id="'+m.id+'">할 일로 추가</button>')+'</div></div>'}).join('')+'</div>'
+      +(document.body.classList.contains('wide')?'':'<p class="small muted" style="margin:8px 0 0">새 미션 받기는 PC에서만 돼요.</p>')+'</section>';
   }
   var startOpen=null;   // 길이 고르는 중인 할 일
   function pcBusy(){var m=(D.session||{}).mode; return m==='focus'||m==='check'}
@@ -860,7 +1011,7 @@ function hkMain(){
     var nDaily=op.filter(function(t){return t.dailyId}).length;
     var snz=D.tasks.filter(function(t){return !t.done&&t.snoozeUntil&&t.snoozeUntil>TODAY}).length;
     var wd=document.body.classList.contains('wide');
-    var h='<section class="panel'+(wd?' tin':'')+'"><h2>'+(wd?'할 일 쏟아내기 <b>'+op.length+'개</b>':'할 일 '+(op.length||''))+'</h2>'
+    var h='<section class="panel'+(wd?' tin':'')+'"><h2>'+(wd?'해치울 것 <b>'+op.length+'개</b>':'할 일 '+(op.length||''))+'</h2>'
       +'<input type="text" id="taskIn" maxlength="120" placeholder="할 일 추가" autocomplete="off">'
       +'<div class="row" style="margin-top:8px"><select id="taskB" style="flex:1">'+brandOpts('')+'</select>'
       +'<span class="seg"><button data-kind="head" aria-pressed="'+(newKind==='head')+'">머리 씀</button><button data-kind="chore" aria-pressed="'+(newKind==='chore')+'">잡무</button></span>'
@@ -918,6 +1069,27 @@ function hkMain(){
     for(var k=0;k<400;k++){ var key=d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);
       if(ig[key])n++; else if(!rs[key]&&k>0)break; d.setDate(d.getDate()-1); }
     return n; }
+  // 확장 큰 화면 창(세로 약 1060)에 맞춰 짠 화면을, 지금 창 세로에 맞게 같은 비율로 줄임 (본컴 크롬 940 → 0.89배)
+  function fitZoom(){ var b=document.body, z=1; if(!(b.classList.contains('wide')&&window.innerWidth>=1700)){b.style.setProperty('--fz',1);return}
+    b.style.setProperty('--fz',1);
+  }
+  // 2026-11-20 줄 단위로 끊기: 스크롤 되는 목록이 줄 중간에서 반쯤 잘려 보이지 않게, 보이는 높이를 마지막으로 다 들어가는 줄 밑에 맞춤
+  function fitRows(){ if(!document.body.classList.contains('wide'))return;
+    [['.tls','.tlist>.item,.tlist>.grp,.snzin .sl-head,.snzin .sl-row'],['.wmis','.wmlist>.item,.wmlist>.item>*,.wmlist>.item li']].forEach(function(q){
+      var card=document.querySelector(q[0]); if(!card)return; var sc=card.querySelector(':scope>.rfit');
+      if(!sc){ sc=document.createElement('div'); sc.className='rfit'; var keep=q[0]==='.wmis'?card.querySelector(':scope>h2'):null; [].slice.call(card.childNodes).forEach(function(n){ if(n!==keep)sc.appendChild(n); }); card.appendChild(sc); }
+      var rows=[].slice.call(sc.querySelectorAll(q[1])); rows.forEach(function(e){ e.style.paddingTop=e.style.paddingBottom=''; });
+      sc.style.height=''; sc.style.flex=''; var h=sc.clientHeight; if(sc.scrollHeight<=h+1)return;
+      var fit=function(){ var top=sc.getBoundingClientRect().top-sc.scrollTop, best=0, n=0, nx=0;
+        rows.forEach(function(e){ var r=e.getBoundingClientRect(), b=r.bottom-top; if(b<=h+0.5){ if(b>best){best=b;n++;} } else if(!nx) nx=b; }); return {best:best,n:n,nx:nx}; };
+      var f=fit(), need=f.nx-h;   // 한 줄 더 넣으려면 모자란 높이
+      if(f.nx&&need>0&&need<=(f.n+1)*6){ var cut=Math.ceil(need/(f.n+1)/2); rows.forEach(function(e){ var c=getComputedStyle(e); e.style.paddingTop=Math.max(0,parseFloat(c.paddingTop)-cut)+'px'; e.style.paddingBottom=Math.max(0,parseFloat(c.paddingBottom)-cut)+'px'; }); f=fit(); }   // 줄 간격을 조금(줄당 최대 6px) 줄여서 한 줄 더 들어가면 그렇게
+      if(f.best>0){ sc.style.flex='none'; sc.style.height=Math.floor(f.best)+'px'; } });
+  }
+  window.addEventListener('resize',function(){ fitRows(); });
+  function fitSug(){ var c=document.querySelector('.wc'), t=document.querySelector('.sug .tt'); if(!c||!t||!document.body.classList.contains('wide'))return; t.style.fontSize='';
+    var f=parseFloat(getComputedStyle(t).fontSize), n=0; while(c.scrollHeight>c.clientHeight+1&&f>30&&n<20){ f-=2; n++; t.style.fontSize=f+'px'; } }   // 왼쪽 칸이 화면 밑에서 잘리지 않게
+  window.addEventListener('resize',function(){fitZoom()});
   function render(){
     if(dragging) return;   // 끄는 중엔 다시 그리지 않음
     drawSync(); document.body.className='t-'+tab;
@@ -928,14 +1100,20 @@ function hkMain(){
     var wide=window.innerWidth>=1100; document.body.classList.toggle('wide',wide); document.body.classList.toggle('pcbusy',pcBusy());
     var cp=$('compose'), dk=document.querySelector('.dock');
     if(wide&&cp.parentNode!==document.querySelector('.wrap')) $('sync').insertAdjacentElement('afterend',cp); else if(!wide&&cp.parentNode!==dk) dk.insertBefore(cp,dk.firstChild);
-    if(wide){ var so=slOpen; slOpen=true; h='<div class="wtop">'+declHTML()+panWideHTML()+'</div><div id="wcomp"></div>'+tlWideHTML()+'<div class="wcols"><div class="wc">'+timerHTML()+sugHTML()+slotsHTML()+nowHTML()+snzHTML()+'</div><div class="wc mid">'+tasksHTML()+'</div><div class="wc side">'+memoReviewHTML()+missionsHTML()+'</div></div>'; slOpen=so; }
-    else if(tab==='today') h=timerHTML()+declHTML()+sugHTML()+slotsHTML()+panHTML()+nowHTML()+missionsHTML();
+    if(wide){ var so=slOpen, mac=window.innerWidth<1700; slOpen=true; var sz=snzHTML().replace('<section class="panel snz">','<div class="snzin">').replace(/<\/section>$/,'</div>'), tk=tasksHTML().replace(/<\/section>$/,sz+'</section>');
+      h=wbarHTML()+'<div id="wcomp"></div>'+tlWideHTML()+'<div class="wcols"><div class="wc">'+timerHTML()+sugHTML()+slotsHTML()+nowHTML()+'</div><div class="wc mid">'+tk+'</div><div class="wc side">'+memoReviewHTML()+missionsHTML()+'</div></div>'; slOpen=so; }   // 내일 할 일·미룬 것은 할 일 목록 맨 밑에 (같은 목록이라 같이 스크롤, 왼쪽 칸은 안 잘림)
+    else if(tab==='today') h=timerHTML()+declHTML()+sugHTML()+slotsHTML()+panHTML()+nowHTML();   // 2026-11-20 아이폰(좁은 화면)은 오늘의 미션 안 보임 (형 결정)
     else if(tab==='tasks') h=tasksHTML();
     else h=memoReviewHTML();
     v.innerHTML=h; loadPhotos();
-    var wcp=$('wcomp'); if(wide&&wcp) wcp.replaceWith(cp);   // 대시보드처럼: 선포 → 판 → 아이디어 칸 → 오늘 하루 → 세 칸
+    var wcp=$('wcomp'); if(wide&&wcp) wcp.replaceWith(cp);
+    fitZoom(); fitSug(); fitRows();   // 대시보드처럼: 선포 → 판 → 아이디어 칸 → 오늘 하루 → 세 칸
     sortable(document.querySelector('.mpan .mlist'),'memo',pendingMemos);
-    [].forEach.call(document.querySelectorAll('.wtllab .wlb,.wnb'),function(el){ var i=el.getAttribute('data-i'); var tg=function(on){[].forEach.call(document.querySelectorAll('[data-i="'+i+'"]'),function(x){if(x.classList.contains('wlb')||x.classList.contains('wnb'))x.classList.toggle('on',on)})}; el.onmouseenter=function(){tg(true)}; el.onmouseleave=function(){tg(false)}; });
+    [].forEach.call(document.querySelectorAll('.wtllab .wlb,.wnb'),function(el){ var i=el.getAttribute('data-i'); var tg=function(on){[].forEach.call(document.querySelectorAll('[data-i="'+i+'"]'),function(x){if(x.classList.contains('wlb')||x.classList.contains('wnb'))x.classList.toggle('on',on)});
+        var bx=document.querySelector('.wtlbox'), lab=document.querySelector('.wtllab'), tp=document.querySelector('.wtip'); if(tp)tp.remove();
+        if(on&&el.classList.contains('wnb')&&lab&&getComputedStyle(lab).display==='none'){ var src=lab.querySelector('.wlb[data-i="'+i+'"]'); if(!src)return; tp=document.createElement('div'); tp.className='wtip'; tp.appendChild(src.cloneNode(true)); bx.appendChild(tp);
+          var r=el.getBoundingClientRect(), b0=bx.getBoundingClientRect(), x=Math.min(Math.max(0,r.left-b0.left-24),bx.clientWidth-tp.offsetWidth); tp.style.left=x+'px'; tp.style.top=(r.bottom-b0.top+6)+'px'; } };   // 맥북: 이름 줄 대신 번호에 마우스 올리면 이름표
+      el.onmouseenter=function(){tg(true)}; el.onmouseleave=function(){tg(false)}; });
     { var tb=document.querySelector('.tlist'); sortable(tb,'task',function(){return D.tasks.filter(function(t){return !t.done&&!(t.snoozeUntil&&t.snoozeUntil>TODAY)}).sort(function(a,b){return ((b.dailyId?1:0)-(a.dailyId?1:0))||(ordKey(a)-ordKey(b))})}); }
     var pb=$('pcbar'); if(pb) pb.remove();
     if(pcBusy()&&!D.psession){ var ss=D.session, tt=D.tasks.filter(function(x){return x.id===ss.taskId})[0]; (wide?$('sync'):dk).insertAdjacentHTML(wide?'afterend':'afterbegin','<div class="pcbar" id="pcbar"><span class="pd"></span><span class="pt">'+(ss.mode==='check'?'PC 한 칸 끝, 체크 대기':'PC 집중 중')+(tt?' · '+esc(tt.title):'')+'</span>'+(ss.mode==='focus'&&ss.endAt?'<b>'+hm(ss.endAt)+'까지</b>':'')+'</div>'); }
@@ -1005,12 +1183,13 @@ function hkMain(){
       case 'picDel': memoPics.splice(+b.getAttribute('data-i'),1); drawPics(); break;
       case 'panSOpen': salesOpen=!salesOpen; render(); if(salesOpen){var x=$('panIn'); if(x)x.focus()} break;
       case 'mAll': memoAll=!memoAll; render(); break;
+      case 'wPop': panPop=!panPop; goalEdit=false; render(); if(panPop){var wi=$('panIn'); if(wi)wi.focus()} break;
       case 'mTask': send('memoAct',{id:id,act:'task'},'할 일로 보냈어요'); break;
       case 'mLater': send('memoAct',{id:id,act:'later',tomorrow:tomorrow()},'내일 다시 보여줄게요'); break;
       case 'panM': send('pan',{day:TODAY,dm:1,ds:0},'물길 +1 · +20,000'); break;
       case 'panMm': send('pan',{day:TODAY,dm:-1,ds:0},'물길 −1'); break;
-      case 'panS': var pv=Math.round(+String(($('panIn')||{}).value||'').replace(/[^0-9]/g,'')); if(!pv){$('panIn')&&$('panIn').focus();break} salesOpen=false; send('pan',{day:TODAY,dm:0,ds:pv},'매출 +'+pv.toLocaleString('ko-KR')+'원'); break;
-      case 'panSm': var nv=Math.round(+String(($('panIn')||{}).value||'').replace(/[^0-9]/g,'')); if(!nv){toast('뺄 금액을 먼저 적어줘');$('panIn')&&$('panIn').focus();break} salesOpen=false; send('pan',{day:TODAY,dm:0,ds:-nv},'매출 −'+nv.toLocaleString('ko-KR')+'원'); break;
+      case 'panS': var pv=Math.round(+String(($('panIn')||{}).value||'').replace(/[^0-9]/g,'')); if(!pv){$('panIn')&&$('panIn').focus();break} salesOpen=false; panPop=false; send('pan',{day:TODAY,dm:0,ds:pv},'매출 +'+pv.toLocaleString('ko-KR')+'원'); break;
+      case 'panSm': var nv=Math.round(+String(($('panIn')||{}).value||'').replace(/[^0-9]/g,'')); if(!nv){toast('뺄 금액을 먼저 적어줘');$('panIn')&&$('panIn').focus();break} salesOpen=false; panPop=false; send('pan',{day:TODAY,dm:0,ds:-nv},'매출 −'+nv.toLocaleString('ko-KR')+'원'); break;
       case 'mKeep': send('memoAct',{id:id,act:'keep'},'보관함에 넣었어요'); break;
       case 'mDrop': send('memoAct',{id:id,act:'drop'}); break;
       case 'mAdd': send('missionAdd',{id:id},'할 일에 추가했어요'); break;
@@ -1024,7 +1203,7 @@ function hkMain(){
       case 'skipReset': skip=[]; render(); break;
       case 'unsnz': send('unsnooze',{id:id},'오늘 목록으로 돌렸어요'); break;
       case 'sugSnooze': if(pick===id)pick=null; sugMin=null; send('snooze',{id:id,tomorrow:tomorrow()},'내일 다시 보여줄게요'); break;
-      case 'goalOpen': goalEdit=!goalEdit; render(); if(goalEdit){var gi=$('goalIn'); if(gi)gi.focus()} break;
+      case 'goalOpen': goalEdit=!goalEdit; panPop=false; render(); if(goalEdit){var gi=$('goalIn'); if(gi)gi.focus()} break;
       case 'goalSave': var gv=Math.round(+String(($('goalIn')||{}).value||'').replace(/[^0-9]/g,'')); if(!(gv>=10000)){toast('목표는 1만원 이상으로 적어줘');break} goalEdit=false; send('panGoal',{day:TODAY,g:gv},'오늘 목표 '+gv.toLocaleString('ko-KR')+'원'); break;
       case 'goalReset': goalEdit=false; send('panGoal',{day:TODAY,g:0},'기본 목표로 되돌렸어요'); break;
       case 'pDone': case 'pHalf':
