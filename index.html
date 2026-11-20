@@ -413,7 +413,7 @@ body.wide .tls .item>.grow>div:first-child{font-size:19px;font-weight:600}
 body.wide .tls .tag{font-size:13.4px;padding:1px 10px}
 body.wide .tls .btn.s{font-size:14.6px;min-height:37px;padding:6px 12px}
 body.wide .grp{display:none}   /* 확장 가운데 칸처럼 '매일 3·할 일 5' 묶음 제목 없음 (형: '할 일' 두 번 나와서 거슬림) */
-body.wide .tls .item:first-child,body.wide .tls .tlist>.item:first-of-type{border-top:0}
+body.wide .tls .tlist>.item:first-of-type,body.wide .tls .tlist>.grp:first-child+.item{border-top:0;padding-top:2px}
 /* 오른쪽: 메모 정리 · 오늘의 미션 */
 body.wide .wc.side .panel{border-radius:22px;padding:22px 24px}
 body.wide .wc.side h2{font-size:17px;font-weight:700;margin:0 0 10px;display:flex;align-items:center}
@@ -433,6 +433,22 @@ body.wide .wmis .item div[style*="font-size:14px"],body.wide .wmis ol{font-size:
 @media (min-width:1901px){body.wide #view{display:flex;flex-direction:column}body.wide #view>.wcols{flex:1;min-height:0;height:auto}body.wide .wrap>#scroller,body.wide .wrap>*:last-child{margin-bottom:0}}
 @media (max-width:1900px){body.wide #scroller{overflow-y:auto}body.wide .wrap{height:auto}body.wide #view{flex:none}body.wide .wcols{height:calc(100vh - 48px)}}
 body.wide .wc.side h2 .ico{margin-right:6px}
+/* 2026-11-20 맥북 1440이 기준 (형: PC 화면은 맥북에서만 씀) — 위쪽을 줄여 세 칸이 위로 올라오게, 시작 버튼 두 개가 한 줄에 */
+@media (max-width:1900px){
+  body.wide .wrap{padding:18px 28px 20px}
+  body.wide .top .date{font-size:24px}body.wide .medchip{font-size:14px;padding:4px 12px}body.wide .sync{margin:-6px 0 10px;font-size:12.5px}
+  body.wide .wtop{gap:10px;margin-bottom:10px}
+  body.wide .decl{padding:9px 18px;font-size:17px}body.wide .decl .l,body.wide .decl .t{font-size:17px}
+  body.wide .wpan{padding:12px 18px}body.wide .wpan .pt{font-size:16px}body.wide .wpan .pr{font-size:17px}body.wide .wpan .bar{height:8px;margin:9px 0}
+  body.wide .wpan .pa .btn,body.wide .wpan .pa input{min-height:34px;font-size:14px;padding:4px 12px}body.wide .wpan .pa input{width:160px}
+  body.wide #compose{margin-bottom:12px;gap:8px}body.wide #compose #memoIn{min-height:46px;font-size:16px;padding:10px 14px;line-height:24px}
+  body.wide #compose .picb,body.wide #compose select,body.wide #compose [data-a="memoAdd"]{min-height:46px}body.wide #compose .picb{width:46px}body.wide #compose [data-a="memoAdd"]{font-size:16px;padding:0 22px}
+  body.wide .wtlbox{margin-bottom:14px}body.wide .wtlh{margin-bottom:8px}
+  body.wide .wcols{gap:16px}
+  body.wide .sug{padding:20px 24px}body.wide .sug .lbl{font-size:17px}
+  body.wide .sug .tt{font-size:40px;letter-spacing:-.8px;margin:2px 0 12px}   /* 확장도 좁은 화면에선 40px */
+  body.wide .sgo{flex-wrap:nowrap}body.wide .sgo .btn{height:56px;font-size:18px;padding:0 22px;flex:none}body.wide .sgo .btn.p{font-size:20px;padding:0 26px;flex:1}
+}
 /* 스크롤 막대: 기본 대신 얇고 둥글게 (확장도 같은 모양) */
 *{scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--muted) 35%,transparent) transparent}
 ::-webkit-scrollbar{width:10px;height:10px}
