@@ -35,16 +35,32 @@
 .jeomp{border:2px solid var(--act)}.jeomp .jh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}.jeomp .jh b{font-size:18px;color:var(--act)}
 .jeomp .jq{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}.jeomp .jl{font-size:14px;font-weight:700}
 .jrow{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.jrow .grow{flex:1}
-/* 2026-11-21 3단계: 주간 돌아보기 (점호 2/3) */
-.wk{display:flex;flex-direction:column;gap:12px;margin-bottom:12px}
-.wkn{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-.wkn>div{border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;min-width:0}
-.wkn span{font-size:12px;color:var(--muted);font-weight:700}.wkn b{font-size:19px}.wkn i{font-style:normal;font-size:12px;color:var(--muted)}
-.wkdots{display:flex;gap:4px}.wd{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1}
-.wd i{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-style:normal;font-weight:800;font-size:13px;background:var(--line);color:var(--muted)}
-.wd.ok i{background:var(--act);color:#fff}.wd.miss i{background:#FDE7E4;color:#C0392B}.wd em{font-style:normal;font-size:12px;color:var(--muted)}
-.wkl{display:flex;flex-direction:column;gap:6px}.wkh{font-size:14px;font-weight:700}.wkr b{font-size:15px}.wkr .small{color:var(--muted)}
-@media (min-width:1100px){.wkn{grid-template-columns:repeat(4,minmax(0,1fr))}}
+/* 시안 2026-11-21: 점호 단계 카드 + 주간 돌아보기 */
+.jeomp.steps .jh{margin-bottom:12px}
+.jsh{display:flex;align-items:center;gap:10px;width:100%;padding:12px 14px;border-radius:14px;background:var(--bg);margin-bottom:8px;text-align:left;border:0;font:inherit;color:var(--ink)}
+.jstep.cur{border:1.5px solid var(--act);border-radius:14px;margin-bottom:8px}.jstep.cur .jsh{background:none;margin:0}
+.jsn{width:24px;height:24px;border-radius:50%;flex:none;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;background:var(--line);color:var(--muted)}
+.jsh.cur .jsn{background:var(--act);color:#fff}.jsh.done .jsn{background:var(--done);color:#fff;font-size:0}.jsh.done .jsn::before{content:'✓';font-size:13px}
+.jst{font-size:15px;font-weight:700;white-space:nowrap}.jsh.todo .jst{color:var(--muted)}
+.jss{flex:1;min-width:0;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.jsm{font-size:12px;color:var(--muted);white-space:nowrap}
+.jsb{padding:2px 14px 14px}
+.wk{display:flex;flex-direction:column;gap:14px;margin-bottom:14px}
+.wkhero{background:var(--act);color:#fff;border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:4px}
+.wkhero>span{font-size:12px;font-weight:700;color:rgba(255,255,255,.8)}.wkhero>b{font-size:28px;font-weight:800;line-height:1.2}
+.wkbar{height:8px;border-radius:4px;background:rgba(255,255,255,.28);overflow:hidden;margin:6px 0 2px}.wkbar i{display:block;height:100%;background:#fff;border-radius:4px}
+.wkhero em{font-style:normal;font-size:12px;color:rgba(255,255,255,.85)}.wkhero em b{color:#fff}
+.wk3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--line);border-radius:12px;padding:10px 0}
+.wk3>div{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0;padding:0 4px}.wk3>div+div{border-left:1px solid var(--line)}
+.wk3 span{font-size:12px;color:var(--muted);white-space:nowrap}.wk3 b{font-size:16px;font-weight:700;white-space:nowrap}
+.wkdots{display:flex;justify-content:space-between;gap:4px}.wd{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1}
+.wd i{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-style:normal;font-weight:800;font-size:13px;border:1.5px solid var(--line);color:var(--muted);background:var(--surface)}
+.wd.ok i{background:var(--act);border-color:var(--act);color:#fff}.wd.miss i{border-color:#E8A29C;color:#C0392B}.wd.rest i{border-style:dashed;font-size:11px}.wd em{font-style:normal;font-size:12px;color:var(--muted)}
+.wkl{display:flex;flex-direction:column;gap:8px}.wkh{font-size:14px;font-weight:700}
+.wkr{display:flex;flex-direction:column;gap:2px}.wkrt{display:flex;align-items:center;gap:8px}.wkrt b{font-size:15px}.wkrt .muted{font-size:12px}.wkr .small{padding-left:26px}
+.wkn1{width:18px;height:18px;border-radius:50%;background:var(--bg);font-size:11px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;color:var(--muted)}
+.wk2{display:flex;gap:8px}.wk2>div{flex:1;border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;justify-content:space-between;align-items:baseline}
+.wk2 span{font-size:12px;color:var(--muted)}.wk2 b{font-size:16px}.wk2 small{font-size:12px;color:var(--muted);font-weight:500}.wk2 .warn b{color:#B85C00}
 .jin{width:100%;box-sizing:border-box;padding:11px 12px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font:inherit;font-size:16px}
 .jrow .jin{flex:1;width:auto;min-width:0}
 .jchips{display:flex;gap:6px;flex-wrap:wrap}.jchip{padding:8px 14px;border-radius:99px;border:1.5px solid var(--line);background:var(--surface);font-weight:600;font-size:14px}
@@ -55,7 +71,17 @@
 .gjt{font-size:11px;font-weight:800;padding:1px 7px;border-radius:6px;background:#1F2A6B;color:#fff;vertical-align:1px}
 .gjs{display:flex;align-items:center;gap:8px;margin:0 0 8px;padding:9px 12px;border-radius:12px;font-size:14px;flex-wrap:wrap}
 .gjs.ok{background:#F3F7EE}.gjs.no{background:#FFF5F4;border:1.5px solid #F2B8B5}.gjs.wt{background:var(--bg);color:var(--muted)}
+.gjs.col{flex-direction:column;align-items:stretch;gap:6px}
+.gjk{font-size:11px;font-weight:700;padding:1px 7px;border-radius:99px;white-space:nowrap}.gjk.no{background:#FDECEA;color:#B3261E}.gjk.ok{background:var(--zone,#E7F1EA);color:var(--done,#1F7F53)}
+.gjic{width:20px;height:20px;border-radius:50%;flex:none;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;background:var(--done,#1F7F53);color:#fff}.gjic.no{background:#C62828}
+.gjtop{display:flex;align-items:center;gap:8px}.gjlk{font-size:12px;color:#B3261E;padding-left:28px}
+.gjproof{display:flex;gap:8px}.gjtile{flex:1;height:40px;border:1.5px dashed #E8A29C;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;gap:4px;font:inherit;font-size:13px;font-weight:700;color:#B3261E}.gjtile.g2{flex:0 0 96px;border-style:solid;border-color:#DDE3DF;color:var(--ink,#1C2420)}.gjplus{font-size:16px}
+.gjp{display:inline-flex;align-items:baseline;gap:6px;min-width:0}.gjp .gjk{flex:none}.gjs.wt{column-gap:14px;row-gap:6px}
+.gjs .btn.gjgot{background:#1F7F53;color:#fff;border-color:#1F7F53}
 .gjs .grow{flex:1;min-width:0}.gjs b{color:var(--ink)}.gjs .lt{color:#C62828;font-weight:700}
+@media (prefers-color-scheme:dark){.gjs.ok{background:#173326}.gjs.no{background:#2A1B1A;border-color:#6B2E2A}.gjic.no{background:#E5534B}.gjlk,.gjx,.gjs .lt{color:#FF8A80}
+.gjtile{background:var(--surface);border-color:#7A3A35;color:#FF8A80}.gjtile.g2{border-color:var(--line);color:var(--ink)}.gjk.no{background:#3A1A1A;color:#FF8A80}
+.wkhero{background:#2F47D8}.wd.miss i{background:#2A1B1A;border-color:#7A3A35;color:#FF8A80}}
 .gjpick{display:flex;flex-direction:column;gap:10px}.gp{display:flex;flex-direction:column;gap:8px;padding:10px 12px;border:1.5px solid var(--line);border-radius:12px}
 .gp.on{border-color:var(--act);box-shadow:0 0 0 2px rgba(43,69,232,.12)}.gp .gt{display:flex;gap:8px;align-items:center}
 .gp .gpc{width:28px;height:28px;border-radius:8px;border:1.5px solid var(--line);background:var(--surface);font-weight:800;color:#fff;flex:none}.gp .gpc.on{background:var(--act);border-color:var(--act)}
@@ -796,11 +822,11 @@ function hkMain(){
   function gjMult(day,it){var n=1,k=day; for(var g=0;g<60&&n<3;g++){k=gjDayPrev(k,-1); if(gjRest(k))continue; var pg=(D.gonjang||{})[k], pi=pg&&(pg.items||[]).filter(function(y){return y.i===it.i})[0]; if(!pi||gjState(k,pi,new Date(k+'T23:59:59').getTime())!=='miss')break; n++} return n}
   function gjConX(c,m){return m>1?String(c).replace(/\d+/,function(v){return String(+v*m)}):String(c)}
   function gjLockOf(day){var g=(D.gonjang||{})[day]; if(!g)return []; return (g.items||[]).filter(function(it){return !it.proof&&gjState(day,it,Date.now())==='miss'})}
-  function gjProofBtns(day,it){return '<button class="btn s p" data-a="gjAlbum" data-sid="'+it.sid+'" data-day="'+day+'">앨범</button><button class="btn s" data-a="gjCam" data-sid="'+it.sid+'" data-day="'+day+'">찍기</button>'}
-  function gjLine(day,it){var k=gjState(day,it,Date.now()), m=gjMult(day,it);
-    if(k==='kept') return it.got?'<div class="gjs ok">✓ 지켰어 · 보상 <b>'+esc(it.rew)+'</b> 받음</div>':'<div class="gjs ok">🎁 <span class="grow">지켰어 · 보상 <b>'+esc(it.rew)+'</b></span><button class="btn s p" data-a="gjGot" data-sid="'+it.sid+'" data-day="'+day+'">받음</button></div>';
-    if(k==='miss') return it.proof?'<div class="gjs ok">✓ 인증 끝 · <b>'+esc(gjConX(it.con,m))+'</b></div>':'<div class="gjs no"><span class="grow lt">🔒 못 지킴 · 제약 <b>'+esc(gjConX(it.con,m))+'</b>'+(m>1?' ('+m+'번째 ×'+m+')':'')+' · 연차·보상 사이트 잠김</span>'+gjProofBtns(day,it)+'</div>';
-    return '<div class="gjs wt">못 지키면 <b>'+esc(gjConX(it.con,m))+'</b> · 지키면 <b>'+esc(it.rew)+'</b></div>'}
+  function gjLine(day,it){var k=gjState(day,it,Date.now()), m=gjMult(day,it), con=esc(gjConX(it.con,m));   // 시안 2026-11-21 (키피럽 짜임, 확장과 같은 모양)
+    if(k==='kept') return '<div class="gjs ok"><span class="gjic">✓</span><span class="grow">지켰어 · 보상 <b>'+esc(it.rew)+'</b>'+(it.got?' 받음':'')+'</span>'+(it.got?'':'<button class="btn s gjgot" data-a="gjGot" data-sid="'+it.sid+'" data-day="'+day+'">보상 받음</button>')+'</div>';
+    if(k==='miss') return it.proof?'<div class="gjs ok"><span class="gjic">✓</span><span class="grow">인증 끝 · <b>'+con+'</b>'+(m>1?' ×'+m:'')+'</span></div>'
+      :'<div class="gjs no col"><div class="gjtop"><span class="gjic no">!</span><span class="grow"><b>못 지킴</b> · 제약 <b>'+con+'</b>'+(m>1?' <span class="gjx">'+m+'번째 ×'+m+'</span>':'')+'</span></div><div class="gjlk">인증 전엔 연차·보상 사이트 잠김</div><div class="gjproof"><button class="gjtile" data-a="gjCam" data-sid="'+it.sid+'" data-day="'+day+'"><span class="gjplus">＋</span>찍어서 인증</button><button class="gjtile g2" data-a="gjAlbum" data-sid="'+it.sid+'" data-day="'+day+'">앨범에서</button></div></div>';
+    return '<div class="gjs wt"><span class="gjp"><span class="gjk no">못 지키면</span><b>'+con+'</b></span><span class="gjp"><span class="gjk ok">지키면</span><b>'+esc(it.rew)+'</b></span></div>'}
   var gjBusy=false;
   function gjUpload(day,sid,cam){ if(gjBusy)return; var inp=document.createElement('input'); inp.type='file'; inp.accept='image/*'; if(cam)inp.setAttribute('capture','environment');
     inp.onchange=function(){ var f=inp.files[0]; if(!f)return; gjBusy=true; toast('올리는 중');
@@ -873,7 +899,7 @@ function hkMain(){
     if(D.syncedAt){var mins=Math.round((Date.now()-D.syncedAt)/60000);
       t='PC 마지막 변경 '+(key(new Date(D.syncedAt))!==TODAY?label(key(new Date(D.syncedAt)))+' ':'')+hm(D.syncedAt)+(mins<1?' (방금)':mins<60?' ('+mins+'분 전)':'');}
     else t='아직 PC에서 동기화 전';
-    s.innerHTML=esc(t)+' · 앱 v22'+(D.pending?' · <b>PC 반영 대기 '+D.pending+'개</b>':'');
+    s.innerHTML=esc(t)+' · 앱 v23'+(D.pending?' · <b>PC 반영 대기 '+D.pending+'개</b>':'');
     if(NS&&NS.on){var bad=NS.err&&NS.errSince&&(Date.now()-NS.errSince>3600000)||(NS.lastOk&&Date.now()-NS.lastOk>3600000);
       var warn=!bad&&NS.err;   // 방금 생긴 문제: 자동으로 다시 시도 중
       var nt=bad?'노션 ⚠ '+(NS.err||'1시간 넘게 못 보냈어요'):warn?'노션 ⚠ 다시 시도 중 · '+NS.err:NS.prog&&NS.prog[0]<NS.prog[1]?'노션 옮기는 중 '+NS.prog[0]+'/'+NS.prog[1]:'노션 ✓ '+(NS.lastOk?hm(NS.lastOk):'');
@@ -946,18 +972,31 @@ function hkMain(){
     var top=Object.keys(R).map(function(k){return {k:k,n:R[k].n,notes:R[k].notes.slice(0,3)}}).sort(function(a,b){return b.n-a.n}).slice(0,3);
     return {from:from,to:to,s:s,g:g,m:m,sit:sit,gj:{k:gk,a:ga,dots:dots},mv:mv,fix:{k:fk,a:fa},top:top,wqa:wqa} }
   function wkHTMLp(S){ var pct=S.g?Math.floor(S.s/S.g*100):null;
-    return '<div class="wk"><div class="wkn"><div><span>순익</span><b>'+manS(S.s)+'</b><i>'+(S.g?'목표 '+manS(S.g)+' · '+pct+'%':'목표 없음')+'</i></div><div><span>물길</span><b>'+S.m+'개</b></div><div><span>앉아 있던 시간</span><b>'+hmLen(S.sit)+'</b></div><div><span>곤장 지킴</span><b>'+(S.gj.a?Math.round(S.gj.k/S.gj.a*100)+'%':'-')+'</b><i>'+S.gj.k+'/'+S.gj.a+'칸</i></div></div>'
-      +'<div class="wkdots">'+S.gj.dots.map(function(x){return '<span class="wd '+x.k+'"><i>'+(x.k==='ok'?'✓':x.k==='miss'?'✕':x.k==='rest'?'휴':'·')+'</i><em>'+WKD[dowP(x.d)]+'</em></span>'}).join('')+'</div>'
-      +'<div class="wkl"><div class="wkh">끊긴 이유 상위 3</div>'+(S.top.length?S.top.map(function(r,i){return '<div class="wkr"><b>'+(i+1)+'. '+esc(r.k)+' · '+r.n+'번</b>'+r.notes.map(function(t){return '<div class="small">· '+esc(t)+'</div>'}).join('')+'</div>'}).join(''):'<div class="small muted">점호 기록이 없어</div>')+'</div>'
-      +'<div class="wkl"><div class="wkh">고칠 행동</div><div class="wkr"><b>'+S.fix.a+'개 중 '+S.fix.k+'개 지킴</b></div>'+(S.mv?'<div class="small" style="color:#B85C00;font-weight:700">곤장 칸 미룸 '+S.mv+'번</div>':'')+'</div></div>' }
+    var dot=function(x){return '<span class="wd '+x.k+'"><i>'+(x.k==='ok'?'✓':x.k==='miss'?'✕':x.k==='rest'?'휴':'')+'</i><em>'+WKD[dowP(x.d)]+'</em></span>'};
+    return '<div class="wk"><div class="wkhero"><span>이번 주 순익</span><b>'+manS(S.s)+'</b>'+(S.g?'<div class="wkbar"><i style="width:'+Math.min(100,pct)+'%"></i></div><em>목표 '+manS(S.g)+' 중 <b>'+pct+'%</b></em>':'<em>목표 없음</em>')+'</div>'
+      +'<div class="wk3"><div><span>물길</span><b>'+S.m+'개</b></div><div><span>앉아 있던 시간</span><b>'+hmLen(S.sit)+'</b></div><div><span>곤장 지킴</span><b>'+S.gj.k+'/'+S.gj.a+'칸</b></div></div>'
+      +'<div class="wkdots">'+S.gj.dots.map(dot).join('')+'</div>'
+      +'<div class="wkl"><div class="wkh">끊긴 이유 상위 3</div>'+(S.top.length?S.top.map(function(r,i){return '<div class="wkr"><div class="wkrt"><span class="wkn1">'+(i+1)+'</span><b>'+esc(r.k)+'</b><span class="muted">'+r.n+'번</span></div>'+r.notes.map(function(t){return '<div class="small muted">'+esc(t)+'</div>'}).join('')+'</div>'}).join(''):'<div class="small muted">점호 기록이 없어</div>')+'</div>'
+      +'<div class="wk2"><div><span>고칠 행동 지킴</span><b>'+S.fix.k+'<small>/'+S.fix.a+'</small></b></div>'+(S.mv?'<div class="warn"><span>곤장 칸 미룸</span><b>'+S.mv+'번</b></div>':'')+'</div></div>' }
   function jRecP(){ var jj=jDay(); return {at:Date.now(),ok:true,kept:JD.kept==null?null:JD.kept,reason:JD.reason,rnote:(JD.rnote||'').trim(),could:(JD.could||'').trim(),fix:(JD.fix||'').trim(),wq:(D.weekQ||'').trim(),wqa:(JD.wqa||'').trim(),late:!!(jj&&jj.late)} }
   function jN(day){ return 1+(wkFor(day)?1:0)+(gjNeed2(day)?1:0) }
   function jSn(day,i){ var n=jN(day); return n>1?' · '+i+'/'+n:'' }
-  function jeomHTML(){ var J=jDay(); if(!J)return ''; if(JD.day!==J.day){JD={day:J.day}; jFixOpen=false}
+  // 시안 2026-11-21: 단계 카드 (열품타 짜임) — 지금 단계만 펼치고 끝낸 단계 ✓ 한 줄, 남은 단계 회색 한 줄
+  function jeomHTML(){ var h=jeomHTML0(); if(!h)return h; var J=jDay(), WK=wkFor(J.day), g2=gjNeed2(J.day), ORD=[1].concat(WK?['w']:[]).concat(g2?[2]:[]); if(ORD.length<2) return h;
+    var cur=JD.step==='w'&&WK?'w':JD.step===2&&g2?2:1, ci=ORD.indexOf(cur);
+    var row=function(k,i){ var st=i<ci?'done':i>ci?'todo':'cur', t=k===1?'오늘 세 줄':k==='w'?'주간 돌아보기':(gjDayPrev(J.day,1)===TODAY?'오늘':'내일')+' 곤장 칸 '+GJ_N+'개', sum=st!=='done'?'':k===1?esc((JD.reason||'')+' · '+(JD.rnote||'')):esc('다음 주 질문 · '+(JD.nq||'')), meta=k==='w'?mdP(WK.from)+'~'+mdP(WK.to):'';
+      return '<button class="jsh '+st+'"'+(st==='done'?' data-a="jBack" data-to="'+k+'"':'')+'><span class="jsn">'+(i+1)+'</span><span class="jst">'+t+'</span><span class="jss">'+sum+'</span>'+(meta?'<span class="jsm">'+meta+'</span>':'')+'</button>'; };
+    var m=h.match(/^<section class="panel jeomp">([\s\S]*?)<div class="jh"><b>🌙 점호[^<]*<\/b>(<span[\s\S]*?<\/span>)<\/div>([\s\S]*)<\/section>$/); if(!m) return h;
+    var right=cur==='w'?'<span class="small muted">'+(J.late?'놓친 점호':'24:00까지')+'</span>':m[2];
+    return '<section class="panel jeomp steps">'+m[1]+'<div class="jh"><b>🌙 점호</b>'+right+'</div>'
+      +ORD.slice(0,ci).map(function(k,i){return row(k,i)}).join('')
+      +'<div class="jstep cur">'+row(cur,ci)+'<div class="jsb">'+m[3].replace(/<button class="btn" data-a="jBack"[^>]*>[^<]*<\/button>/,'')+'</div></div>'
+      +ORD.slice(ci+1).map(function(k,i){return row(k,ci+1+i)}).join('')+'</section>'; }
+  function jeomHTML0(){ var J=jDay(); if(!J)return ''; if(JD.day!==J.day){JD={day:J.day}; jFixOpen=false}
     var p=(D.pan||{})[J.day]||{}, fx=(jOf(jPrev(J.day))||{}).fix||'', wq=(D.weekQ||'').trim(), n=jMiss(fx), jm=D.jeomMeta||{};
     var inp=function(f,ph,mx){return '<input type="text" class="jin" id="jq_'+f+'" data-jf="'+f+'" maxlength="'+mx+'" placeholder="'+ph+'" value="'+esc(JD[f]||'')+'">'};
     var ms=(+J.day.slice(5,7))+'월 '+(+J.day.slice(8))+'일';
-    var lock=gjLockOf(J.day).map(function(it){return '<div class="gjs no"><span class="grow lt">🔒 '+esc(it.t)+' 곤장 못 지킴 · <b>'+esc(gjConX(it.con,gjMult(J.day,it)))+'</b> 인증부터 해야 점호가 끝나</span>'+gjProofBtns(J.day,it)+'</div>'}).join('');
+    var lock=gjLockOf(J.day).map(function(it){return '<div class="gjs no col"><div class="gjtop"><span class="gjic no">!</span><span class="grow"><b>'+esc(it.t)+' 곤장 못 지킴</b> · 제약 <b>'+esc(gjConX(it.con,gjMult(J.day,it)))+'</b></span></div><div class="gjlk">인증부터 해야 점호가 끝나</div><div class="gjproof"><button class="gjtile" data-a="gjCam" data-sid="'+it.sid+'" data-day="'+J.day+'"><span class="gjplus">＋</span>찍어서 인증</button><button class="gjtile g2" data-a="gjAlbum" data-sid="'+it.sid+'" data-day="'+J.day+'">앨범에서</button></div></div>'}).join('');   // 2026-11-21: 고정 칸 곤장 줄과 같은 모양
     var gd=(D.gonjang||{})[J.day], mv=gd?(gd.items||[]).reduce(function(a2,y){return a2+(y.moved||0)},0):0;
     var WK=wkFor(J.day);
     if(JD.step==='w'&&WK){ var jx={}; Object.keys(D.jeom||{}).forEach(function(k){jx[k]=D.jeom[k]}); jx[J.day]=jRecP(); var nq=(JD.nq||'').trim();
@@ -966,17 +1005,17 @@ function hkMain(){
         +'<div class="jrow jend"><button class="btn" data-a="jBack" data-to="1">← 세 줄로</button><button class="btn p grow" id="jSaveW" data-a="'+(gjNeed2(J.day)?'jNext2':'jSave')+'"'+(!nq||(!gjNeed2(J.day)&&lock)?' disabled':'')+'>'+(gjNeed2(J.day)?'다음 · 곤장 칸 고르기':'점호 끝')+'</button></div></section>' }
     if(JD.step===2&&gjNeed2(J.day)) return '<section class="panel jeomp">'+lock+'<div class="jh"><b>🌙 점호'+jSn(J.day,jN(J.day))+'</b><span class="small muted">'+(gjDayPrev(J.day,1)===TODAY?'오늘':'내일')+' 곤장 칸 '+GJ_N+'개 고르기</span></div><div class="gjpick">'+gjPickPhone(J.day)+'</div><div class="small" style="color:#C62828;min-height:18px;margin-top:8px" id="gjMsg"></div><div class="jrow jend"><button class="btn" data-a="jBack" data-to="'+(WK?'w':'1')+'">← '+(WK?'주간 돌아보기로':'세 줄로')+'</button><button class="btn p grow" data-a="jSave"'+(lock?' disabled':'')+'>점호 끝</button></div></section>';
     return '<section class="panel jeomp">'+lock+'<div class="jh"><b>🌙 점호'+jSn(J.day,1)+'</b><span class="small muted">'+(J.late?ms+' 놓친 점호 · 시동 전에 먼저':'24:00까지')+'</span></div>'
-      +'<div class="jq"><div class="jl">'+(J.late?'그날':'오늘')+' 합계 맞아?</div><div class="jrow"><span class="grow">순익 <b>'+manS(p.s||0)+'</b> · 물길 <b>'+pM(p)+'</b>개 · 앉아 있던 시간 <b>'+hmLen(sitMinP(J.day))+'</b></span><button class="btn'+(JD.ok?' p':'')+'" data-a="jOk">맞아</button><button class="btn" data-a="jFix">고치기</button></div>'
+      +'<div class="jq"><div class="jl">'+(J.late?'그날':'오늘')+' 합계 맞아?</div><div class="jrow"><span class="grow">순익 <b>'+manS(p.s||0)+'</b> · 물길 <b>'+pM(p)+'</b>개 · <span style="white-space:nowrap">앉아 있던 시간 <b>'+hmLen(sitMinP(J.day))+'</b></span></span><button class="btn'+(JD.ok?' p':'')+'" data-a="jOk">맞아</button><button class="btn" data-a="jFix">고치기</button></div>'
       +(jFixOpen?'<div class="jrow"><input type="number" class="jin" id="jq_s" inputmode="numeric" value="'+(p.s||0)+'" placeholder="순익 합계(원)"><input type="number" class="jin" id="jq_m" inputmode="numeric" value="'+pM(p)+'" placeholder="물길" style="max-width:80px"><button class="btn p" data-a="jFixSave">이걸로</button></div>':'')+'</div>'
       +(fx?'<div class="jq"><div class="jl">어제 정한 것 · '+esc(fx)+'</div><div class="jrow"><button class="btn'+(JD.kept===true?' p':'')+'" data-a="jKept" data-v="1">지켰어</button><button class="btn'+(JD.kept===false?' p':'')+'" data-a="jKept" data-v="0">못 지켰어</button></div></div>':'')
       +'<div class="jq"><div class="jl">① 흐름 끊긴 이유</div><div class="jchips">'+jReasons().map(function(r){return '<button class="jchip'+(JD.reason===r?' on':'')+'" data-a="jReason" data-v="'+esc(r)+'">'+esc(r)+'</button>'}).join('')+'<button class="jchip add" data-a="jReasonAdd">+ 추가</button></div>'+inp('rnote','한 줄 (예: 점심 먹고 폰 보다 40분 날림)',200)+'</div>'
       +'<div class="jq"><div class="jl">② 그 시간에 할 수 있었던 것</div>'+inp('could','예: 체험단 모집글 1곳 더 올리기',200)+'</div>'
       +'<div class="jq"><div class="jl">③ 내일 고칠 행동 하나</div>'+inp('fix','예: 점심 끝나면 폰 서랍에 넣고 바로 칸 시작',120)+'</div>'
       +(wq?'<div class="jq"><div class="jl">이번 주 질문 · '+esc(wq)+'</div>'+inp('wqa','한 줄',200)+'</div>':'')
-      +'<div class="jrow jend"><button class="btn p grow" data-a="'+(jN(J.day)>1?'jNext':'jSave')+'" id="jSaveB"'+(n?' disabled':'')+'>'+jBtnLabel(J.day)+(n?' (빈 칸 '+n+'개)':'')+'</button>'+(!J.late&&J.day===TODAY&&jm.used!==TODAY?'<button class="btn" data-a="jDefer">1시까지 미루기</button>':'')+'</div></section>'; }
+      +'<div class="jrow jend"><button class="btn p grow" data-a="'+(jN(J.day)>1?'jNext':'jSave')+'" id="jSaveB"'+(n?' disabled':'')+'>'+(n?(jN(J.day)>1?'다음':'점호 끝')+' (빈 칸 '+n+'개)':jBtnLabel(J.day))+'</button>'+(!J.late&&J.day===TODAY&&jm.used!==TODAY?'<button class="btn" data-a="jDefer">1시까지 미루기</button>':'')+'</div></section>'; }
   function jBtnLabel(day){ return wkFor(day)?'다음 · 주간 돌아보기':gjNeed2(day)?'다음 · 곤장 칸 고르기':'점호 끝' }
   function jRefreshBtn(){ var w=$('jSaveW'); if(w){ w.disabled=!(JD.nq||'').trim()||(!gjNeed2(JD.day)&&gjLockOf(JD.day).length>0); }
-    var b=$('jSaveB'); if(!b)return; var fx=(jOf(jPrev(JD.day))||{}).fix||'', n=jMiss(fx); b.disabled=n>0; b.textContent=jBtnLabel(JD.day)+(n?' (빈 칸 '+n+'개)':''); }
+    var b=$('jSaveB'); if(!b)return; var fx=(jOf(jPrev(JD.day))||{}).fix||'', n=jMiss(fx); b.disabled=n>0; b.textContent=n?(jN(JD.day)>1?'다음':'점호 끝')+' (빈 칸 '+n+'개)':jBtnLabel(JD.day); }
   function fixCardHTML(){ var o=jDay(); if(o)return ''; var f=(jOf(jPrev(TODAY))||{}).fix; return f?'<section class="panel fixp"><div class="small muted">어젯밤 정한 오늘 고칠 행동</div><div class="fixt">'+esc(f)+'</div></section>':''; }
   function panHTML(){
     var p=(D.pan||{})[TODAY]||{}, def=gDaily()||D.panGoal||500000, G=p.g||def, m=pM(p), sv=p.s||0, mw=m*20000, tot=mw+sv, f=function(n){return Math.round(n).toLocaleString('ko-KR')}, mn=function(n){return !n?'0':n%10000===0?(n/10000).toLocaleString('ko-KR')+'만':f(n)};
