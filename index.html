@@ -35,6 +35,16 @@
 .jeomp{border:2px solid var(--act)}.jeomp .jh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}.jeomp .jh b{font-size:18px;color:var(--act)}
 .jeomp .jq{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}.jeomp .jl{font-size:14px;font-weight:700}
 .jrow{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.jrow .grow{flex:1}
+/* 2026-11-21 3단계: 주간 돌아보기 (점호 2/3) */
+.wk{display:flex;flex-direction:column;gap:12px;margin-bottom:12px}
+.wkn{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.wkn>div{border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.wkn span{font-size:12px;color:var(--muted);font-weight:700}.wkn b{font-size:19px}.wkn i{font-style:normal;font-size:12px;color:var(--muted)}
+.wkdots{display:flex;gap:4px}.wd{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1}
+.wd i{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-style:normal;font-weight:800;font-size:13px;background:var(--line);color:var(--muted)}
+.wd.ok i{background:var(--act);color:#fff}.wd.miss i{background:#FDE7E4;color:#C0392B}.wd em{font-style:normal;font-size:12px;color:var(--muted)}
+.wkl{display:flex;flex-direction:column;gap:6px}.wkh{font-size:14px;font-weight:700}.wkr b{font-size:15px}.wkr .small{color:var(--muted)}
+@media (min-width:1100px){.wkn{grid-template-columns:repeat(4,minmax(0,1fr))}}
 .jin{width:100%;box-sizing:border-box;padding:11px 12px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font:inherit;font-size:16px}
 .jrow .jin{flex:1;width:auto;min-width:0}
 .jchips{display:flex;gap:6px;flex-wrap:wrap}.jchip{padding:8px 14px;border-radius:99px;border:1.5px solid var(--line);background:var(--surface);font-weight:600;font-size:14px}
@@ -731,6 +741,7 @@ function hkMain(){
       case 'panSet': st.pan=st.pan||{}; var qs=st.pan[d.day]||{m:0,s:0}; qs.s=Math.max(0,Math.round(+d.s||0)); qs.m=Math.max(0,Math.round(+d.m||0))-(qs.ma||0); st.pan[d.day]=qs; break;   // 점호 합계 고치기 (2026-11-21)
       case 'mulgilAuto': st.pan=st.pan||{}; var qa=st.pan[d.day]||{m:0,s:0}; qa.ma=Math.max(0,Math.round(+d.n||0)); if((qa.m||0)<-qa.ma)qa.m=-qa.ma; st.pan[d.day]=qa; break;
       case 'jeom': if(d.day&&d.rec){st.jeom=st.jeom||{}; st.jeom[d.day]=d.rec} break;
+      case 'weekly': if(d.rec&&d.rec.to){ st.weekly=(st.weekly||[]).filter(function(r){return !(r&&r.v===2&&r.to===d.rec.to)}).concat([d.rec]).slice(-8); if(d.rec.q)st.weekQ=String(d.rec.q).slice(0,80) } break;
       case 'jeomDefer': st.jeomMeta=st.jeomMeta||{}; st.jeomMeta.defer=d.day; st.jeomMeta.used=d.day; break;
       case 'jeomReason': var jr=String(d.name||'').trim().slice(0,12); if(jr){var JL=jReasons().slice(); if(JL.indexOf(jr)<0)JL.push(jr); st.jeomReasons=JL} break;
       case 'gjSet': if(d.day&&d.items&&d.items.length===2){ st.gonjang=st.gonjang||{}; var go=st.gonjang[d.day]; st.gonjang[d.day]={items:d.items.map(function(x){var o=go&&(go.items||[]).filter(function(y){return y.sid===x.sid})[0]; return {sid:x.sid,i:+x.i||0,t:x.t,taskId:x.taskId,title:x.title,con:x.con,rew:x.rew,moved:o?o.moved||0:0,proof:o?o.proof||'':'',proofAt:o?o.proofAt||0:0,got:o?o.got||0:0}}),at:op.at,ok:d.ok?op.at:(go&&go.ok)||0};
@@ -862,7 +873,7 @@ function hkMain(){
     if(D.syncedAt){var mins=Math.round((Date.now()-D.syncedAt)/60000);
       t='PC 마지막 변경 '+(key(new Date(D.syncedAt))!==TODAY?label(key(new Date(D.syncedAt)))+' ':'')+hm(D.syncedAt)+(mins<1?' (방금)':mins<60?' ('+mins+'분 전)':'');}
     else t='아직 PC에서 동기화 전';
-    s.innerHTML=esc(t)+' · 앱 v21'+(D.pending?' · <b>PC 반영 대기 '+D.pending+'개</b>':'');
+    s.innerHTML=esc(t)+' · 앱 v22'+(D.pending?' · <b>PC 반영 대기 '+D.pending+'개</b>':'');
     if(NS&&NS.on){var bad=NS.err&&NS.errSince&&(Date.now()-NS.errSince>3600000)||(NS.lastOk&&Date.now()-NS.lastOk>3600000);
       var warn=!bad&&NS.err;   // 방금 생긴 문제: 자동으로 다시 시도 중
       var nt=bad?'노션 ⚠ '+(NS.err||'1시간 넘게 못 보냈어요'):warn?'노션 ⚠ 다시 시도 중 · '+NS.err:NS.prog&&NS.prog[0]<NS.prog[1]?'노션 옮기는 중 '+NS.prog[0]+'/'+NS.prog[1]:'노션 ✓ '+(NS.lastOk?hm(NS.lastOk):'');
@@ -913,23 +924,59 @@ function hkMain(){
       if(items.some(function(y){return y.taskId===t.id})) return {err:'두 칸에 같은 일을 넣었어'};
       items.push({sid:x.id,i:x.i,t:x.t,taskId:t.id,title:t.title,con:g.con,rew:g.rew,moved:0}) }
     return {items:items,day:nd} }
+  // 3단계 (2026-11-21): 앉아 있던 시간 · 주간 돌아보기 — 확장 core.js와 같은 규칙
+  function sitMerge(a,b){ var L=(a||[]).concat(b||[]).filter(function(r){return r&&+r[1]>+r[0]}).map(function(r){return [Math.max(0,Math.round(+r[0])),Math.min(1500,Math.round(+r[1]))]}).filter(function(r){return r[1]>r[0]}).sort(function(x,y){return x[0]-y[0]}), o=[];
+    L.forEach(function(r){var l=o[o.length-1]; if(l&&r[0]<=l[1])l[1]=Math.max(l[1],r[1]); else o.push([r[0],r[1]])}); return o }
+  function sitMinP(day){ var base=new Date(day+'T00:00:00').getTime(), B=(D.blocks||[]).filter(function(b){return b&&b.day===day&&b.start&&b.end>b.start}).map(function(b){return [Math.floor((b.start-base)/60000),Math.ceil((b.end-base)/60000)]});
+    return sitMerge((D.sit||{})[day],B).reduce(function(a,r){return a+r[1]-r[0]},0) }
+  function hmLen(m){ m=Math.max(0,Math.round(m||0)); var h=Math.floor(m/60), r=m%60; return h?h+'시간'+(r?' '+r+'분':''):r+'분' }
+  var WKD=['일','월','화','수','목','금','토'];
+  function dowP(k){ return new Date(k+'T12:00:00').getDay() }
+  function mdP(k){ return (+k.slice(5,7))+'/'+(+k.slice(8)) }
+  function wkFor(day){ var wd=+(D.weekDay||0); for(var k=0;k<7;k++){ var W=gjDayPrev(day,-k); if(dowP(W)!==wd)continue; if(gjRest(day))return null;
+      for(var x=W;x<day;x=gjDayPrev(x,1)) if(!gjRest(x))return null;
+      if((D.weekly||[]).some(function(r){return r&&r.v===2&&r.to===W}))return null; return {from:gjDayPrev(W,-6),to:W} } return null }
+  function wkStats(from,to,jx){ var s=0,g=0,m=0,sit=0,gk=0,ga=0,mv=0,fk=0,fa=0,R={},dots=[],wqa=[], J=jx||D.jeom||{};
+    for(var d=from;d<=to;d=gjDayPrev(d,1)){ var p=(D.pan||{})[d]||{}; s+=p.s||0; m+=pM(p); g+=+p.dg||0; sit+=sitMinP(d);
+      var G=(D.gonjang||{})[d], end=new Date(d+'T23:59:59').getTime();
+      if(gjRest(d)) dots.push({d:d,k:'rest'}); else if(!G||!(G.items||[]).length) dots.push({d:d,k:'none'});
+      else { var ks=G.items.map(function(it){return gjState(d,it,end)}), kk=ks.filter(function(x){return x==='kept'}).length; gk+=kk; ga+=ks.length; dots.push({d:d,k:kk===ks.length?'ok':'miss'}); mv+=G.items.reduce(function(a2,it){return a2+(it.moved||0)},0) }
+      var j=J[d]; if(!j)continue; if(j.reason){ R[j.reason]=R[j.reason]||{n:0,notes:[]}; R[j.reason].n++; if(j.rnote)R[j.reason].notes.push(j.rnote) }
+      if(j.kept!=null){fa++; if(j.kept)fk++} if(j.wq&&j.wqa)wqa.push({d:d,q:j.wq,a:j.wqa}) }
+    var top=Object.keys(R).map(function(k){return {k:k,n:R[k].n,notes:R[k].notes.slice(0,3)}}).sort(function(a,b){return b.n-a.n}).slice(0,3);
+    return {from:from,to:to,s:s,g:g,m:m,sit:sit,gj:{k:gk,a:ga,dots:dots},mv:mv,fix:{k:fk,a:fa},top:top,wqa:wqa} }
+  function wkHTMLp(S){ var pct=S.g?Math.floor(S.s/S.g*100):null;
+    return '<div class="wk"><div class="wkn"><div><span>순익</span><b>'+manS(S.s)+'</b><i>'+(S.g?'목표 '+manS(S.g)+' · '+pct+'%':'목표 없음')+'</i></div><div><span>물길</span><b>'+S.m+'개</b></div><div><span>앉아 있던 시간</span><b>'+hmLen(S.sit)+'</b></div><div><span>곤장 지킴</span><b>'+(S.gj.a?Math.round(S.gj.k/S.gj.a*100)+'%':'-')+'</b><i>'+S.gj.k+'/'+S.gj.a+'칸</i></div></div>'
+      +'<div class="wkdots">'+S.gj.dots.map(function(x){return '<span class="wd '+x.k+'"><i>'+(x.k==='ok'?'✓':x.k==='miss'?'✕':x.k==='rest'?'휴':'·')+'</i><em>'+WKD[dowP(x.d)]+'</em></span>'}).join('')+'</div>'
+      +'<div class="wkl"><div class="wkh">끊긴 이유 상위 3</div>'+(S.top.length?S.top.map(function(r,i){return '<div class="wkr"><b>'+(i+1)+'. '+esc(r.k)+' · '+r.n+'번</b>'+r.notes.map(function(t){return '<div class="small">· '+esc(t)+'</div>'}).join('')+'</div>'}).join(''):'<div class="small muted">점호 기록이 없어</div>')+'</div>'
+      +'<div class="wkl"><div class="wkh">고칠 행동</div><div class="wkr"><b>'+S.fix.a+'개 중 '+S.fix.k+'개 지킴</b></div>'+(S.mv?'<div class="small" style="color:#B85C00;font-weight:700">곤장 칸 미룸 '+S.mv+'번</div>':'')+'</div></div>' }
+  function jRecP(){ var jj=jDay(); return {at:Date.now(),ok:true,kept:JD.kept==null?null:JD.kept,reason:JD.reason,rnote:(JD.rnote||'').trim(),could:(JD.could||'').trim(),fix:(JD.fix||'').trim(),wq:(D.weekQ||'').trim(),wqa:(JD.wqa||'').trim(),late:!!(jj&&jj.late)} }
+  function jN(day){ return 1+(wkFor(day)?1:0)+(gjNeed2(day)?1:0) }
+  function jSn(day,i){ var n=jN(day); return n>1?' · '+i+'/'+n:'' }
   function jeomHTML(){ var J=jDay(); if(!J)return ''; if(JD.day!==J.day){JD={day:J.day}; jFixOpen=false}
     var p=(D.pan||{})[J.day]||{}, fx=(jOf(jPrev(J.day))||{}).fix||'', wq=(D.weekQ||'').trim(), n=jMiss(fx), jm=D.jeomMeta||{};
     var inp=function(f,ph,mx){return '<input type="text" class="jin" id="jq_'+f+'" data-jf="'+f+'" maxlength="'+mx+'" placeholder="'+ph+'" value="'+esc(JD[f]||'')+'">'};
     var ms=(+J.day.slice(5,7))+'월 '+(+J.day.slice(8))+'일';
     var lock=gjLockOf(J.day).map(function(it){return '<div class="gjs no"><span class="grow lt">🔒 '+esc(it.t)+' 곤장 못 지킴 · <b>'+esc(gjConX(it.con,gjMult(J.day,it)))+'</b> 인증부터 해야 점호가 끝나</span>'+gjProofBtns(J.day,it)+'</div>'}).join('');
     var gd=(D.gonjang||{})[J.day], mv=gd?(gd.items||[]).reduce(function(a2,y){return a2+(y.moved||0)},0):0;
-    if(JD.step===2&&gjNeed2(J.day)) return '<section class="panel jeomp">'+lock+'<div class="jh"><b>🌙 점호 · 2/2</b><span class="small muted">'+(gjDayPrev(J.day,1)===TODAY?'오늘':'내일')+' 곤장 칸 '+GJ_N+'개 고르기</span></div><div class="gjpick">'+gjPickPhone(J.day)+'</div><div class="small" style="color:#C62828;min-height:18px;margin-top:8px" id="gjMsg"></div><div class="jrow jend"><button class="btn" data-a="jBack">← 세 줄로</button><button class="btn p grow" data-a="jSave"'+(lock?' disabled':'')+'>점호 끝</button></div></section>';
-    return '<section class="panel jeomp">'+lock+'<div class="jh"><b>🌙 점호'+(gjNeed2(J.day)?' · 1/2':'')+'</b><span class="small muted">'+(J.late?ms+' 놓친 점호 · 시동 전에 먼저':'24:00까지')+'</span></div>'
-      +'<div class="jq"><div class="jl">'+(J.late?'그날':'오늘')+' 합계 맞아?</div><div class="jrow"><span class="grow">순익 <b>'+manS(p.s||0)+'</b> · 물길 <b>'+pM(p)+'</b>개</span><button class="btn'+(JD.ok?' p':'')+'" data-a="jOk">맞아</button><button class="btn" data-a="jFix">고치기</button></div>'
+    var WK=wkFor(J.day);
+    if(JD.step==='w'&&WK){ var jx={}; Object.keys(D.jeom||{}).forEach(function(k){jx[k]=D.jeom[k]}); jx[J.day]=jRecP(); var nq=(JD.nq||'').trim();
+      return '<section class="panel jeomp">'+lock+'<div class="jh"><b>🌙 점호'+jSn(J.day,2)+'</b><span class="small muted">주간 돌아보기 · '+mdP(WK.from)+'~'+mdP(WK.to)+'</span></div>'+wkHTMLp(wkStats(WK.from,WK.to,jx))
+        +'<div class="jq"><div class="jl">다음 주 질문 한 줄 <span class="small muted">· 다음 주 매일 점호에 떠</span></div>'+inp('nq','예: 오늘 칸 몇 개를 점심 전에 끝냈어?',80)+'</div>'
+        +'<div class="jrow jend"><button class="btn" data-a="jBack" data-to="1">← 세 줄로</button><button class="btn p grow" id="jSaveW" data-a="'+(gjNeed2(J.day)?'jNext2':'jSave')+'"'+(!nq||(!gjNeed2(J.day)&&lock)?' disabled':'')+'>'+(gjNeed2(J.day)?'다음 · 곤장 칸 고르기':'점호 끝')+'</button></div></section>' }
+    if(JD.step===2&&gjNeed2(J.day)) return '<section class="panel jeomp">'+lock+'<div class="jh"><b>🌙 점호'+jSn(J.day,jN(J.day))+'</b><span class="small muted">'+(gjDayPrev(J.day,1)===TODAY?'오늘':'내일')+' 곤장 칸 '+GJ_N+'개 고르기</span></div><div class="gjpick">'+gjPickPhone(J.day)+'</div><div class="small" style="color:#C62828;min-height:18px;margin-top:8px" id="gjMsg"></div><div class="jrow jend"><button class="btn" data-a="jBack" data-to="'+(WK?'w':'1')+'">← '+(WK?'주간 돌아보기로':'세 줄로')+'</button><button class="btn p grow" data-a="jSave"'+(lock?' disabled':'')+'>점호 끝</button></div></section>';
+    return '<section class="panel jeomp">'+lock+'<div class="jh"><b>🌙 점호'+jSn(J.day,1)+'</b><span class="small muted">'+(J.late?ms+' 놓친 점호 · 시동 전에 먼저':'24:00까지')+'</span></div>'
+      +'<div class="jq"><div class="jl">'+(J.late?'그날':'오늘')+' 합계 맞아?</div><div class="jrow"><span class="grow">순익 <b>'+manS(p.s||0)+'</b> · 물길 <b>'+pM(p)+'</b>개 · 앉아 있던 시간 <b>'+hmLen(sitMinP(J.day))+'</b></span><button class="btn'+(JD.ok?' p':'')+'" data-a="jOk">맞아</button><button class="btn" data-a="jFix">고치기</button></div>'
       +(jFixOpen?'<div class="jrow"><input type="number" class="jin" id="jq_s" inputmode="numeric" value="'+(p.s||0)+'" placeholder="순익 합계(원)"><input type="number" class="jin" id="jq_m" inputmode="numeric" value="'+pM(p)+'" placeholder="물길" style="max-width:80px"><button class="btn p" data-a="jFixSave">이걸로</button></div>':'')+'</div>'
       +(fx?'<div class="jq"><div class="jl">어제 정한 것 · '+esc(fx)+'</div><div class="jrow"><button class="btn'+(JD.kept===true?' p':'')+'" data-a="jKept" data-v="1">지켰어</button><button class="btn'+(JD.kept===false?' p':'')+'" data-a="jKept" data-v="0">못 지켰어</button></div></div>':'')
       +'<div class="jq"><div class="jl">① 흐름 끊긴 이유</div><div class="jchips">'+jReasons().map(function(r){return '<button class="jchip'+(JD.reason===r?' on':'')+'" data-a="jReason" data-v="'+esc(r)+'">'+esc(r)+'</button>'}).join('')+'<button class="jchip add" data-a="jReasonAdd">+ 추가</button></div>'+inp('rnote','한 줄 (예: 점심 먹고 폰 보다 40분 날림)',200)+'</div>'
       +'<div class="jq"><div class="jl">② 그 시간에 할 수 있었던 것</div>'+inp('could','예: 체험단 모집글 1곳 더 올리기',200)+'</div>'
       +'<div class="jq"><div class="jl">③ 내일 고칠 행동 하나</div>'+inp('fix','예: 점심 끝나면 폰 서랍에 넣고 바로 칸 시작',120)+'</div>'
       +(wq?'<div class="jq"><div class="jl">이번 주 질문 · '+esc(wq)+'</div>'+inp('wqa','한 줄',200)+'</div>':'')
-      +'<div class="jrow jend"><button class="btn p grow" data-a="'+(gjNeed2(J.day)?'jNext':'jSave')+'" id="jSaveB"'+(n?' disabled':'')+'>'+(gjNeed2(J.day)?'다음 · 곤장 칸 고르기':'점호 끝')+(n?' (빈 칸 '+n+'개)':'')+'</button>'+(!J.late&&J.day===TODAY&&jm.used!==TODAY?'<button class="btn" data-a="jDefer">1시까지 미루기</button>':'')+'</div></section>'; }
-  function jRefreshBtn(){ var b=$('jSaveB'); if(!b)return; var fx=(jOf(jPrev(JD.day))||{}).fix||'', n=jMiss(fx); b.disabled=n>0; b.textContent=(gjNeed2(JD.day)?'다음 · 곤장 칸 고르기':'점호 끝')+(n?' (빈 칸 '+n+'개)':''); }
+      +'<div class="jrow jend"><button class="btn p grow" data-a="'+(jN(J.day)>1?'jNext':'jSave')+'" id="jSaveB"'+(n?' disabled':'')+'>'+jBtnLabel(J.day)+(n?' (빈 칸 '+n+'개)':'')+'</button>'+(!J.late&&J.day===TODAY&&jm.used!==TODAY?'<button class="btn" data-a="jDefer">1시까지 미루기</button>':'')+'</div></section>'; }
+  function jBtnLabel(day){ return wkFor(day)?'다음 · 주간 돌아보기':gjNeed2(day)?'다음 · 곤장 칸 고르기':'점호 끝' }
+  function jRefreshBtn(){ var w=$('jSaveW'); if(w){ w.disabled=!(JD.nq||'').trim()||(!gjNeed2(JD.day)&&gjLockOf(JD.day).length>0); }
+    var b=$('jSaveB'); if(!b)return; var fx=(jOf(jPrev(JD.day))||{}).fix||'', n=jMiss(fx); b.disabled=n>0; b.textContent=jBtnLabel(JD.day)+(n?' (빈 칸 '+n+'개)':''); }
   function fixCardHTML(){ var o=jDay(); if(o)return ''; var f=(jOf(jPrev(TODAY))||{}).fix; return f?'<section class="panel fixp"><div class="small muted">어젯밤 정한 오늘 고칠 행동</div><div class="fixt">'+esc(f)+'</div></section>':''; }
   function panHTML(){
     var p=(D.pan||{})[TODAY]||{}, def=gDaily()||D.panGoal||500000, G=p.g||def, m=pM(p), sv=p.s||0, mw=m*20000, tot=mw+sv, f=function(n){return Math.round(n).toLocaleString('ko-KR')}, mn=function(n){return !n?'0':n%10000===0?(n/10000).toLocaleString('ko-KR')+'만':f(n)};
@@ -1304,8 +1351,9 @@ function hkMain(){
       case 'gjChip': var gs0=b.getAttribute('data-sid'), gk0=b.getAttribute('data-k'); JD.gj=JD.gj||{}; JD.gj[gs0]=JD.gj[gs0]||{}; JD.gj[gs0][gk0]=b.getAttribute('data-v'); JD.gj[gs0].on=true; render(); break;
       case 'gjOn': var gs1=b.getAttribute('data-sid'); JD.gj=JD.gj||{}; JD.gj[gs1]=JD.gj[gs1]||{}; JD.gj[gs1].on=!gjOnOf(gs1); render(); break;
       case 'gjAdd': var gk1=b.getAttribute('data-k'), gnv=(prompt(gk1==='con'?'새 제약 (숫자가 있어야 ×2·×3)':'새 보상')||'').trim().slice(0,30); if(!gnv)break; if(gk1==='rew'&&GJ_BAD.test(gnv)&&!confirm('이건 흐름 끊기는 보상이야. 그래도 넣을래?'))break; send('gjList',{k:gk1,v:gnv},'목록에 넣었어'); break;
-      case 'jNext': JD.step=2; render(); break;
-      case 'jBack': JD.step=1; render(); break;
+      case 'jNext': var jfn=(jOf(jPrev(JD.day))||{}).fix||''; if(jMiss(jfn)){toast('빈 칸부터 채워줘');break} JD.step=wkFor(JD.day)?'w':2; render(); window.scrollTo(0,0); break;
+      case 'jNext2': if(!(JD.nq||'').trim()){toast('다음 주 질문 한 줄 적어줘');break} JD.step=2; render(); break;
+      case 'jBack': var jto=b.getAttribute('data-to'); JD.step=jto==='w'?'w':1; render(); break;
       case 'jOk': JD.ok=true; render(); break;
       case 'jFix': jFixOpen=!jFixOpen; render(); break;
       case 'jFixSave': var js=Math.max(0,Math.round(+(($('jq_s')||{}).value||0))), jmv=Math.max(0,Math.round(+(($('jq_m')||{}).value||0))); jFixOpen=false; JD.ok=true; send('panSet',{day:JD.day,s:js,m:jmv},'합계 고쳤어'); break;
@@ -1315,9 +1363,11 @@ function hkMain(){
       case 'jDefer': send('jeomDefer',{day:TODAY},'1시까지 미뤘어. 한 번만 돼'); break;
       case 'jSave': var jfx=(jOf(jPrev(JD.day))||{}).fix||''; if(jMiss(jfx)){toast(gjLockOf(JD.day).length?'곤장 인증부터 해줘':'빈 칸부터 채워줘');break}
         var gjr=null; if(gjNeed2(JD.day)){ gjr=gjPickRead(JD.day); if(gjr.err){ var gm2=$('gjMsg'); if(gm2)gm2.textContent=gjr.err; else{JD.step=2;render()} break } }
+        var WK2=wkFor(JD.day); if(WK2&&!(JD.nq||'').trim()){ JD.step='w'; render(); toast('다음 주 질문 한 줄 적어줘'); break }
         if(gjr) send('gjSet',{day:gjr.day,items:gjr.items,ok:gjr.day===TODAY});
-        var jj=jDay(), rec={at:Date.now(),ok:true,kept:JD.kept==null?null:JD.kept,reason:JD.reason,rnote:(JD.rnote||'').trim(),could:(JD.could||'').trim(),fix:(JD.fix||'').trim(),wq:(D.weekQ||'').trim(),wqa:(JD.wqa||'').trim(),late:!!(jj&&jj.late)};
-        var jdd=JD.day; JD={}; send('jeom',{day:jdd,rec:rec},'점호 끝. 내일 아침 시동에 ③이 떠'); break;
+        var rec=jRecP(), jdd=JD.day;
+        if(WK2){ var jx2={}; Object.keys(D.jeom||{}).forEach(function(k){jx2[k]=D.jeom[k]}); jx2[jdd]=rec; send('weekly',{rec:{v:2,day:jdd,from:WK2.from,to:WK2.to,at:Date.now(),stats:wkStats(WK2.from,WK2.to,jx2),q:(JD.nq||'').trim().slice(0,80)}}); }
+        JD={}; send('jeom',{day:jdd,rec:rec},WK2?'점호 끝. 다음 주 질문도 넣었어':'점호 끝. 내일 아침 시동에 ③이 떠'); break;
       case 'panSOpen': salesOpen=!salesOpen; render(); if(salesOpen){var x=$('panIn'); if(x)x.focus()} break;
       case 'mAll': memoAll=!memoAll; render(); break;
       case 'mEdit': memoEd=id; render(); var mt0=$('med-'+id); if(mt0){mt0.focus(); mt0.setSelectionRange(mt0.value.length,mt0.value.length);} break;
