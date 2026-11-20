@@ -368,7 +368,6 @@ body.wide .wtl{position:relative;height:28px}
 body.wide .wtl::before{content:'';position:absolute;left:0;right:0;top:13px;border-top:2px dotted var(--line)}
 body.wide .wtl i{position:absolute;top:8px;height:12px;border-radius:6px;background:var(--done)}
 body.wide .wtl i.half{background:#8FA59B}body.wide .wtl i.cur{background:var(--act)}
-body.wide .wtl .wzone{position:absolute;top:22px;height:4px;border-radius:2px;background:color-mix(in srgb,var(--act) 10%,transparent)}
 body.wide .wtl .wslot{position:absolute;top:8px;height:12px;border-radius:6px;border:2px dashed var(--act)}
 body.wide .wtl .wslot.miss{border-color:var(--muted)}
 body.wide .wtl .wnow{position:absolute;width:2px;top:-2px;bottom:-2px;background:var(--ink);z-index:2}
@@ -428,7 +427,7 @@ body.wide .tls .tag{font-size:13.4px;padding:1px 10px}
 body.wide .tls .btn.s{font-size:14.6px;min-height:37px;padding:6px 12px}
 body.wide .grp{display:none}   /* 확장 가운데 칸처럼 '매일 3·할 일 5' 묶음 제목 없음 (형: '할 일' 두 번 나와서 거슬림) */
 body.wide .tls .tlist>.item:first-of-type,body.wide .tls .tlist>.grp:first-child+.item{border-top:0;padding-top:2px}
-/* 오른쪽: 메모 정리 · 오늘의 미션 */
+/* 오른쪽: 메모 정리 */
 body.wide .wc.side .panel{border-radius:22px;padding:22px 24px}
 body.wide .wc.side h2{font-size:17px;font-weight:700;margin:0 0 10px;display:flex;align-items:center}
 body.wide .mpan h2 .n{margin-left:auto;color:var(--muted);font-size:14.6px;font-weight:500}
@@ -439,10 +438,6 @@ body.wide .mpan .item .acts{display:flex;gap:4px;margin-top:10px}
 body.wide .mpan .acts .btn{min-height:37px;font-size:14.6px;padding:6px 12px;border-radius:10px;background:transparent;color:var(--muted);font-weight:600}
 body.wide .mpan .acts .btn.p{background:var(--surface);color:var(--ink);border:1.5px solid var(--line)}
 body.wide .mmore{font-size:14.6px}
-body.wide .wmis .item{background:var(--bg);border:0;border-radius:15px;padding:15px;margin-top:8px}
-body.wide .wmis .item>div[style*="font-size:16px"]{font-size:19.5px!important}
-body.wide .wmis .item .small{font-size:14.6px}
-body.wide .wmis .item div[style*="font-size:14px"],body.wide .wmis ol{font-size:16px!important}
 /* 맥북(1900 이하): 위쪽(선포·판·하루 띠)이 화면을 많이 먹어서 세 칸이 너무 납작해짐 → 화면 전체를 내리면 세 칸이 화면 높이만큼 펼쳐지고, 칸마다 따로 스크롤 */
 body.wide .wc.side h2 .ico{margin-right:6px}
 /* 맥북(1700 미만): 화면이 작으니 글씨·여백을 줄여서 배치. 본컴 창(1700 이상)은 확장 대시보드 값 그대로 */
@@ -556,8 +551,6 @@ html body.wide .wc.side h2 .n{margin-left:auto}
 /* 본문 줄: 할 일 이름 · 메모 글 · 고정 칸 할 일 이름 */
 html body.wide .tls .item .grow>div:first-child,html body.wide .mpan .item .grow,html body.wide .sl-body,html body.wide .sl-t{font-size:round(calc(15px*var(--s)),1px);font-weight:600;color:var(--ink);line-height:1.45}
 html body.wide .s-done .sl-t,html body.wide .s-pass .sl-t{color:var(--muted)}
-html body.wide .wmis .item>div[style*="font-size:16px"]{font-size:round(calc(16px*var(--s)),1px)!important;font-weight:800!important}
-html body.wide .wmis .item div[style*="font-size:14px"],html body.wide .wmis ol{font-size:round(calc(13.5px*var(--s)),1px)!important}
 /* 보조 글씨: 시간·메타·눈금·범례 */
 html body.wide .small,html body.wide .wticks,html body.wide .wtlh .wlg,html body.wide .wtlh .wsy,html body.wide .mpan .item .small,html body.wide .sl-row>.small,html body.wide .sl-b{font-size:round(calc(12.5px*var(--s)),1px);font-weight:500}
 html body.wide .wtllab .wlb b{font-size:round(calc(14px*var(--s)),1px)}html body.wide .wtllab .wlb span{font-size:round(calc(12.5px*var(--s)),1px)}
@@ -585,26 +578,18 @@ html body.wide .wpm .btn{font-weight:600}
 html body.wide .tls .tlist{margin-top:0!important}html body.wide .tls .tlist>.item:first-of-type{padding-top:2px}
 html body.wide .snzin .sl-head b{font-size:round(calc(15px*var(--s)),1px);font-weight:800}
 html body.wide .snzin .sl-row,html body.wide .snzin .sl-body{font-size:round(calc(15px*var(--s)),1px);font-weight:600}
-html body.wide .wmis .item .small,html body.wide .wmis .item div[style*="color:var(--act)"]{font-size:round(calc(12.5px*var(--s)),1px)!important}
-html body.wide .wmis .item div[style*="font-size:14px"]{font-weight:500}
 html body.wide .wtllab .wlb b{font-size:round(calc(14px*var(--s)),1px);font-weight:700}
 html body.wide .tls .item.row{align-items:center}   /* 할 일 줄: 핀·시각·수정 버튼을 줄 가운데에 맞춤 */
 /* 2026-11-20 세 칸 밑줄 맞춤 + 안 잘림: 왼쪽 마지막 카드는 칸 밑까지, 오른쪽 미션 카드는 남은 높이를 채우고 안에서 스크롤 */
 html body.wide .wc:first-child>section:last-child{flex:1 1 auto}
 html body.wide .wc.side{overflow:hidden}
 html body.wide .wc.side>.mpan{flex:none}
-html body.wide .wc.side>.wmis{flex:1 1 0;min-height:0;display:flex;flex-direction:column}
-html body.wide .wmis .wmlist{flex:1;min-height:0;overflow-y:auto}
-html body.wide .wmis .item>div[style*="font-size:16px"]{font-size:round(calc(15px*var(--s)),1px)!important;font-weight:700!important}
-html body.wide .wmis .item div[style*="font-size:14px"],html body.wide .wmis .item ol{font-size:round(calc(13.5px*var(--s)),1px)!important}
 /* 2026-11-20 맥북(1700 미만): 오른쪽 칸이 모자라 오늘의 미션은 안 보임 (형 결정). 메모 카드가 칸 밑까지 */
-@media (max-width:1699px){html body.wide .wc.side>.wmis{display:none}html body.wide .wc.side>.mpan{flex:1 1 auto}}
+html body.wide .wc.side>.mpan{flex:1 1 auto}   /* 2026-11-21 오늘의 미션 없앰 → 메모 카드가 오른쪽 칸 밑까지 (본컴·맥북 같음) */
 /* 2026-11-20 줄 단위 스크롤: 카드는 칸 밑까지 그대로, 안쪽 .rfit 만 스크롤 (높이는 fitRows가 줄 끝에 맞춤) */
 html body.wide .tls{overflow:hidden;display:flex;flex-direction:column}
-html body.wide .tls>.rfit,html body.wide .wmis>.rfit{flex:1 1 0;min-height:0;overflow-y:auto}
-html body.wide .wmis .wmlist{overflow:visible}
+html body.wide .tls>.rfit{flex:1 1 0;min-height:0;overflow-y:auto}
 /* 2026-11-20 하루 띠: 지금 시각 = 구글 캘린더 지금 줄 짜임(2px 선 + 동그라미, 띠 안에서만), 약 효과 구간 = 막대 뒤 연한 바탕, 짝 표시 = 올린 짝만 진하게 */
-html body.wide .wtl .wzone{top:3px;height:22px;border-radius:11px;background:color-mix(in srgb,var(--act) 7%,transparent)}
 html body.wide .wtl .wnow{width:2px;top:5px;bottom:auto;height:18px;background:var(--act);border-radius:1px}
 html body.wide .wtl .wnow::before{content:'';position:absolute;left:50%;top:-6px;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:var(--act)}
 html body.wide .wtl .wnow span{background:none;color:var(--act);font-size:12px;font-weight:700;padding:0;bottom:calc(100% + 9px)}
@@ -692,7 +677,7 @@ function hkMain(){
   function uid(){return Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4)}
   function $(id){return document.getElementById(id)}
   function toast(m){var t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('show')},2200)}
-  var TODAY=key(), tab='today', day=TODAY, editId=null, newKind='head', medEdit=false, noteEditDay=null, salesOpen=false;
+  var TODAY=key(), tab='today', day=TODAY, editId=null, newKind='head', noteEditDay=null, salesOpen=false;
 
   /* 서버와 같은 규칙 */
   function applyOp(st,op){var d=op.d||{};
@@ -814,7 +799,7 @@ function hkMain(){
     if(D.syncedAt){var mins=Math.round((Date.now()-D.syncedAt)/60000);
       t='PC 마지막 변경 '+(key(new Date(D.syncedAt))!==TODAY?label(key(new Date(D.syncedAt)))+' ':'')+hm(D.syncedAt)+(mins<1?' (방금)':mins<60?' ('+mins+'분 전)':'');}
     else t='아직 PC에서 동기화 전';
-    s.innerHTML=esc(t)+' · 앱 v18'+(D.pending?' · <b>PC 반영 대기 '+D.pending+'개</b>':'');
+    s.innerHTML=esc(t)+' · 앱 v19'+(D.pending?' · <b>PC 반영 대기 '+D.pending+'개</b>':'');
     if(NS&&NS.on){var bad=NS.err&&NS.errSince&&(Date.now()-NS.errSince>3600000)||(NS.lastOk&&Date.now()-NS.lastOk>3600000);
       var warn=!bad&&NS.err;   // 방금 생긴 문제: 자동으로 다시 시도 중
       var nt=bad?'노션 ⚠ '+(NS.err||'1시간 넘게 못 보냈어요'):warn?'노션 ⚠ 다시 시도 중 · '+NS.err:NS.prog&&NS.prog[0]<NS.prog[1]?'노션 옮기는 중 '+NS.prog[0]+'/'+NS.prog[1]:'노션 ✓ '+(NS.lastOk?hm(NS.lastOk):'');
@@ -877,8 +862,7 @@ function hkMain(){
   }
   function tlWideHTML(){
     var S0=360, SPAN=1080, pc=function(a){return Math.max(0,Math.min(100,a/SPAN*100))}, mOf=function(ts){var d=new Date(ts);return d.getHours()*60+d.getMinutes()}, ps=function(ts){return pc(mOf(ts)-S0)};
-    var kk=0, h='', md=D.med[TODAY], L=slOf(D,TODAY), now=Date.now(), lab=[];
-    if(md){var a=slMin(md)+90,b=slMin(md)+420; h+='<span class="wzone" style="left:'+pc(a-S0)+'%;width:'+pc(b-a)+'%"></span>'}
+    var kk=0, h='', L=slOf(D,TODAY), now=Date.now(), lab=[];
     (D.blocks||[]).filter(function(b){return b.day===TODAY}).forEach(function(b){ var g=b.slotId&&L.some(function(x){return x.id===b.slotId}), mi=b.minutes||Math.round((b.end-b.start)/60000);
       h+='<i data-k="'+kk+'" class="'+(b.result==='done'?'':'half')+'" style="left:'+ps(b.start)+'%;width:'+Math.max(.4,ps(b.end)-ps(b.start))+'%"></i>';
       lab.push({x:ps(b.start),cx:ps(b.start)+Math.max(.4,ps(b.end)-ps(b.start))/2,c:b.result==='done'?'':'h',t:b.title,m:mi+'분 · '+hm(b.start)+'–'+hm(b.end)+(b.result==='done'?'':' · 반쯤'),g:g,k:kk++}); });
@@ -890,7 +874,7 @@ function hkMain(){
     var tk=[6,9,12,15,18,21,24].map(function(x){var l=pc(x*60-S0);return '<span class="'+(nl>=0&&Math.abs(l-nl)<3?'hid':'')+'" style="left:'+l+'%">'+x+'시</span>'}).join('');
     var kept=L.filter(function(x){return x.st==='done'}).length;
     lab.sort(function(a,b){return a.x-b.x});
-    return '<div class="wtlbox"><div class="wtlh"><span class="wbx">📌 <b>오늘 하루</b>'+(L.length?'<span class="wpl">고정 칸 '+kept+'/'+L.length+' 지킴</span>':'')+'<span class="wsy">'+$('sync').innerHTML+'</span></span><span class="grow"></span><span class="wlg"><i class="l1"></i>다 한 칸 <i class="l2"></i>반쯤 <i class="l3"></i>고정 칸 자리'+(md?' <i class="l4"></i>약 효과 구간':'')+'</span></div>'
+    return '<div class="wtlbox"><div class="wtlh"><span class="wbx">📌 <b>오늘 하루</b>'+(L.length?'<span class="wpl">고정 칸 '+kept+'/'+L.length+' 지킴</span>':'')+'<span class="wsy">'+$('sync').innerHTML+'</span></span><span class="grow"></span><span class="wlg"><i class="l1"></i>다 한 칸 <i class="l2"></i>반쯤 <i class="l3"></i>고정 칸 자리</span></div>'
       +'<div class="wticks">'+tk+'</div><div class="wtl">'+h+lab.map(function(o,i){return '<span class="wnb '+o.c+'" data-i="'+i+'" data-k="'+o.k+'" style="left:'+o.cx+'%">'+(i+1)+'</span>'}).join('')+'</div>'
       +'<div class="wtllab">'+lab.map(function(o,i){return '<div class="wlb '+o.c+'" data-i="'+i+'"><i>'+(i+1)+'</i><b>'+esc(o.t)+(o.g?'<em>고정</em>':'')+'</b><span>'+esc(o.m)+'</span></div>'}).join('')+'</div></div>';
   }
@@ -905,11 +889,8 @@ function hkMain(){
     if(m==='focus') ln=''; else if(false) ln='PC 집중 중'+(t?' · '+esc(t.title):'')+' <span class="small muted">'+hm(s.endAt)+'까지'+(stale?' (끝났을 수 있어요)':'')+'</span>';
     else if(m==='break') ln='PC 쉬는 중 <span class="small muted">'+hm(s.endAt)+'까지</span>';
     else if(m==='check') ln='';
-    var v=D.med[TODAY], med;
-    if(medEdit) med='<div class="ln"><span>💊</span><input type="time" id="medT" value="'+esc(v||'')+'" style="flex:1"><button class="btn s p" data-a="medSave">저장</button><button class="btn s" data-a="medClear">지우기</button><button class="btn s g" data-a="medCancel">취소</button></div>';
-    else med=v?'':'<div class="ln"><span>💊</span><div class="grow"><span class="muted">오늘 약 기록 전</span></div><button class="btn s p" data-a="medNow">약 먹었어</button></div>';   // 기록하면 숨김 (위 날짜 옆 💊 누르면 수정)
-    if(!ln&&!med) return '';
-    return '<section class="panel now">'+(ln?'<div class="ln"><span class="dot '+m+'"></span><div class="grow" style="font-weight:700">'+ln+'</div></div>':'')+med+'</section>';
+    if(!ln) return '';
+    return '<section class="panel now"><div class="ln"><span class="dot '+m+'"></span><div class="grow" style="font-weight:700">'+ln+'</div></div></section>';
   }
   // "지금 이거 어때?" (PC 큰 화면과 같은 규칙: 매일 할 일 먼저, 그다음 오래된 순)
   var skip=[], pick=null, sugMin=null;
@@ -1009,26 +990,6 @@ function hkMain(){
       +(li.length?li.map(function(m){var hd=m.day!==last?'<div class="small muted" style="font-weight:700;margin-top:14px">'+label(m.day)+'</div>':''; last=m.day;
         return hd+'<div class="item"><div style="white-space:pre-wrap">'+esc(m.text)+(m.bp&&m.brand&&(m.text||'').indexOf(m.brand)<0?' <span class="tag n">'+esc(m.brand)+'</span>':'')+'</div>'+photoBtn(m.imgs)+'<div class="small muted" style="margin-top:4px">'+hm(m.at)+'</div></div>'}).join(''):'<p class="empty" style="margin-top:10px">'+(q?'찾는 메모가 없어요':'보관한 메모가 없어요')+'</p>')+'</section>';
   }
-  function medListHTML(){
-    var ds=Array.from(new Set(Object.keys(D.notes).concat(Object.keys(D.med)))).sort().reverse();
-    return '<section class="panel"><details class="fold"><summary>복용 기록</summary>'+(ds.length?ds.map(function(d){return '<div class="medrow"><div style="font-weight:700">'+label(d)+(D.med[d]?' <span class="small muted" style="font-weight:400">약 '+esc(D.med[d])+'</span>':'')+'</div>'+(D.notes[d]?'<div style="white-space:pre-wrap">'+esc(D.notes[d])+'</div>':'')+'</div>'}).join(''):'<p class="empty">아직 없어요.</p>')+'</details></section>';
-  }
-  function missionsHTML(){
-    var md=D.missionDay; if(!md||md.day!==TODAY||!(md.items||[]).length) return '';
-    var items=md.items, lb=items[items.length-1].batch||items[items.length-1].id;
-    var cur=items.filter(function(m){return (m.batch||m.id)===lb});
-    return '<section class="panel wmis"><h2>🎯 오늘의 미션'+(document.body.classList.contains('wide')?'<span class="n">'+cur.length+'개</span>':'')+'</h2><div class="wmlist">'+cur.map(function(m){
-      var kl=m.kind==='gap'?'빈 곳 채우기':m.kind==='flow'?'흐름 채우기':'미션';
-      return '<div class="item"><div class="row"><span class="tag '+(m.kind==='gap'?'g':'')+'">'+kl+'</span><span class="small muted">'+esc(m.zone)+'</span></div>'
-        +'<div style="font-weight:700;font-size:16px;margin:6px 0 4px">'+esc(m.mission_title)+'</div>'
-        +(m.original?'<div class="small muted">'+esc(m.original)+'</div>':'')
-        +(m.why?'<div class="small" style="color:var(--act);font-weight:700;margin-top:8px">왜 이 미션</div><div style="font-size:14px">'+esc(m.why)+'</div>':'')
-        +(m.practice?'<div class="small" style="color:var(--act);font-weight:700;margin-top:8px">오늘 실전</div><div style="font-size:14px;font-weight:600">'+esc(m.practice)+'</div>':'')
-        +((m.steps||[]).length?'<div class="small" style="color:var(--act);font-weight:700;margin-top:8px">단계 '+m.steps.length+'개</div><ol style="margin:4px 0 0;padding-left:20px;font-size:14px">'+m.steps.map(function(t){return '<li>'+esc(t)+'</li>'}).join('')+'</ol>':'')
-        +'<div class="row" style="margin-top:10px">'+(m.added?'<span class="small" style="color:var(--done);font-weight:600">할 일에 추가됨 ✓</span>':'<button class="btn s p" data-a="mAdd" data-id="'+m.id+'">할 일로 추가</button>')+'</div></div>'}).join('')+'</div>'
-      +(document.body.classList.contains('wide')?'':'<p class="small muted" style="margin:8px 0 0">새 미션 받기는 PC에서만 돼요.</p>')+'</section>';
-  }
-  var startOpen=null;   // 길이 고르는 중인 할 일
   function pcBusy(){var m=(D.session||{}).mode; return m==='focus'||m==='check'}
   function mmss(ms){var neg=ms<0; ms=Math.abs(ms); var t=Math.floor(ms/1000), m=Math.floor(t/60), s2=t%60; return (neg?'+':'')+m+':'+pad(s2)}
   function timerHTML(){
@@ -1074,12 +1035,6 @@ function hkMain(){
     if(!wd) h+='<p class="small muted" style="margin:8px 0 0">할 일을 누르면 오늘 탭에서 바로 시작할 수 있어요.</p>';
     return h+'</section>';
   }
-  function noteHTML(d){
-    var v=D.notes[d]||'';
-    return '<section class="panel"><h2>'+(d===TODAY?'오늘 한 줄':'그날 한 줄')+'</h2><p class="small muted" style="margin:-4px 0 8px">약 효과 체감, 부작용, 컨디션</p>'
-      +'<textarea id="noteIn" rows="3" placeholder="예: 11시쯤부터 덜 산만, 4시 이후 흩어짐">'+esc(v)+'</textarea>'
-      +'<div class="row" style="margin-top:8px"><button class="btn s p" data-a="noteSave" data-d="'+d+'">저장</button></div></section>';
-  }
   function dayHTML(d){
     var bl=D.blocks.filter(function(b){return b.day===d}).sort(function(a,b){return a.start-b.start});
     var done=bl.filter(function(b){return b.result==='done'}).length, mins=bl.reduce(function(a,b){return a+b.minutes},0);
@@ -1120,7 +1075,7 @@ function hkMain(){
   }
   // 2026-11-20 줄 단위로 끊기: 스크롤 되는 목록이 줄 중간에서 반쯤 잘려 보이지 않게, 보이는 높이를 마지막으로 다 들어가는 줄 밑에 맞춤
   function fitRows(){ if(!document.body.classList.contains('wide'))return;
-    [['.tls','.tlist>.item,.tlist>.grp,.snzin .sl-head,.snzin .sl-row'],['.wmis','.wmlist>.item,.wmlist>.item>*,.wmlist>.item li']].forEach(function(q){
+    [['.tls','.tlist>.item,.tlist>.grp,.snzin .sl-head,.snzin .sl-row']].forEach(function(q){
       var card=document.querySelector(q[0]); if(!card)return; var sc=card.querySelector(':scope>.rfit');
       if(!sc){ sc=document.createElement('div'); sc.className='rfit'; var keep=q[0]==='.wmis'?card.querySelector(':scope>h2'):null; [].slice.call(card.childNodes).forEach(function(n){ if(n!==keep)sc.appendChild(n); }); card.appendChild(sc); }
       var rows=[].slice.call(sc.querySelectorAll(q[1])); rows.forEach(function(e){ e.style.paddingTop=e.style.paddingBottom=''; });
@@ -1138,7 +1093,7 @@ function hkMain(){
   function render(){
     if(dragging) return;   // 끄는 중엔 다시 그리지 않음
     drawSync(); document.body.className='t-'+tab;
-    var sk=streakN(), wd0=window.innerWidth>=1100; $('today').innerHTML=(wd0?'<span class="dl">'+esc(label(TODAY))+'</span>':'')+(sk>=2?'<span class="medchip fire" title="시동 연속 (쉬는 날은 건너뜀)">🔥 시동 '+sk+'일째</span>':'')+(D.med[TODAY]?'<button class="medchip" data-a="medEdit" title="약 시간 수정">💊 '+esc(D.med[TODAY])+'</button>':'')+(wd0?'':esc(label(TODAY)));
+    var sk=streakN(), wd0=window.innerWidth>=1100; $('today').innerHTML=(wd0?'<span class="dl">'+esc(label(TODAY))+'</span>':'')+(sk>=2?'<span class="medchip fire" title="시동 연속 (쉬는 날은 건너뜀)">🔥 시동 '+sk+'일째</span>':'')+(wd0?'':esc(label(TODAY)));
     var pm=pendingMemos().length, bd=$('memoBd'); bd.hidden=!pm; bd.textContent=pm;
     var v=$('view'), h='';
     // 2026-11-17 리디자인: 오늘 = 선포 → 지금 이거 어때 → 고정 칸 → 판 → 미션. 넓은 화면(맥북 북마크)은 세 칸으로 펼침
@@ -1146,7 +1101,7 @@ function hkMain(){
     var cp=$('compose'), dk=document.querySelector('.dock');
     if(wide&&cp.parentNode!==document.querySelector('.wrap')) $('sync').insertAdjacentElement('afterend',cp); else if(!wide&&cp.parentNode!==dk) dk.insertBefore(cp,dk.firstChild);
     if(wide){ var so=slOpen, mac=window.innerWidth<1700; slOpen=true; var sz=snzHTML().replace('<section class="panel snz">','<div class="snzin">').replace(/<\/section>$/,'</div>'), tk=tasksHTML().replace(/<\/section>$/,sz+'</section>');
-      h=wbarHTML()+'<div id="wcomp"></div>'+tlWideHTML()+'<div class="wcols"><div class="wc">'+timerHTML()+sugHTML()+slotsHTML()+nowHTML()+'</div><div class="wc mid">'+tk+'</div><div class="wc side">'+memoReviewHTML()+missionsHTML()+'</div></div>'; slOpen=so; }   // 내일 할 일·미룬 것은 할 일 목록 맨 밑에 (같은 목록이라 같이 스크롤, 왼쪽 칸은 안 잘림)
+      h=wbarHTML()+'<div id="wcomp"></div>'+tlWideHTML()+'<div class="wcols"><div class="wc">'+timerHTML()+sugHTML()+slotsHTML()+nowHTML()+'</div><div class="wc mid">'+tk+'</div><div class="wc side">'+memoReviewHTML()+'</div></div>'; slOpen=so; }   // 내일 할 일·미룬 것은 할 일 목록 맨 밑에 (같은 목록이라 같이 스크롤, 왼쪽 칸은 안 잘림)
     else if(tab==='today') h=timerHTML()+declHTML()+sugHTML()+slotsHTML()+panHTML()+nowHTML();   // 2026-11-20 아이폰(좁은 화면)은 오늘의 미션 안 보임 (형 결정)
     else if(tab==='tasks') h=tasksHTML();
     else h=memoReviewHTML();
@@ -1220,11 +1175,6 @@ function hkMain(){
       case 'slStart': if(D.psession||pcBusy()){toast('이미 도는 칸이 있어요');break} var sid3=b.getAttribute('data-sid'), x3=slOf(D,TODAY).filter(function(y){return y.id===sid3})[0]; if(!x3)break;
         var tid3=x3.taskId&&D.tasks.some(function(y){return y.id===x3.taskId&&!y.done})?x3.taskId:(sugTask()||{}).id; if(!tid3){toast('할 일이 없어요. 먼저 배치해요');break}
         var s3=Date.now(); send('phoneStart',{taskId:tid3,startAt:s3,endAt:s3+SL_MIN*60000,min:SL_MIN,slotId:sid3},'50분 시작! 이 칸만 하자'); break;
-      case 'medNow': var n=new Date(); send('med',{day:TODAY,time:pad(n.getHours())+':'+pad(n.getMinutes())},'약 시간 기록됨'); break;
-      case 'medEdit': medEdit=true; render(); break;
-      case 'medCancel': medEdit=false; render(); break;
-      case 'medSave': var mt=$('medT').value; medEdit=false; send('med',{day:TODAY,time:mt||null},'약 시간 수정됨'); break;
-      case 'medClear': medEdit=false; send('med',{day:TODAY,time:null},'오늘 약 기록 지움'); break;
       case 'memoAdd': memoSubmit(); break;
       case 'picDel': memoPics.splice(+b.getAttribute('data-i'),1); drawPics(); break;
       case 'panSOpen': salesOpen=!salesOpen; render(); if(salesOpen){var x=$('panIn'); if(x)x.focus()} break;
@@ -1241,7 +1191,6 @@ function hkMain(){
       case 'panSm': var nv=Math.round(+String(($('panIn')||{}).value||'').replace(/[^0-9]/g,'')); if(!nv){toast('뺄 금액을 먼저 적어줘');$('panIn')&&$('panIn').focus();break} salesOpen=false; panPop=false; send('pan',{day:TODAY,dm:0,ds:-nv},'매출 −'+nv.toLocaleString('ko-KR')+'원'); break;
       case 'mKeep': send('memoAct',{id:id,act:'keep'},'보관함에 넣었어요'); break;
       case 'mDrop': send('memoAct',{id:id,act:'drop'}); break;
-      case 'mAdd': send('missionAdd',{id:id},'할 일에 추가했어요'); break;
       case 'lunchTask': var lv=(D.lunch||{})[b.getAttribute('data-k')]; if(lv&&lv.next) send('addTask',{title:lv.next,brand:lv.brand||'',kind:'head'},'할 일에 넣었어요'); break;
       case 'taskAdd': var tt=$('taskIn').value.trim(); if(!tt){$('taskIn').focus();return} var tb=$('taskB').value; send('addTask',{title:tt,brand:tb,kind:newKind},'할 일 추가됨'); setTimeout(function(){var x=$('taskIn');if(x)x.focus()},50); break;
       case 'edOpen': editId=id; startOpen=null; render(); break;
@@ -1261,7 +1210,6 @@ function hkMain(){
       case 'edCancel': editId=null; render(); break;
       case 'edSave': var et=$('edT').value.trim(); if(!et)return; var eb=$('edB').value, ek=$('edK').value; editId=null; send('editTask',{id:id,title:et,brand:eb,kind:ek},'수정됨'); break;
       case 'taskDel': if(!confirm('이 할 일을 삭제할까요?'))return; editId=null; send('delTask',{id:id},'삭제됨'); break;
-      case 'noteSave': var nd=b.getAttribute('data-d'); send('note',{day:nd,text:$('noteIn').value.trim()},'저장됨'); break;
     }
   });
   window.__hkToast=toast;
