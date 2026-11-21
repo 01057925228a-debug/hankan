@@ -78,6 +78,7 @@
 .gjproof{display:flex;gap:8px}.gjtile{flex:1;height:40px;border:1.5px dashed #E8A29C;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;gap:4px;font:inherit;font-size:13px;font-weight:700;color:#B3261E}.gjtile.g2{flex:0 0 96px;border-style:solid;border-color:#DDE3DF;color:var(--ink,#1C2420)}.gjplus{font-size:16px}
 .gjp{display:inline-flex;align-items:baseline;gap:6px;min-width:0}.gjp .gjk{flex:none}.gjs.wt{column-gap:14px;row-gap:6px}
 .gjs .btn.gjgot{background:#1F7F53;color:#fff;border-color:#1F7F53}
+.gp.bad{border-color:#D93025!important;box-shadow:0 0 0 3px rgba(217,48,37,.14)}#gjMsg:not(:empty){display:block;background:#FDECEA;color:#B3261E;border-radius:10px;padding:10px 12px;font-weight:700;font-size:14px}@media (prefers-color-scheme:dark){#gjMsg:not(:empty){background:#2A1B1A;color:#FF8A80}}
 .gjs .grow{flex:1;min-width:0}.gjs b{color:var(--ink)}.gjs .lt{color:#C62828;font-weight:700}
 @media (prefers-color-scheme:dark){.gjs.ok{background:#173326}.gjs.no{background:#2A1B1A;border-color:#6B2E2A}.gjic.no{background:#E5534B}.gjlk,.gjx,.gjs .lt{color:#FF8A80}
 .gjtile{background:var(--surface);border-color:#7A3A35;color:#FF8A80}.gjtile.g2{border-color:var(--line);color:var(--ink)}.gjk.no{background:#3A1A1A;color:#FF8A80}
@@ -195,7 +196,7 @@ h2 .n{color:var(--act);margin-left:4px}
 .pan .lunch>button,.pan .lunch>.small{grid-column:2;grid-row:1/3}
 .pan .lunch .ld{grid-column:1/3;font-size:13px;color:var(--done);margin-top:4px}
 .pan .lunch.done{border-color:var(--done);border-style:solid}.pan .lunch.done .lk{color:var(--done)}
-.pan .pct .sum{font-size:14px;font-weight:600;color:var(--muted);margin-left:10px;letter-spacing:0}
+.pan .pct .sum{font-size:14px;font-weight:600;color:var(--muted);margin-left:10px;letter-spacing:0}.pan .pct .sum,.pan .nums>div{white-space:nowrap}@media (max-width:440px){.pan .pct .sum{display:block;margin:8px 0 0}}
 .medchip.fire{color:var(--act);background:color-mix(in srgb,var(--act) 10%,transparent)}
 /* 오늘의 판 */
 .pan .ph{display:flex;align-items:center;justify-content:space-between;gap:12px}
@@ -675,7 +676,7 @@ html body.wide .mpan .mb:hover{background:var(--line);color:var(--ink)}html body
 /* 2026-11-20 줄바꿈 정리: 낱말 중간에서 안 끊기, 마지막 줄에 한 낱말만 덩그러니 남지 않게 */
 body{word-break:keep-all;overflow-wrap:anywhere}
 p,li,.mw,.mp,.mo,.mt,.tt,.sugt,.tx,.sl-body,.small{text-wrap:pretty}
-h1,h2,h3,.sugt,.mt{text-wrap:balance}
+h1,h2,h3,.sugt,.mt,.tt,.itl{text-wrap:balance}
 .row>.tag,.row>.small{align-self:center;line-height:1.5}
 </style>
 </head>
@@ -704,17 +705,17 @@ var CFG=null; try{CFG=JSON.parse(LS.get('hk_cfg')||'null')}catch(e){}
 var API=CFG&&CFG.u, K=CFG&&CFG.k, D=null, NS=null;
 function hkParse(t){var m=String(t||'').match(/(https:\/\/script\.google\.com\/[^\s?#]*\/exec)\?k=([A-Za-z0-9]+)/);return m?{u:m[1],k:m[2]}:null}
 function hkFetch(cb){ if(!API)return; fetch(API+'?api=1&k='+encodeURIComponent(K)+'&t='+Date.now()).then(function(r){return r.json()}).then(function(r){
-    if(!r||!r.ok){ if(r&&r.err==='secret')hkSetup('주소가 바뀌었어요. 한 칸 설정의 "폰용 주소"를 다시 붙여넣어 주세요.'); else if(!D) hkOffline(r&&r.err); return; }
+    if(!r||!r.ok){ if(r&&r.err==='secret')hkSetup('주소가 바뀌었어. 한 칸 설정의 "폰용 주소"를 다시 붙여넣어줘.'); else if(!D) hkOffline(r&&r.err); return; }
     LS.set('hk_data',JSON.stringify({d:r.data,n:r.notion})); cb(r.data||{},r.notion);
-  }).catch(function(){ if(window.__hkToast)window.__hkToast('인터넷 연결을 확인해 주세요'); else if(!D) hkOffline(); }); }
-function hkOffline(err){ document.body.className='setup-host'; document.body.innerHTML='<div class="setup"><h1>한 칸</h1><p>'+(err?'서버가 이렇게 답했어요: '+String(err).replace(/[<&]/g,''):'인터넷이 안 돼서 기록을 못 받아왔어요.')+'</p><button class="btn p" onclick="location.reload()" style="width:100%;padding:14px">다시 시도</button></div>'; }
+  }).catch(function(){ if(window.__hkToast)window.__hkToast('인터넷 연결을 확인해줘'); else if(!D) hkOffline(); }); }
+function hkOffline(err){ document.body.className='setup-host'; document.body.innerHTML='<div class="setup"><h1>한 칸</h1><p>'+(err?'서버가 이렇게 답했어: '+String(err).replace(/[<&]/g,''):'인터넷이 안 돼서 기록을 못 받아왔어.')+'</p><button class="btn p" onclick="location.reload()" style="width:100%;padding:14px">다시 시도</button></div>'; }
 function hkSetup(msg){
-  document.body.className='setup-host';document.body.innerHTML='<div class="setup"><h1>한 칸 연결</h1><p>'+(msg||'PC 한 칸 → 설정 → 폰·시트 동기화의 <b>폰용 주소</b>를 복사해서 아래에 붙여넣어 주세요. 처음 한 번만 하면 돼요.')+'</p><textarea id="cfgIn" placeholder="https://script.google.com/macros/s/.../exec?k=..."></textarea><button class="btn p" id="cfgGo">연결하기</button><p id="cfgMsg" style="margin-top:10px"></p></div>';
-  document.getElementById('cfgGo').onclick=function(){ var c=hkParse(document.getElementById('cfgIn').value); if(!c){document.getElementById('cfgMsg').textContent='주소 모양이 아니에요. https://script.google.com/... 로 시작하는 걸 통째로 붙여넣어 주세요.';return}
+  document.body.className='setup-host';document.body.innerHTML='<div class="setup"><h1>한 칸 연결</h1><p>'+(msg||'PC 한 칸 → 설정 → 폰·시트 동기화의 <b>폰용 주소</b>를 복사해서 아래에 붙여넣어줘. 처음 한 번만 하면 돼.')+'</p><textarea id="cfgIn" placeholder="https://script.google.com/macros/s/.../exec?k=..."></textarea><button class="btn p" id="cfgGo">연결하기</button><p id="cfgMsg" style="margin-top:10px"></p></div>';
+  document.getElementById('cfgGo').onclick=function(){ var c=hkParse(document.getElementById('cfgIn').value); if(!c){document.getElementById('cfgMsg').textContent='주소 모양이 아니야. https://script.google.com/... 로 시작하는 걸 통째로 붙여넣어줘.';return}
     document.getElementById('cfgMsg').textContent='확인 중…';
-    fetch(c.u+'?api=1&k='+encodeURIComponent(c.k)).then(function(r){return r.json()}).then(function(r){ if(!r||!r.ok){document.getElementById('cfgMsg').textContent='연결이 안 돼요. 주소를 다시 확인해 주세요. (구글 시트에서 Code.gs 새 버전 배포를 했는지도 봐 주세요)';return}
+    fetch(c.u+'?api=1&k='+encodeURIComponent(c.k)).then(function(r){return r.json()}).then(function(r){ if(!r||!r.ok){document.getElementById('cfgMsg').textContent='연결이 안 돼. 주소를 다시 확인해줘. (구글 시트에서 Code.gs 새 버전 배포를 했는지도 봐줘)';return}
       LS.set('hk_cfg',JSON.stringify(c)); LS.set('hk_data',JSON.stringify({d:r.data,n:r.notion})); location.reload(); })
-    .catch(function(){document.getElementById('cfgMsg').textContent='연결이 안 돼요. 인터넷이나 주소를 확인해 주세요.'}); };
+    .catch(function(){document.getElementById('cfgMsg').textContent='연결이 안 돼. 인터넷이나 주소를 확인해줘.'}); };
 }
 function hkBoot(){
   if(!API){hkSetup();return}
@@ -786,7 +787,7 @@ function hkMain(){
   function slTimes(st,day){if((st.dayPlan||{})[day]==='half')return ['13:40','15:45'];var T=st.slotTimes||SL_DEF;var p=day.split('-').map(Number);var w=new Date(p[0],p[1]-1,p[2]).getDay();return ((w===0||w===6?T.we:T.wd)||[]).filter(Boolean)}
   function slEnsure(st,day){st.slots=st.slots||{}; if(st.slots[day])return false; st.slots[day]=slTimes(st,day).slice(0,SL_MAX).sort(function(a,b){return slMin(a)-slMin(b)}).map(function(t,i){return {id:day.replace(/-/g,'')+'d'+i,t:t,taskId:null,st:'wait'}}); return true}
   function slOf(st,day){return ((st.slots||{})[day]||[]).slice().sort(function(a,b){return slMin(a.t)-slMin(b.t)})}
-  function slCheck(list){ if(list.length>SL_MAX)return '고정 칸은 하루 '+SL_MAX+'개까지예요'; var ms=list.map(function(x){return slMin(x.t)}).sort(function(a,b){return a-b}); for(var i=1;i<ms.length;i++) if(ms[i]-ms[i-1]<SL_MIN+SL_GAP) return '너무 빡빡해요. 시작 시간끼리 1시간은 띄워주세요'; return ''}
+  function slCheck(list){ if(list.length>SL_MAX)return '고정 칸은 하루 '+SL_MAX+'개까지야'; var ms=list.map(function(x){return slMin(x.t)}).sort(function(a,b){return a-b}); for(var i=1;i<ms.length;i++) if(ms[i]-ms[i-1]<SL_MIN+SL_GAP) return '너무 빡빡해. 시작 시간끼리 1시간은 띄워줘'; return ''}
   function slState(x,day,now){ if(x.st==='run'||x.st==='done'||x.st==='pass')return x.st; var t0=slTs(day,x.t); if(now<t0)return 'wait'; return now-t0<SL_MISS*60000?'due':'missed'}
   function slFind(st,id){var ks=Object.keys(st.slots||{}); for(var i=0;i<ks.length;i++){var f=st.slots[ks[i]].filter(function(y){return y.id===id})[0]; if(f)return f} return null}
   function slLink(st,taskId,now,slotId){var day=key(new Date(now)); slEnsure(st,day); var L=st.slots[day];
@@ -830,8 +831,8 @@ function hkMain(){
   var gjBusy=false;
   function gjUpload(day,sid,cam){ if(gjBusy)return; var inp=document.createElement('input'); inp.type='file'; inp.accept='image/*'; if(cam)inp.setAttribute('capture','environment');
     inp.onchange=function(){ var f=inp.files[0]; if(!f)return; gjBusy=true; toast('올리는 중');
-      shrink(f,function(u){ if(!u){gjBusy=false;toast('사진을 못 읽었어요');return} var id='gj'+day.replace(/-/g,'')+uid().slice(0,6)+Date.now().toString(36).slice(-4);
-        upPic({id:id,u:u},function(fid){ gjBusy=false; imgCache[fid]=u; var dr={}; dr[id]=fid; send('gjProof',{day:day,sid:sid,img:id,drive:dr},'인증 끝. 잠금 풀렸어') },function(e){ gjBusy=false; toast('올리기 실패: '+(e||'다시 눌러줘요')) }) },1280) };
+      shrink(f,function(u){ if(!u){gjBusy=false;toast('사진을 못 읽었어');return} var id='gj'+day.replace(/-/g,'')+uid().slice(0,6)+Date.now().toString(36).slice(-4);
+        upPic({id:id,u:u},function(fid){ gjBusy=false; imgCache[fid]=u; var dr={}; dr[id]=fid; send('gjProof',{day:day,sid:sid,img:id,drive:dr},'인증 끝. 잠금 풀렸어') },function(e){ gjBusy=false; toast('올리기 실패: '+(e||'다시 눌러줘')) }) },1280) };
     inp.click() }
   var slPick='', slTimeEd='', slOpen=false;
   function slotsHTML(){
@@ -857,17 +858,17 @@ function hkMain(){
       if(gi&&s==='done'&&gk==='miss'){var bb=(D.blocks||[]).filter(function(y){return x.blockId?y.id===x.blockId:y.slotId===x.id})[0]; right='<span class="sl-st miss">'+(bb?bb.minutes+'분 · ':'')+'곤장 못 채움</span>'}
       var can=s==='wait';
       h+='<div class="sl-row s-'+s+'"><button class="sl-time" data-a="slTime" data-sid="'+x.id+'"'+(can?'':' disabled')+'>'+esc(x.t)+'</button><span class="small muted">50분</span><span class="sl-body">'+(i===0&&!t&&!gi&&(s==='wait'||s==='due')?'<span class="sl-hint">순익 일 추천</span>':'')+title+(gi?' <span class="gjt">곤장</span>':'')+'</span><span class="sl-act">'+right+'</span></div>'+(gi?gjLine(TODAY,gi):'');
-      if(slPick===x.id) h+='<div class="sl-list">'+(open.length?open.slice(0,12).map(function(o){return '<button class="opt" data-a="slSet" data-sid="'+x.id+'" data-id="'+o.id+'">'+esc(o.title)+(o.brand&&o.title.indexOf(o.brand)<0?' <span class="sl-b">'+esc(o.brand)+'</span>':'')+'</button>'}).join(''):'<span class="small muted">배치할 할 일이 없어요</span>')+'<button class="btn s g" data-a="slPickClose">닫기</button></div>';
+      if(slPick===x.id) h+='<div class="sl-list">'+(open.length?open.slice(0,12).map(function(o){return '<button class="opt" data-a="slSet" data-sid="'+x.id+'" data-id="'+o.id+'">'+esc(o.title)+(o.brand&&o.title.indexOf(o.brand)<0?' <span class="sl-b">'+esc(o.brand)+'</span>':'')+'</button>'}).join(''):'<span class="small muted">배치할 할 일이 없어</span>')+'<button class="btn s g" data-a="slPickClose">닫기</button></div>';
       if(slTimeEd===x.id) h+='<div class="sl-list"><div class="row"><input type="time" id="slT" value="'+esc(x.t)+'" style="flex:1"><button class="btn s p" data-a="slTimeSave" data-sid="'+x.id+'">저장</button></div><div class="row"><button class="btn s g" data-a="slDel" data-sid="'+x.id+'">자리 빼기</button><span class="grow"></span><button class="btn s g" data-a="slTimeClose">취소</button></div></div>';
     });
-    if(!slOpen&&!nx) h+='<div class="small muted" style="padding:4px 0 2px">오늘 고정 칸은 다 지나갔어요</div>';
+    if(!slOpen&&!nx) h+='<div class="small muted" style="padding:4px 0 2px">오늘 고정 칸은 다 지나갔어</div>';
     return h+'</section>';
   }
   function slPin(taskId,sid){ slEnsure(D,TODAY); var L=slOf(D,TODAY), now=Date.now();
     var x=sid?L.filter(function(y){return y.id===sid})[0]:L.filter(function(y){return !y.taskId&&['wait','due'].indexOf(slState(y,TODAY,now))>=0})[0];
-    if(!x){toast('빈 고정 칸이 없어요');return}
+    if(!x){toast('빈 고정 칸이 없어');return}
     L.forEach(function(y){ if(y!==x&&y.taskId===taskId&&y.st!=='done'&&y.st!=='run') send('slotSet',{day:TODAY,id:y.id,taskId:null}) });
-    send('slotSet',{day:TODAY,id:x.id,taskId:taskId},x.t+' 고정 칸에 넣었어요') }
+    send('slotSet',{day:TODAY,id:x.id,taskId:taskId},x.t+' 고정 칸에 넣었어') }
   /* 못 보낸 동작은 폰에 모아뒀다가 다시 보냄 (예전엔 인터넷이 끊기면 그냥 사라졌음) */
   var Q=[]; try{Q=JSON.parse(localStorage.getItem('hk_q')||'[]')||[]}catch(e){Q=[]}
   function qSave(){try{localStorage.setItem('hk_q',JSON.stringify(Q.slice(-200)))}catch(e){}}
@@ -877,13 +878,13 @@ function hkMain(){
     post(op,function(r){ qDrop(op.id); qBusy=false; if(r&&typeof r.pending==='number'){D.pending=r.pending;drawSync()} if(Q.length)qFlush(); },
       function(err,hard){ qBusy=false;
         if(hard||Date.now()-(op.at||0)>3*864e5){qDrop(op.id);toast('저장 실패: '+err);if(Q.length)qFlush();return}   // 서버가 거절했거나 3일 넘게 못 보낸 것만 버림 (인터넷 끊김은 계속 기다림)
-        toast('지금 못 보냈어요. 인터넷 되면 다시 보낼게요 (대기 '+Q.length+'개)'); }); }
+        toast('지금 못 보냈어. 인터넷 되면 다시 보낼게 (대기 '+Q.length+'개)'); }); }
   function qReapply(){ var seen=D.opIds||[]; Q=Q.filter(function(op){return seen.indexOf(op.id)<0}); qSave();   // 서버가 이미 받은 건 빼고
     Q.forEach(function(op){applyOp(D,op)}) }
   window.addEventListener('online',function(){qFlush()});
   setInterval(function(){ if(document.visibilityState==='visible')qFlush() },30000);
   function post(op,ok,fail){ fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({k:K,op:op})}).then(function(r){return r.json()})
-    .then(function(r){ if(r&&r.ok) ok(r); else fail(r&&r.err||'다시 시도해 주세요', !!(r&&r.err&&!/lock|잠금|timeout|시간/i.test(r.err))); }).catch(function(){fail('인터넷 확인')}); }
+    .then(function(r){ if(r&&r.ok) ok(r); else fail(r&&r.err||'다시 시도해줘', !!(r&&r.err&&!/lock|잠금|timeout|시간/i.test(r.err))); }).catch(function(){fail('인터넷 확인')}); }
   function sendRaw(op){ Q.push(op); qSave(); LS.set('hk_data',JSON.stringify({d:D,n:NS})); qFlush(); }
   function send(type,d,msg){
     var g0=type==='pan'&&d.day===TODAY?gStat():null;
@@ -899,10 +900,10 @@ function hkMain(){
     if(D.syncedAt){var mins=Math.round((Date.now()-D.syncedAt)/60000);
       t='PC 마지막 변경 '+(key(new Date(D.syncedAt))!==TODAY?label(key(new Date(D.syncedAt)))+' ':'')+hm(D.syncedAt)+(mins<1?' (방금)':mins<60?' ('+mins+'분 전)':'');}
     else t='아직 PC에서 동기화 전';
-    s.innerHTML=esc(t)+' · 앱 v23'+(D.pending?' · <b>PC 반영 대기 '+D.pending+'개</b>':'');
+    s.innerHTML=esc(t)+' · 앱 v25'+(D.pending?' · <b>PC 반영 대기 '+D.pending+'개</b>':'');
     if(NS&&NS.on){var bad=NS.err&&NS.errSince&&(Date.now()-NS.errSince>3600000)||(NS.lastOk&&Date.now()-NS.lastOk>3600000);
       var warn=!bad&&NS.err;   // 방금 생긴 문제: 자동으로 다시 시도 중
-      var nt=bad?'노션 ⚠ '+(NS.err||'1시간 넘게 못 보냈어요'):warn?'노션 ⚠ 다시 시도 중 · '+NS.err:NS.prog&&NS.prog[0]<NS.prog[1]?'노션 옮기는 중 '+NS.prog[0]+'/'+NS.prog[1]:'노션 ✓ '+(NS.lastOk?hm(NS.lastOk):'');
+      var nt=bad?'노션 ⚠ '+(NS.err||'1시간 넘게 못 보냈어'):warn?'노션 ⚠ 다시 시도 중 · '+NS.err:NS.prog&&NS.prog[0]<NS.prog[1]?'노션 옮기는 중 '+NS.prog[0]+'/'+NS.prog[1]:'노션 ✓ '+(NS.lastOk?hm(NS.lastOk):'');
       s.innerHTML+=' · <span style="color:'+(bad?'#C62828;font-weight:700':warn?'#B85C00;font-weight:600':'inherit')+'">'+esc(nt)+'</span>';}
   }
   function dayOf(ts){return key(new Date(ts))}
@@ -937,16 +938,17 @@ function hkMain(){
   function jDay(){ var o=jOpenDay(); if(o&&!jOf(o))return {day:o,late:false}; var m=jMissed(); return m?{day:m,late:true}:null; }
   function jMiss(fx){ var n=gjLockOf(JD.day||'').length?1:0; if(!JD.ok)n++; if(fx&&JD.kept==null)n++; if(!JD.reason)n++; ['rnote','could','fix'].forEach(function(f){if(!(JD[f]||'').trim())n++}); if((D.weekQ||'').trim()&&!(JD.wqa||'').trim())n++; return n; }
   function gjNeed2(day){ var nd=gjDayPrev(day,1); return !(D.gonjang||{})[nd]&&!gjRest(nd) }
-  function gjSlots(day){ var L=(D.slots||{})[day]; if(L&&L.length) return slOf(D,day).map(function(x,i){return {id:x.id,t:x.t,i:i}}); return slTimes(D,day).slice(0,SL_MAX).sort(function(a,b){return slMin(a)-slMin(b)}).map(function(t,i){return {id:day.replace(/-/g,'')+'d'+i,t:t,i:i}}) }
+  function gjSlots(day){ var L=(D.slots||{})[day]; if(L&&L.length) return slOf(D,day).map(function(x,i){return {id:x.id,t:x.t,i:i,task:x.taskId||''}}); return slTimes(D,day).slice(0,SL_MAX).sort(function(a,b){return slMin(a)-slMin(b)}).map(function(t,i){return {id:day.replace(/-/g,'')+'d'+i,t:t,i:i}}) }
   function gjOnOf(sid){ var g=(JD.gj||{})[sid]; if(g&&g.on!=null)return !!g.on; var S=gjSlots(gjDayPrev(JD.day,1)); return S.slice(0,GJ_N).some(function(x){return x.id===sid}) }
+  function gjTaskOf(x){ var g=(JD.gj||{})[x.id]||{}; if(g.taskId) return g.taskId; return gjOnOf(x.id)&&x.task&&D.tasks.some(function(t){return t.id===x.task&&!t.done})?x.task:'' }   // 고정 칸에 넣어둔 할 일은 미리 골라 둠
   function gjPickPhone(day){ var nd=gjDayPrev(day,1), S=gjSlots(nd), tasks=D.tasks.filter(function(t){return !t.done&&!t.dailyId});
     return S.map(function(x){ var g=(JD.gj||{})[x.id]||{}, on=gjOnOf(x.id);
-      return '<div class="gp'+(on?' on':'')+'"><div class="gt"><button class="gpc'+(on?' on':'')+'" data-a="gjOn" data-sid="'+x.id+'" aria-label="'+x.t+' 곤장 칸">'+(on?'✓':'')+'</button><b>'+x.t+'</b><select class="gps" data-sid="'+x.id+'"><option value="">할 일 고르기</option>'+tasks.map(function(t){return '<option value="'+t.id+'"'+(g.taskId===t.id?' selected':'')+'>'+esc(t.title)+'</option>'}).join('')+'<option value="__new">+ 새 할 일 적기</option></select></div>'
+      return '<div class="gp'+(on?' on':'')+'"><div class="gt"><button class="gpc'+(on?' on':'')+'" data-a="gjOn" data-sid="'+x.id+'" aria-label="'+x.t+' 곤장 칸">'+(on?'✓':'')+'</button><b>'+x.t+'</b><select class="gps" data-sid="'+x.id+'"><option value="">할 일 고르기</option>'+tasks.map(function(t){return '<option value="'+t.id+'"'+(gjTaskOf(x)===t.id?' selected':'')+'>'+esc(t.title)+'</option>'}).join('')+'<option value="__new">+ 새 할 일 적기</option></select></div>'
         +(on?'<div class="jl" style="font-size:13px">못 지키면</div><div class="jchips">'+gjCons().map(function(v){return '<button class="jchip'+(g.con===v?' on':'')+'" data-a="gjChip" data-k="con" data-sid="'+x.id+'" data-v="'+esc(v)+'">'+esc(v)+'</button>'}).join('')+'<button class="jchip add" data-a="gjAdd" data-k="con">+ 추가</button></div>'
         +'<div class="jl" style="font-size:13px">지키면</div><div class="jchips">'+gjRews().map(function(v){return '<button class="jchip'+(g.rew===v?' on':'')+'" data-a="gjChip" data-k="rew" data-sid="'+x.id+'" data-v="'+esc(v)+'">'+esc(v)+'</button>'}).join('')+'<button class="jchip add" data-a="gjAdd" data-k="rew">+ 추가</button></div>':'')+'</div>' }).join('') }
   function gjPickRead(day){ var nd=gjDayPrev(day,1), S=gjSlots(nd).filter(function(x){return gjOnOf(x.id)}); if(S.length!==GJ_N) return {err:'곤장 칸은 딱 '+GJ_N+'칸 골라줘 (지금 '+S.length+'칸)'};
-    var items=[]; for(var i=0;i<S.length;i++){ var x=S[i], g=(JD.gj||{})[x.id]||{}, t=D.tasks.filter(function(y){return y.id===g.taskId})[0];
-      if(!t) return {err:x.t+' 칸 할 일을 골라줘'}; if(!g.con) return {err:x.t+' 칸 제약을 골라줘'}; if(!g.rew) return {err:x.t+' 칸 보상을 골라줘'};
+    var items=[]; for(var i=0;i<S.length;i++){ var x=S[i], g=(JD.gj||{})[x.id]||{}, tk0=gjTaskOf(x), t=D.tasks.filter(function(y){return y.id===tk0})[0];
+      if(!t) return {err:x.t+' 칸 할 일을 골라줘',sid:x.id}; if(!g.con) return {err:x.t+' 칸 제약을 골라줘',sid:x.id}; if(!g.rew) return {err:x.t+' 칸 보상을 골라줘',sid:x.id};
       if(items.some(function(y){return y.taskId===t.id})) return {err:'두 칸에 같은 일을 넣었어'};
       items.push({sid:x.id,i:x.i,t:x.t,taskId:t.id,title:t.title,con:g.con,rew:g.rew,moved:0}) }
     return {items:items,day:nd} }
@@ -1058,7 +1060,7 @@ function hkMain(){
       +'<div class="bar"><i style="background:var(--act);width:'+(mw/bs)+'%"></i><i style="background:color-mix(in srgb,var(--act) 40%,var(--surface));width:'+(sv/bs)+'%"></i></div>'
       +(p.rest?'<span class="pc">쉬는 날</span>':'<button class="pc" data-a="goalOpen" title="오늘 목표 바꾸기">'+pct+'%<small> / '+mn(G)+'</small></button>')
       +'<button class="btn p" data-a="panM">+물길</button><button class="btn" data-a="wPop">+순익</button>'
-      +(panPop?'<div class="pop"><input type="number" id="panIn" inputmode="numeric" placeholder="순익 금액 (원)"><button class="btn p" data-a="panS">더하기</button><button class="btn" data-a="panSm">빼기</button><button class="btn" data-a="panMm"'+(m?'':' disabled')+'>−물길 하나</button><span class="sm">달성률 숫자를 누르면 오늘 목표를 바꿔요</span></div>':'')
+      +(panPop?'<div class="pop"><input type="number" id="panIn" inputmode="numeric" placeholder="순익 금액 (원)"><button class="btn p" data-a="panS">더하기</button><button class="btn" data-a="panSm">빼기</button><button class="btn" data-a="panMm"'+(m?'':' disabled')+'>−물길 하나</button><span class="sm">달성률 숫자를 누르면 오늘 목표를 바꿔</span></div>':'')
       +(goalEdit?'<div class="pop"><input type="number" id="goalIn" inputmode="numeric" step="10000" value="'+G+'" placeholder="오늘 목표 (원)"><button class="btn p" data-a="goalSave">저장</button>'+(p.g?'<button class="btn" data-a="goalReset">골 기준 '+mn(def)+'</button>':'')+'</div>':'')+'</div>';
     return '<div class="wbar"><div class="wdate">'+$('today').innerHTML+'</div>'+declHTML()+pm+'</div>'+(gNow()?'<div class="wgoal">'+goalLine(false)+'</div>':'');
   }
@@ -1088,7 +1090,7 @@ function hkMain(){
   function nowHTML(){
     var s=D.session, m=s.mode||'idle', t=D.tasks.filter(function(x){return x.id===s.taskId})[0], ln='';
     var stale=s.endAt&&Date.now()>s.endAt;
-    if(m==='focus') ln=''; else if(false) ln='PC 집중 중'+(t?' · '+esc(t.title):'')+' <span class="small muted">'+hm(s.endAt)+'까지'+(stale?' (끝났을 수 있어요)':'')+'</span>';
+    if(m==='focus') ln=''; else if(false) ln='PC 집중 중'+(t?' · '+esc(t.title):'')+' <span class="small muted">'+hm(s.endAt)+'까지'+(stale?' (끝났을 수 있어)':'')+'</span>';
     else if(m==='break') ln='PC 쉬는 중 <span class="small muted">'+hm(s.endAt)+'까지</span>';
     else if(m==='check') ln='';
     if(!ln) return '';
@@ -1104,8 +1106,8 @@ function hkMain(){
   function sugHTML(){
     if(D.psession) return '';
     var op=openList(), t=sugTask();
-    if(!op.length) return '<section class="panel sug"><div class="lbl">지금 이거 어때?</div><div class="tt muted">할 일이 비어 있어요</div><button class="btn s" data-t2="tasks">할 일 추가하러 가기</button></section>';
-    if(!t) return '<section class="panel sug"><div class="lbl">지금 이거 어때?</div><div class="tt">추천을 다 넘겼어요</div><button class="btn s p" data-a="skipReset">처음부터 다시</button></section>';
+    if(!op.length) return '<section class="panel sug"><div class="lbl">지금 이거 어때?</div><div class="tt muted">할 일이 비어 있어</div><button class="btn s" data-t2="tasks">할 일 추가하러 가기</button></section>';
+    if(!t) return '<section class="panel sug"><div class="lbl">지금 이거 어때?</div><div class="tt">추천을 다 넘겼어</div><button class="btn s p" data-a="skipReset">처음부터 다시</button></section>';
     var L=D.lens||{focus:50,late:25}, dm=sugMin||(t.kind==='chore'?L.late:L.focus), lens=[10,25,50];
     if(lens.indexOf(dm)<0) dm=25;
     var busy=pcBusy(), locked=t.dailyId&&!t.optional;
@@ -1113,7 +1115,7 @@ function hkMain(){
       +'<div class="row" style="margin:6px 0 10px">'+(locked?'<span class="tag" style="background:var(--warm);color:#fff">매일 🔒</span>':'')+kindTag(t.kind)+(t.brand&&(t.title||'').indexOf(t.brand)<0?'<span class="tag n">'+esc(t.brand)+'</span>':'')+(t.postponed?'<span class="small" style="color:var(--warm)">'+t.postponed+'번 미룸</span>':'')+'</div>'
       +'<div class="row" style="margin-bottom:10px"><span class="small muted">길이</span><span class="seg">'+lens.map(function(m){return '<button data-min="'+m+'" aria-pressed="'+(dm===m)+'">'+m+'분</button>'}).join('')+'</span></div>'
       +'<div class="sgo"><button class="btn p" data-a="sugGo" data-id="'+t.id+'" data-min="'+dm+'"'+(busy?' disabled':'')+'>⏵ '+dm+'분 시작</button><button class="btn" data-a="sugSkip" data-id="'+t.id+'">넘기기</button>'+(locked?'':'<button class="btn" data-a="sugSnooze" data-id="'+t.id+'">내일로</button>')+'</div>'
-      +(busy?'<p class="small muted" style="margin:8px 0 0">PC에서 칸이 도는 중이라 폰 시작은 잠가 뒀어요.</p>':'')+'</section>';
+      +(busy?'<p class="small muted" style="margin:8px 0 0">PC에서 칸이 도는 중이라 폰 시작은 잠가 뒀어.</p>':'')+'</section>';
   }
   var memoBrand=null;   // null = 아직 안 고름
   function defBrand(){return ''}   // 자동으로 안 붙임: 직접 고름
@@ -1133,22 +1135,22 @@ function hkMain(){
     if(!mv&&!memoPics.length){$('memoIn').focus();return}
     if(picBusy) return;
     var done=function(extra){ $('memoIn').value=''; memoGrow(); memoBrand=null; memoPics=[]; drawPics(); drawCompose(); };
-    if(!memoPics.length){ send('addMemo',{text:mv,day:TODAY,brand:br},'메모 적었어요'+(br?' · '+br:'')); done(); return }
+    if(!memoPics.length){ send('addMemo',{text:mv,day:TODAY,brand:br},'메모 적었어'+(br?' · '+br:'')); done(); return }
     picBusy=true; var pics=memoPics.slice(), drive={}, i=0, btn=document.querySelector('[data-a="memoAdd"]'); if(btn){btn.disabled=true;btn.textContent='올리는 중'}
     var fin=function(){ picBusy=false; if(btn){btn.disabled=false;btn.textContent='적기'} };
     (function next(){
       if(i>=pics.length){ fin(); var fm={}, nf=0; pics.forEach(function(p){ if(p.n){fm[p.id]={n:p.n,s:p.s,m:p.m};nf++} else imgCache[drive[p.id]]=p.u });
         D.fileMeta=D.fileMeta||{}; Object.keys(fm).forEach(function(k2){D.fileMeta[k2]=fm[k2]});
         var np=pics.length-nf, what=(np?'사진 '+np+'장':'')+(np&&nf?' · ':'')+(nf?'파일 '+nf+'개':'');
-        send('addMemo',{text:mv||(nf===pics.length?'(파일)':'(이미지)'),day:TODAY,brand:br,imgs:pics.map(function(p){return p.id}),drive:drive,fm:fm},'메모 적었어요 · '+what+(br?' · '+br:'')); done(); return }
+        send('addMemo',{text:mv||(nf===pics.length?'(파일)':'(이미지)'),day:TODAY,brand:br,imgs:pics.map(function(p){return p.id}),drive:drive,fm:fm},'메모 적었어 · '+what+(br?' · '+br:'')); done(); return }
       toast('올리는 중 '+(i+1)+'/'+pics.length);
-      upPic(pics[i],function(fid){ drive[pics[i].id]=fid; i++; next() },function(e){ fin(); toast('올리기 실패: '+(e||'다시 눌러줘요')+' (적은 건 그대로 있어요)') });
+      upPic(pics[i],function(fid){ drive[pics[i].id]=fid; i++; next() },function(e){ fin(); toast('올리기 실패: '+(e||'다시 눌러줘')+' (적은 건 그대로 있어)') });
     })();
   }
-  function addRaw(f){ if(f.size>FILE_MAX){toast('「'+f.name+'」 '+fsz(f.size)+' — 노션 한도 때문에 4.8MB까지만 넣을 수 있어요');return} if(!f.size){toast('빈 파일이라 못 넣어요');return}
-    var r=new FileReader(); r.onload=function(){ if(memoPics.length>=PIC_MAX)return; var m=f.type||'application/octet-stream'; memoPics.push({id:uid(),u:String(r.result).replace(/^data:[^;,]*(;base64)?,/,'data:'+m+';base64,'),n:f.name||'파일',s:f.size,m:m}); drawPics() }; r.onerror=function(){toast('「'+f.name+'」 못 읽었어요')}; r.readAsDataURL(f) }
+  function addRaw(f){ if(f.size>FILE_MAX){toast('「'+f.name+'」 '+fsz(f.size)+' — 노션 한도 때문에 4.8MB까지만 넣을 수 있어');return} if(!f.size){toast('빈 파일이라 못 넣어');return}
+    var r=new FileReader(); r.onload=function(){ if(memoPics.length>=PIC_MAX)return; var m=f.type||'application/octet-stream'; memoPics.push({id:uid(),u:String(r.result).replace(/^data:[^;,]*(;base64)?,/,'data:'+m+';base64,'),n:f.name||'파일',s:f.size,m:m}); drawPics() }; r.onerror=function(){toast('「'+f.name+'」 못 읽었어')}; r.readAsDataURL(f) }
   $('memoPic').onchange=function(){ var fs=[].slice.call(this.files||[]); this.value=''; var room=PIC_MAX-memoPics.length;
-    if(fs.length>room) toast('한 메모에 '+PIC_MAX+'개까지예요');
+    if(fs.length>room) toast('한 메모에 '+PIC_MAX+'개까지야');
     fs.slice(0,Math.max(0,room)).forEach(function(f){ if(/^image\/(jpeg|png|webp|gif|heic|heif)$/.test(f.type||'')) shrink(f,function(u){ if(!u){addRaw(f);return} if(memoPics.length<PIC_MAX){memoPics.push({id:uid(),u:u}); drawPics()} }); else addRaw(f) }) };
 
   function ordKey(x){return x&&x.rk!=null&&isFinite(+x.rk)?+x.rk:((x&&(x.created||x.at))||0)}   // 형이 정한 자리(rk)가 먼저, 없으면 넣은 시각 — 확장과 같은 규칙
@@ -1161,7 +1163,7 @@ function hkMain(){
       onEnd:function(e){ dragging=false; if(e.oldIndex===e.newIndex){render();return}
         var L=getList(), vis=[].map.call(box.querySelectorAll('[data-ord]'),function(x){return x.getAttribute('data-ord')}), id=e.item.getAttribute('data-ord');
         var ids=vis.concat(L.map(function(x){return x.id}).filter(function(x){return vis.indexOf(x)<0})), at=ids.indexOf(id), by=function(i){return L.filter(function(x){return x.id===ids[i]})[0]};
-        send('order',{kind:kind,id:id,rk:rkBetween(by(at-1),by(at+1))},'순서 바꿨어요'); } }); }
+        send('order',{kind:kind,id:id,rk:rkBetween(by(at-1),by(at+1))},'순서 바꿨어'); } }); }
   var dragging=false, memoAll=false;
   var memoEd=null;   // 2026-11-20 메모 고치는 중인 id
   function memoCtx(m){ return label(m.day)+' · '+hm(m.at)+(m.ctx?' · '+(m.ctx==='폰'?'폰에서':'"'+esc(m.ctx)+'" 하다가'):''); }
@@ -1170,7 +1172,7 @@ function hkMain(){
       +'<div class="mer"><button class="btn s p" data-a="mSave" data-id="'+m.id+'">저장</button><button class="btn s g" data-a="mCancel">취소</button>'+(document.body.classList.contains('wide')?'<span class="small muted">엔터 저장 · Esc 취소</span>':'')+'</div></div>'; }
   function memoReviewHTML(){
     var ms=pendingMemos();
-    if(!ms.length)return '<section class="panel"><h2>메모 정리</h2><p class="empty">정리할 메모가 없어요. 아래 칸에 바로 적으면 여기 모여요.<br>보관한 메모는 노션 보관함에서 봐요.</p></section>';
+    if(!ms.length)return '<section class="panel"><h2>메모 정리</h2><p class="empty">정리할 메모가 없어. 아래 칸에 바로 적으면 여기 모여.<br>보관한 메모는 노션 보관함에서 봐.</p></section>';
     var wd=document.body.classList.contains('wide'), sh=wd&&!memoAll?ms.slice(0,3):ms;
     var pill=function(m){return m.bp&&m.brand&&(m.text||'').indexOf(m.brand)<0?'<span class="tag n">'+esc(m.brand)+'</span>':''};
     var row=wd?function(m){   // 넓은 화면: Todoist 목록 짜임 (윗줄 첫 줄 글 · 회색 한 줄 · 날짜 줄, 버튼은 마우스 올릴 때 오른쪽 위)
@@ -1191,7 +1193,7 @@ function hkMain(){
     var li=q?all.filter(function(m){return (m.text+' '+(m.ctx||'')+' '+(m.bp?m.brand||'':'')).toLowerCase().indexOf(q)>=0}):all, last='';
     return '<section class="panel"><h2>보관함 <span class="small muted">'+(q?li.length+' / ':'')+all.length+'개</span></h2><input type="text" id="aq" placeholder="검색 (예: 등드름)" value="'+esc(window.__aq||'')+'">'
       +(li.length?li.map(function(m){var hd=m.day!==last?'<div class="small muted" style="font-weight:700;margin-top:14px">'+label(m.day)+'</div>':''; last=m.day;
-        return hd+'<div class="item"><div style="white-space:pre-wrap">'+esc(m.text)+(m.bp&&m.brand&&(m.text||'').indexOf(m.brand)<0?' <span class="tag n">'+esc(m.brand)+'</span>':'')+'</div>'+photoBtn(m.imgs)+'<div class="small muted" style="margin-top:4px">'+hm(m.at)+'</div></div>'}).join(''):'<p class="empty" style="margin-top:10px">'+(q?'찾는 메모가 없어요':'보관한 메모가 없어요')+'</p>')+'</section>';
+        return hd+'<div class="item"><div style="white-space:pre-wrap">'+esc(m.text)+(m.bp&&m.brand&&(m.text||'').indexOf(m.brand)<0?' <span class="tag n">'+esc(m.brand)+'</span>':'')+'</div>'+photoBtn(m.imgs)+'<div class="small muted" style="margin-top:4px">'+hm(m.at)+'</div></div>'}).join(''):'<p class="empty" style="margin-top:10px">'+(q?'찾는 메모가 없어':'보관한 메모가 없어')+'</p>')+'</section>';
   }
   function pcBusy(){var m=(D.session||{}).mode; return m==='focus'||m==='check'}
   function mmss(ms){var neg=ms<0; ms=Math.abs(ms); var t=Math.floor(ms/1000), m=Math.floor(t/60), s2=t%60; return (neg?'+':'')+m+':'+pad(s2)}
@@ -1199,7 +1201,7 @@ function hkMain(){
     var ps=D.psession; if(!ps) return '';
     var left=ps.endAt-Date.now(), tot=Math.max(1,ps.endAt-ps.startAt), pr=Math.min(100,Math.max(0,(Date.now()-ps.startAt)/tot*100));
     return '<section class="panel timer'+(left<=0?' over':'')+'"><div class="lbl">📱 폰에서 도는 칸 · '+ps.min+'분</div><div class="tt">'+esc(ps.title)+'</div>'
-      +'<div class="clock" id="pClock">'+(left>0?mmss(left):'시간 끝!')+'</div><div class="small" id="pSub">'+(left>0?hm(ps.endAt)+'까지':mmss(left)+' 지남 · 체크해 줘')+'</div>'
+      +'<div class="clock" id="pClock">'+(left>0?mmss(left):'시간 끝!')+'</div><div class="small" id="pSub">'+(left>0?hm(ps.endAt)+'까지':mmss(left)+' 지남 · 체크해줘')+'</div>'
       +'<div class="bar"><i id="pBar" style="background:var(--act);width:'+pr+'%"></i></div>'
       +'<div class="big2"><button class="btn p" data-a="pDone">다 했어</button><button class="btn" data-a="pHalf">반쯤 했어</button></div>'
       +'<div class="minor"><button data-a="pCancel">그만두기 (기록 안 남김)</button></div></section>';
@@ -1227,15 +1229,15 @@ function hkMain(){
       +'<button class="btn p" data-a="taskAdd">추가</button></div>';
     if(wd) h+='</section><section class="panel tls">';
     h+= op.length?'<div class="tlist" style="margin-top:10px">'+op.map(function(t,ii){return (ii===0||!!op[ii-1].dailyId!==!!t.dailyId?'<div class="grp">'+(t.dailyId?'매일 '+nDaily:'할 일 '+(op.length-nDaily))+'</div>':'')+itemOf(t)}).join('')+'</div>'
-      :'<p class="empty" style="margin-top:10px">남은 할 일이 없어요.</p>';
+      :'<p class="empty" style="margin-top:10px">남은 할 일이 없어.</p>';
     function itemOf(t){var s=t.steps||[],dn=s.filter(function(x){return x.done}).length;
       if(editId===t.id) return '<div class="item"><div class="edit"><input type="text" id="edT" value="'+esc(t.title)+'" maxlength="120">'
         +'<div class="row" style="margin-top:6px"><select id="edB" style="flex:1">'+brandOpts(t.brand)+'</select><select id="edK" style="width:auto"><option value="head" '+(t.kind!=='chore'?'selected':'')+'>머리 씀</option><option value="chore" '+(t.kind==='chore'?'selected':'')+'>잡무</option></select></div>'
-        +'<div class="row" style="margin-top:6px"><button class="btn s p" data-a="edSave" data-id="'+t.id+'">저장</button><button class="btn s" data-a="edCancel">취소</button><span style="flex:1"></span>'+(t.dailyId&&!t.optional?'<span class="small muted">매일 할 일은 삭제 안 돼요</span>':'<button class="btn s g" data-a="taskDel" data-id="'+t.id+'">삭제</button>')+'</div></div></div>';
-      return '<div class="item row" data-ord="'+t.id+'"><div class="grow" data-pk="'+t.id+'"><div>'+esc(t.title)+'</div><div class="row" style="margin-top:3px">'+(t.dailyId?(t.optional?'<span class="tag" style="background:transparent;border:1px solid var(--warm);color:var(--warm)">선택</span>':'<span class="tag" style="background:var(--warm);color:#fff">매일 🔒</span>'):'')+kindTag(t.kind)+(t.brand&&(t.title||'').indexOf(t.brand)<0?'<span class="tag n">'+esc(t.brand)+'</span>':'')+(s.length?'<span class="small muted">단계 '+dn+'/'+s.length+'</span>':'')+'</div></div>'
+        +'<div class="row" style="margin-top:6px"><button class="btn s p" data-a="edSave" data-id="'+t.id+'">저장</button><button class="btn s" data-a="edCancel">취소</button><span style="flex:1"></span>'+(t.dailyId&&!t.optional?'<span class="small muted">매일 할 일은 삭제 안 돼</span>':'<button class="btn s g" data-a="taskDel" data-id="'+t.id+'">삭제</button>')+'</div></div></div>';
+      return '<div class="item row" data-ord="'+t.id+'"><div class="grow" data-pk="'+t.id+'"><div class="itl">'+esc(t.title)+'</div><div class="row" style="margin-top:3px">'+(t.dailyId?(t.optional?'<span class="tag" style="background:transparent;border:1px solid var(--warm);color:var(--warm)">선택</span>':'<span class="tag" style="background:var(--warm);color:#fff">매일 🔒</span>'):'')+kindTag(t.kind)+(t.brand&&(t.title||'').indexOf(t.brand)<0?'<span class="tag n">'+esc(t.brand)+'</span>':'')+(s.length?'<span class="small muted">단계 '+dn+'/'+s.length+'</span>':'')+'</div></div>'
         +(function(){var pl=slPlaced(t.id);return pl?'<span class="tag pin">📌 '+esc(pl.t)+'</span>':'<button class="btn s g" data-a="slPin" data-id="'+t.id+'" aria-label="고정 칸에 넣기">📌</button>'})()+'<button class="btn s g" data-a="edOpen" data-id="'+t.id+'">수정</button></div>'}
     if(snz&&!document.body.classList.contains('wide')) h+='<p class="small muted" style="margin:8px 0 0">내일로 미룬 것 '+snz+'개 (PC에서 관리)</p>';
-    if(!wd) h+='<p class="small muted" style="margin:8px 0 0">할 일을 누르면 오늘 탭에서 바로 시작할 수 있어요.</p>';
+    if(!wd) h+='<p class="small muted" style="margin:8px 0 0">할 일을 누르면 오늘 탭에서 바로 시작할 수 있어.</p>';
     return h+'</section>';
   }
   function dayHTML(d){
@@ -1244,13 +1246,13 @@ function hkMain(){
     var h='<section class="panel"><h2>한 칸들</h2>';
     h+= bl.length?'<div class="stats"><div><b>'+bl.length+'</b><span class="small muted">칸</span></div><div><b>'+done+'</b><span class="small muted">다 했어</span></div><div><b>'+(Math.floor(mins/60)?Math.floor(mins/60)+'시간 ':'')+(mins%60)+'분</b><span class="small muted">집중</span></div></div>'
       +'<ul class="tl">'+bl.map(function(b){return '<li><span class="tm">'+hm(b.start)+'–'+hm(b.end)+'</span><span class="grow">'+esc(b.title)+'</span><span class="small '+(b.result==='done'?'':'muted')+'">'+(b.result==='done'?'다 했어':'반쯤')+'</span></li>'}).join('')+'</ul>'
-      :'<p class="empty">기록된 칸이 없어요.</p>';
+      :'<p class="empty">기록된 칸이 없어.</p>';
     h+='</section>';
     var dn=D.tasks.filter(function(t){return t.done&&t.doneAt&&dayOf(t.doneAt)===d}).sort(function(a,b){return a.doneAt-b.doneAt});
-    h+='<section class="panel"><h2>끝낸 할 일</h2>'+(dn.length?'<ul class="tl">'+dn.map(function(t){return '<li><span class="tm">'+hm(t.doneAt)+'</span><span class="grow">'+esc(t.title)+'</span>'+(t.brand&&(t.title||'').indexOf(t.brand)<0?'<span class="tag n">'+esc(t.brand)+'</span>':'')+'</li>'}).join('')+'</ul>':'<p class="empty">없어요.</p>')+'</section>';
+    h+='<section class="panel"><h2>끝낸 할 일</h2>'+(dn.length?'<ul class="tl">'+dn.map(function(t){return '<li><span class="tm">'+hm(t.doneAt)+'</span><span class="grow">'+esc(t.title)+'</span>'+(t.brand&&(t.title||'').indexOf(t.brand)<0?'<span class="tag n">'+esc(t.brand)+'</span>':'')+'</li>'}).join('')+'</ul>':'<p class="empty">없어.</p>')+'</section>';
     var ms=D.memos.filter(function(m){return m.day===d}).sort(function(a,b){return a.at-b.at});
     var sl={later:'다시 보기',done:'할 일로',dropped:'버림',kept:'보관함'};
-    h+='<section class="panel"><h2>떠오른 아이디어</h2>'+(ms.length?'<ul class="tl">'+ms.map(function(m){return '<li><span class="tm">'+hm(m.at)+'</span><span class="grow">'+esc(m.text)+photoBtn(m.imgs)+(m.ctx?'<br><span class="small muted">'+(m.ctx==='폰'?'폰에서':'"'+esc(m.ctx)+'" 하다가')+'</span>':'')+'</span>'+(m.bp&&m.brand&&(m.text||'').indexOf(m.brand)<0?'<span class="tag">'+esc(m.brand)+'</span>':'')+(sl[m.status]?'<span class="tag n">'+sl[m.status]+'</span>':'')+'</li>'}).join('')+'</ul>':'<p class="empty">없어요.</p>')+'</section>';
+    h+='<section class="panel"><h2>떠오른 아이디어</h2>'+(ms.length?'<ul class="tl">'+ms.map(function(m){return '<li><span class="tm">'+hm(m.at)+'</span><span class="grow">'+esc(m.text)+photoBtn(m.imgs)+(m.ctx?'<br><span class="small muted">'+(m.ctx==='폰'?'폰에서':'"'+esc(m.ctx)+'" 하다가')+'</span>':'')+'</span>'+(m.bp&&m.brand&&(m.text||'').indexOf(m.brand)<0?'<span class="tag">'+esc(m.brand)+'</span>':'')+(sl[m.status]?'<span class="tag n">'+sl[m.status]+'</span>':'')+'</li>'}).join('')+'</ul>':'<p class="empty">없어.</p>')+'</section>';
     var ls=(D.lectures||[]).filter(function(l){return l.day===d});
     if(ls.length) h+='<section class="panel"><h2>강의 기록</h2>'+ls.map(function(l){return '<div class="item"><div style="font-weight:700">'+esc(l.title)+'</div><div style="white-space:pre-wrap;font-size:14px;margin-top:4px">'+esc(l.note)+'</div>'+photoBtn(l.imgs)+'</div>'}).join('')+'</section>';
     return h;
@@ -1334,7 +1336,7 @@ function hkMain(){
     if(mb.value!=='__new__'){memoBrand=mb.value;return}
     var n=String(prompt('새 브랜드 이름')||'').replace(/[,\n]/g,' ').replace(/\s+/g,' ').trim().slice(0,30);
     if(!n){drawCompose();return}
-    memoBrand=n; if(brands.indexOf(n)<0)send('addBrand',{name:n},'"'+n+'" 브랜드 만들었어요'); drawCompose(); $('memoIn').focus(); };
+    memoBrand=n; if(brands.indexOf(n)<0)send('addBrand',{name:n},'"'+n+'" 브랜드 만들었어'); drawCompose(); $('memoIn').focus(); };
   /* 엔터 = 줄바꿈, 저장은 「적기」 버튼. 줄이 늘면 칸도 커짐 (5줄까지, 그 뒤는 칸 안에서 스크롤) */
   function memoGrow(){ var t=$('memoIn'); if(!t)return; t.style.height='auto'; if(t.value) t.style.height=Math.min(t.scrollHeight+3,132)+'px' }
   $('memoIn').addEventListener('input',memoGrow);
@@ -1347,7 +1349,7 @@ function hkMain(){
   var buzzed=null;
   setInterval(function(){ var ps=D.psession, c=$('pClock'); if(!ps||!c)return; var left=ps.endAt-Date.now();
     if(left<=0&&buzzed!==ps.id){buzzed=ps.id; try{navigator.vibrate&&navigator.vibrate([300,150,300])}catch(e){} render(); return}
-    c.textContent=left>0?mmss(left):'시간 끝!'; var sb=$('pSub'); if(sb)sb.textContent=left>0?hm(ps.endAt)+'까지':mmss(left)+' 지남 · 체크해 줘';
+    c.textContent=left>0?mmss(left):'시간 끝!'; var sb=$('pSub'); if(sb)sb.textContent=left>0?hm(ps.endAt)+'까지':mmss(left)+' 지남 · 체크해줘';
     var br=$('pBar'); if(br)br.style.width=Math.min(100,Math.max(0,(Date.now()-ps.startAt)/Math.max(1,ps.endAt-ps.startAt)*100))+'%'; },1000);
   function click(a){var b=document.querySelector('[data-a="'+a+'"]');if(b)b.click()}
 
@@ -1371,16 +1373,16 @@ function hkMain(){
       case 'slFold': slOpen=!slOpen; slPick=''; slTimeEd=''; render(); break;
       case 'slSet': slPick=''; slPin(id,b.getAttribute('data-sid')); break;
       case 'slPin': slPin(id); break;
-      case 'slClear': send('slotSet',{day:TODAY,id:b.getAttribute('data-sid'),taskId:null},'배치 뺐어요'); break;
+      case 'slClear': send('slotSet',{day:TODAY,id:b.getAttribute('data-sid'),taskId:null},'배치 뺐어'); break;
       case 'slTime': slTimeEd=slTimeEd===b.getAttribute('data-sid')?'':b.getAttribute('data-sid'); slPick=''; render(); break;
       case 'slTimeClose': slTimeEd=''; render(); break;
-      case 'slTimeSave': var sid1=b.getAttribute('data-sid'), tv1=($('slT')||{}).value||''; if(!tv1)break; var er1=slCheck(slOf(D,TODAY).map(function(x){return x.id===sid1?{t:tv1}:x})); if(er1){toast(er1);break} if(slTs(TODAY,('0'+tv1).slice(-5))<=Date.now()){toast('지난 시간으로는 못 옮겨요');break} slTimeEd=''; send('slotTime',{day:TODAY,id:sid1,t:tv1},tv1+'로 옮겼어요'); break;
-      case 'slDel': slTimeEd=''; send('slotDel',{day:TODAY,id:b.getAttribute('data-sid')},'자리를 뺐어요'); break;
-      case 'slAdd': var L1=slOf(D,TODAY); if(L1.length>=SL_MAX){toast('고정 칸은 하루 '+SL_MAX+'개까지예요');break} var nt1=slNextFree(''); if(!nt1){toast('오늘은 더 넣을 시간이 없어요');break} var nid=uid(); applyOp(D,{id:nid,type:'slotAdd',at:Date.now(),d:{day:TODAY,t:nt1}}); slTimeEd=nid;
-        var op1={id:nid,type:'slotAdd',at:Date.now(),d:{day:TODAY,t:nt1}}; D.pending=(D.pending||0)+1; render(); toast(nt1+' 자리를 만들었어요. 시간 바꿔도 돼요'); sendRaw(op1); break;
+      case 'slTimeSave': var sid1=b.getAttribute('data-sid'), tv1=($('slT')||{}).value||''; if(!tv1)break; var er1=slCheck(slOf(D,TODAY).map(function(x){return x.id===sid1?{t:tv1}:x})); if(er1){toast(er1);break} if(slTs(TODAY,('0'+tv1).slice(-5))<=Date.now()){toast('지난 시간으로는 못 옮겨');break} slTimeEd=''; send('slotTime',{day:TODAY,id:sid1,t:tv1},tv1+'로 옮겼어'); break;
+      case 'slDel': slTimeEd=''; send('slotDel',{day:TODAY,id:b.getAttribute('data-sid')},'자리를 뺐어'); break;
+      case 'slAdd': var L1=slOf(D,TODAY); if(L1.length>=SL_MAX){toast('고정 칸은 하루 '+SL_MAX+'개까지야');break} var nt1=slNextFree(''); if(!nt1){toast('오늘은 더 넣을 시간이 없어');break} var nid=uid(); applyOp(D,{id:nid,type:'slotAdd',at:Date.now(),d:{day:TODAY,t:nt1}}); slTimeEd=nid;
+        var op1={id:nid,type:'slotAdd',at:Date.now(),d:{day:TODAY,t:nt1}}; D.pending=(D.pending||0)+1; render(); toast(nt1+' 자리를 만들었어. 시간 바꿔도 돼'); sendRaw(op1); break;
       case 'slPass': send('slotPass',{day:TODAY,id:b.getAttribute('data-sid')},'오늘은 패스'); break;
-      case 'slStart': if(D.psession||pcBusy()){toast('이미 도는 칸이 있어요');break} var sid3=b.getAttribute('data-sid'), x3=slOf(D,TODAY).filter(function(y){return y.id===sid3})[0]; if(!x3)break;
-        var tid3=x3.taskId&&D.tasks.some(function(y){return y.id===x3.taskId&&!y.done})?x3.taskId:(sugTask()||{}).id; if(!tid3){toast('할 일이 없어요. 먼저 배치해요');break}
+      case 'slStart': if(D.psession||pcBusy()){toast('이미 도는 칸이 있어');break} var sid3=b.getAttribute('data-sid'), x3=slOf(D,TODAY).filter(function(y){return y.id===sid3})[0]; if(!x3)break;
+        var tid3=x3.taskId&&D.tasks.some(function(y){return y.id===x3.taskId&&!y.done})?x3.taskId:(sugTask()||{}).id; if(!tid3){toast('할 일이 없어. 먼저 배치해');break}
         var s3=Date.now(); send('phoneStart',{taskId:tid3,startAt:s3,endAt:s3+SL_MIN*60000,min:SL_MIN,slotId:sid3},'50분 시작! 이 칸만 하자'); break;
       case 'memoAdd': memoSubmit(); break;
       case 'picDel': memoPics.splice(+b.getAttribute('data-i'),1); drawPics(); break;
@@ -1388,7 +1390,11 @@ function hkMain(){
       case 'gjAlbum': gjUpload(b.getAttribute('data-day'),b.getAttribute('data-sid'),false); break;
       case 'gjCam': gjUpload(b.getAttribute('data-day'),b.getAttribute('data-sid'),true); break;
       case 'gjChip': var gs0=b.getAttribute('data-sid'), gk0=b.getAttribute('data-k'); JD.gj=JD.gj||{}; JD.gj[gs0]=JD.gj[gs0]||{}; JD.gj[gs0][gk0]=b.getAttribute('data-v'); JD.gj[gs0].on=true; render(); break;
-      case 'gjOn': var gs1=b.getAttribute('data-sid'); JD.gj=JD.gj||{}; JD.gj[gs1]=JD.gj[gs1]||{}; JD.gj[gs1].on=!gjOnOf(gs1); render(); break;
+      case 'gjOn': var gs1=b.getAttribute('data-sid'); JD.gj=JD.gj||{}; JD.gj[gs1]=JD.gj[gs1]||{}; var gon=!gjOnOf(gs1); JD.gj[gs1].on=gon; JD.gjMsg='';
+        if(gon){ JD.gj[gs1].ct=Date.now(); var gnd=gjDayPrev(JD.day,1), gS=gjSlots(gnd), gOn=gS.filter(function(x){return gjOnOf(x.id)});   // 3번째를 켜면 먼저 켠 칸이 빠짐 (2026-11-21)
+          if(gOn.length>GJ_N){ var gOut=gOn.filter(function(x){return x.id!==gs1}).sort(function(a,c){return (((JD.gj[a.id]||{}).ct)||a.i)-(((JD.gj[c.id]||{}).ct)||c.i)})[0]; JD.gj[gOut.id]=JD.gj[gOut.id]||{}; JD.gj[gOut.id].on=false; toast(gOut.t+' 칸은 뺐어 ('+GJ_N+'칸만)') }
+          var gx=gS.filter(function(x){return x.id===gs1})[0]; if(gx&&gx.task&&!JD.gj[gs1].taskId&&D.tasks.some(function(t){return t.id===gx.task&&!t.done})) JD.gj[gs1].taskId=gx.task }
+        render(); break;
       case 'gjAdd': var gk1=b.getAttribute('data-k'), gnv=(prompt(gk1==='con'?'새 제약 (숫자가 있어야 ×2·×3)':'새 보상')||'').trim().slice(0,30); if(!gnv)break; if(gk1==='rew'&&GJ_BAD.test(gnv)&&!confirm('이건 흐름 끊기는 보상이야. 그래도 넣을래?'))break; send('gjList',{k:gk1,v:gnv},'목록에 넣었어'); break;
       case 'jNext': var jfn=(jOf(jPrev(JD.day))||{}).fix||''; if(jMiss(jfn)){toast('빈 칸부터 채워줘');break} JD.step=wkFor(JD.day)?'w':2; render(); window.scrollTo(0,0); break;
       case 'jNext2': if(!(JD.nq||'').trim()){toast('다음 주 질문 한 줄 적어줘');break} JD.step=2; render(); break;
@@ -1401,7 +1407,7 @@ function hkMain(){
       case 'jReasonAdd': var nr=(prompt('새 이유 (12자까지)')||'').trim().slice(0,12); if(!nr)break; JD.reason=nr; send('jeomReason',{name:nr}); break;
       case 'jDefer': send('jeomDefer',{day:TODAY},'1시까지 미뤘어. 한 번만 돼'); break;
       case 'jSave': var jfx=(jOf(jPrev(JD.day))||{}).fix||''; if(jMiss(jfx)){toast(gjLockOf(JD.day).length?'곤장 인증부터 해줘':'빈 칸부터 채워줘');break}
-        var gjr=null; if(gjNeed2(JD.day)){ gjr=gjPickRead(JD.day); if(gjr.err){ var gm2=$('gjMsg'); if(gm2)gm2.textContent=gjr.err; else{JD.step=2;render()} break } }
+        var gjr=null; if(gjNeed2(JD.day)){ gjr=gjPickRead(JD.day); if(gjr.err){ var gm2=$('gjMsg'); if(gm2){ gm2.textContent=gjr.err; document.querySelectorAll('.gp.bad').forEach(function(x){x.classList.remove('bad')}); var gsel=gjr.sid&&document.querySelector('.gps[data-sid="'+gjr.sid+'"]'), gpb=gsel&&gsel.closest('.gp'); if(gpb){ gpb.classList.add('bad'); gpb.scrollIntoView({block:'center',behavior:'smooth'}) } else gm2.scrollIntoView({block:'center',behavior:'smooth'}) } else{JD.step=2;render()} break } }
         var WK2=wkFor(JD.day); if(WK2&&!(JD.nq||'').trim()){ JD.step='w'; render(); toast('다음 주 질문 한 줄 적어줘'); break }
         if(gjr) send('gjSet',{day:gjr.day,items:gjr.items,ok:gjr.day===TODAY});
         var rec=jRecP(), jdd=JD.day;
@@ -1411,35 +1417,35 @@ function hkMain(){
       case 'mAll': memoAll=!memoAll; render(); break;
       case 'mEdit': memoEd=id; render(); var mt0=$('med-'+id); if(mt0){mt0.focus(); mt0.setSelectionRange(mt0.value.length,mt0.value.length);} break;
       case 'mCancel': memoEd=null; render(); break;
-      case 'mSave': var mt1=$('med-'+id), mv=mt1?mt1.value.trim().slice(0,2000):''; memoEd=null; if(mv)send('memoEdit',{id:id,text:mv},'메모 고쳤어요'); else render(); break;
+      case 'mSave': var mt1=$('med-'+id), mv=mt1?mt1.value.trim().slice(0,2000):''; memoEd=null; if(mv)send('memoEdit',{id:id,text:mv},'메모 고쳤어'); else render(); break;
       case 'wPop': panPop=!panPop; goalEdit=false; render(); if(panPop){var wi=$('panIn'); if(wi)wi.focus()} break;
-      case 'mTask': send('memoAct',{id:id,act:'task'},'할 일로 보냈어요'); break;
-      case 'mLater': send('memoAct',{id:id,act:'later',tomorrow:tomorrow()},'내일 다시 보여줄게요'); break;
+      case 'mTask': send('memoAct',{id:id,act:'task'},'할 일로 보냈어'); break;
+      case 'mLater': send('memoAct',{id:id,act:'later',tomorrow:tomorrow()},'내일 다시 보여줄게'); break;
       case 'panM': send('pan',{day:TODAY,dm:1,ds:0},'물길 +1 · +20,000'); break;
       case 'panMm': send('pan',{day:TODAY,dm:-1,ds:0},'물길 −1'); break;
       case 'panS': var pv=Math.round(+String(($('panIn')||{}).value||'').replace(/[^0-9]/g,'')); if(!pv){$('panIn')&&$('panIn').focus();break} salesOpen=false; panPop=false; send('pan',{day:TODAY,dm:0,ds:pv},'순익 +'+pv.toLocaleString('ko-KR')+'원'); break;
       case 'panSm': var nv=Math.round(+String(($('panIn')||{}).value||'').replace(/[^0-9]/g,'')); if(!nv){toast('뺄 금액을 먼저 적어줘');$('panIn')&&$('panIn').focus();break} salesOpen=false; panPop=false; send('pan',{day:TODAY,dm:0,ds:-nv},'순익 −'+nv.toLocaleString('ko-KR')+'원'); break;
-      case 'mKeep': send('memoAct',{id:id,act:'keep'},'보관함에 넣었어요'); break;
+      case 'mKeep': send('memoAct',{id:id,act:'keep'},'보관함에 넣었어'); break;
       case 'mDrop': send('memoAct',{id:id,act:'drop'}); break;
-      case 'lunchTask': var lv=(D.lunch||{})[b.getAttribute('data-k')]; if(lv&&lv.next) send('addTask',{title:lv.next,brand:lv.brand||'',kind:'head'},'할 일에 넣었어요'); break;
+      case 'lunchTask': var lv=(D.lunch||{})[b.getAttribute('data-k')]; if(lv&&lv.next) send('addTask',{title:lv.next,brand:lv.brand||'',kind:'head'},'할 일에 넣었어'); break;
       case 'taskAdd': var tt=$('taskIn').value.trim(); if(!tt){$('taskIn').focus();return} var tb=$('taskB').value; send('addTask',{title:tt,brand:tb,kind:newKind},'할 일 추가됨'); setTimeout(function(){var x=$('taskIn');if(x)x.focus()},50); break;
       case 'edOpen': editId=id; startOpen=null; render(); break;
       case 'sugGo':
-        var mn=+b.getAttribute('data-min'); if(D.psession||pcBusy()){toast('이미 도는 칸이 있어요');break}
+        var mn=+b.getAttribute('data-min'); if(D.psession||pcBusy()){toast('이미 도는 칸이 있어');break}
         var st0=Date.now(), xs=slOf(D,TODAY).filter(function(y){return y.taskId===id&&(y.st||'wait')==='wait'&&st0>=slTs(TODAY,y.t)-15*60000&&st0<slTs(TODAY,y.t)+SL_MISS*60000})[0]; if(xs)mn=SL_MIN; pick=null; sugMin=null; send('phoneStart',{taskId:id,startAt:st0,endAt:st0+mn*60000,min:mn,slotId:xs?xs.id:''},mn+'분 시작! 이 칸만 하자'+(xs?' (고정 칸)':'')); ($('scroller')||{}).scrollTop=0; break;
       case 'sugSkip': if(pick===id)pick=null; skip.push(id); sugMin=null; render(); break;
       case 'skipReset': skip=[]; render(); break;
-      case 'unsnz': send('unsnooze',{id:id},'오늘 목록으로 돌렸어요'); break;
-      case 'sugSnooze': if(pick===id)pick=null; sugMin=null; send('snooze',{id:id,tomorrow:tomorrow()},'내일 다시 보여줄게요'); break;
+      case 'unsnz': send('unsnooze',{id:id},'오늘 목록으로 돌렸어'); break;
+      case 'sugSnooze': if(pick===id)pick=null; sugMin=null; send('snooze',{id:id,tomorrow:tomorrow()},'내일 다시 보여줄게'); break;
       case 'goalOpen': goalEdit=!goalEdit; panPop=false; render(); if(goalEdit){var gi=$('goalIn'); if(gi)gi.focus()} break;
-      case 'goalSave': var gv=Math.round(+String(($('goalIn')||{}).value||'').replace(/[^0-9]/g,'')); if(!(gv>=10000)){toast('목표는 1만원 이상으로 적어줘');break} goalEdit=false; send('panGoal',{day:TODAY,g:gv},'오늘 목표 '+gv.toLocaleString('ko-KR')+'원'); break;
-      case 'goalReset': goalEdit=false; send('panGoal',{day:TODAY,g:0},'기본 목표로 되돌렸어요'); break;
+      case 'goalSave': var gv=Math.round(+String(($('goalIn')||{}).value||'').replace(/[^0-9]/g,'')); if(!(gv>=10000)){toast('목표는 1만 원 이상으로 적어줘');break} goalEdit=false; send('panGoal',{day:TODAY,g:gv},'오늘 목표 '+gv.toLocaleString('ko-KR')+'원'); break;
+      case 'goalReset': goalEdit=false; send('panGoal',{day:TODAY,g:0},'기본 목표로 되돌렸어'); break;
       case 'pDone': case 'pHalf':
         if(!D.psession)break; var ps0=D.psession; send('phoneFinish',{id:ps0.id,result:a==='pDone'?'done':'half',endAt:Date.now(),day:TODAY,ps:ps0},a==='pDone'?'하나 끝! 잘했어':'좋아, 반쯤도 기록했어'); break;
-      case 'pCancel': if(!D.psession||!confirm('이 칸을 그만둘까요? 기록은 안 남아요.'))break; send('phoneCancel',{id:D.psession.id},'그만뒀어요'); break;
+      case 'pCancel': if(!D.psession||!confirm('이 칸을 그만둘까? 기록은 안 남아.'))break; send('phoneCancel',{id:D.psession.id},'그만뒀어'); break;
       case 'edCancel': editId=null; render(); break;
       case 'edSave': var et=$('edT').value.trim(); if(!et)return; var eb=$('edB').value, ek=$('edK').value; editId=null; send('editTask',{id:id,title:et,brand:eb,kind:ek},'수정됨'); break;
-      case 'taskDel': if(!confirm('이 할 일을 삭제할까요?'))return; editId=null; send('delTask',{id:id},'삭제됨'); break;
+      case 'taskDel': if(!confirm('이 할 일을 삭제할까?'))return; editId=null; send('delTask',{id:id},'삭제됨'); break;
     }
   });
   window.__hkToast=toast;
